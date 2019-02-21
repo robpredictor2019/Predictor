@@ -1,0 +1,12 @@
+moos-ivp-predictor/.svn/*
+moos-ivp-predictor/build/*
+moos-ivp-predictor/bin/*
+moos-ivp-predictor/lib/*.so
+moos-ivp-predictor/lib/*~
+moos-ivp-predictor/lib/*.a
+moos-ivp-predictor/lib/lib/*.dylib
+moos-ivp-predictor/lib/*.DS_Store
+moos-ivp-predictor/lib/nbproject
+moos-ivp-predictor/lib/*.dpp
+moos-ivp-predictor/lib/*.user
+
