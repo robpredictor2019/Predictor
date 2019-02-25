@@ -1,4 +1,4 @@
-import particulaire_python
+from  particule import Particule
 import roblib
 
 
