@@ -1,0 +1,9 @@
+//------------------------------------------------
+// pSimulationPredictor config block
+
+ProcessConfig = pSimulationPredictor
+{
+   AppTick   = 4
+   CommsTick = 4
+}
+
