@@ -2,8 +2,8 @@ Community  = boat
 ServerHost = localhost
 ServerPort = 9000
 
-LatOrigin  = 48.3909425
-LongOrigin = -4.4346433
+LatOrigin  = 48.3997222
+LongOrigin = -4.441666666666667
 MOOSTimeWarp = 10
 
 ProcessConfig = ANTLER
@@ -38,7 +38,7 @@ ProcessConfig = pMarineViewer
   AppTick   = 4
   CommsTick = 4
 
-  tiff_file = moulin_blanc.tif
+  tiff_file = penfeld.tif
   zoom      = 1.0
 
   appcast_viewable = true
@@ -72,9 +72,15 @@ ProcessConfig = pNodeReporter
 {
   AppTick   = 4
   CommsTick = 4
+<<<<<<< 23c0be734d534b10a30f3eaec3483da547ed4d97
 
   platform_type      = ship  // détermine l'apparence du robot dans la vue
+=======
+                         
+  platform_type      = auv  // détermine l'apparence du robot dans la vue
+>>>>>>> #Task 10 : Réalisation de pMarineViewer, pNodeReporter, uSimMarine - Part I
   platform_length    = 10    // m
+  platform_colour    = yellow
 }
 
 ProcessConfig = pMarinePID
@@ -124,12 +130,11 @@ ProcessConfig = pMarinePID
 
 ProcessConfig = pHelmIvP
 {
-  AppTick   = 4
-  CommsTick = 4
-
-  // Configuring behavior file and decision domain
-  ivp_behavior_dir =  /home/elodie/moos-ivp-extend/lib/
-  behaviors        =  moulin_blanc.bhv
-  domain           =  course:0:359:360
-  domain           =  speed:0:5:20
+  AppTick   = 4                                                 
+  CommsTick = 4                                                 
+             
+  // Configuring behavior file and decision domain              
+  behaviors        =  SimulationPredictor.bhv                              
+  domain           =  course:0:359:360                          
+  domain           =  speed:0:5:20                              
 }
