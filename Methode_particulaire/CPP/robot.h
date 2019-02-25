@@ -1,8 +1,17 @@
 #include "Kalman.h"
 #include <opencv2/core/core.hpp>
-
+#include <fstream>
 #include <vector>
 #include "gnuplot-iostream.h"
+
+
+struct State{
+  int ID,
+  double t,
+  double x,
+  double y,
+  double theta
+}typedef State;
 
 typedef std::pair<double, double> Point;
 
@@ -14,8 +23,10 @@ private:
   float m_theta;
   float m_u;
   Kalman m_kalman;
-  int m_number;
+  int m_ID;
   std::vector<Point> plot;
+  std::vector<State> m_state;
+  double m_t;
 
 
 
@@ -26,6 +37,8 @@ private:
   void evolution();
   void draw(Gnuplot gp);
   float scenario();
+  void save_state();
+  void export(std::fstream fs);
   void kalman_predict(Mat xup_k,Mat Pup_k, Mat Q, Mat A, Mat u, Mat* x_k1, Mat* P_k1);
   void kalman_correct(Mat x_k1, Mat P_k1, Mat  C, Mat R, Mat y, Mat* xup_k1, Mat* Pup_k1);
   void kalman_x(Mat x_k,Mat P_k,Mat u,Mat y,Mat Q, Mat R,Mat A ,Mat C, Mat* P_k1, Mat* x_k1);
