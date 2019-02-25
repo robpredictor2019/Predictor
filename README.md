@@ -1,25 +1,30 @@
 # Predictor
 
-Étudiants :
+Students :
 Promo ROB 2019
 
+In a context of industrial AUV (Autonomous Underwater Vehicule) applications, ingineers need to predict, before the mission, that their robot will not be in a forbidden area or lost.
 
-Ce projet à pour but de proposer des méthodes capables de garantir des marges d'erreur de positionement pour des robots sous marins. Différentes solutions sont dévloppées. Certaines cherchent à quantifier l'incertitude sur la position du robot afin de définir une erreur maximal en fin de mission. D'autres montrent que le robot est capable de parcourir un cycle à l'infini sans jamais se perdre. Enfin une méthode est proposée afin de déterminer une zone de navigation de laquel on est certain que le robot ne sort jamais.
- 
+This project aim to propose several methods able to guarantee margins of position error for submarin application (AUV). 
+
+Several solutions have been deveploped. Some aim to quantify the AUV position uncertainty in order to define a maximum errorat the end of the mission. Others show that the robot is able to go through a cycle to infinity without ever getting lost. Finally a method is proposed to determine a navigation zone which we are certain that the robot never goes out.
+
 ## Kalman
-On utilise un filtre de Kalman en mode prédiction afin de quantifier l'incertitude sur la position du robot au cours de la mission. On est donc capable de quantifier de combien le robot c'est perdu à la fin de sa mission.
+A Kalman filter is used in prediction mode in order to quantify uncertainty on the AUV position during its mission. We are therefore able to quantify how much the robot is lost at the end of its mission.
 
 ## Méthode particulaire
-Cette méthode complète et valide le travail effectué par Kalman. Il s'agit de simuler le déplacement d'une multitude de robots qui ont tous une évolution et un comportement différents. Pour une même mission, chaque robot va donc suivre un trajectoire différente. A la fin de la simulation on est donc capable de quantifier l'incertitude sur la localisation mais aussi de détecter des comportements inatendus. 
+This method completes and validates the work done by Kalman. It involves simulating the movement of a multitude of robots that all have different evolution and behavior. For the same mission, each robot will follow a different trajectory. At the end of the simulation we are able to quantify the uncertainty on the location but also to detect unexpected behaviors.
 
 ## Focalisation
-Dans cette partie on essaye de déterminer une zone de navigation de laquelle on est certain que le robot ne sort jamais. Cela permet de garantir que le robot ne se perdra pas lors de sa mission et qu'on pourra toujours le récupérer.
+In this part we try to determine a navigation zone from which we are certain that the robot never goes out. This ensures that the robot will not be lost during its mission and can always be recovered.
 
 ## Tubex
-Outil utilisé (ou pas) par les autres groupes. On trouve dans ce repertoire des exemples d'utilisation.
+Tool used (or not) by the other groups. Examples of use can be found in this directory.
 
 ## Lien utiles
 
 Trello: 
 
 Latex/ Overleaf : https://www.overleaf.com/8358965573yyksgdngzxmz
+
+Predictor web site: https://www.ensta-bretagne.fr/jaulin/predictor.html
