@@ -28,9 +28,3 @@ class Particule:
         A  = np.array([[0,0,np.cos(theta)],[0,0,np.sin(theta)],[0,0,-1]])
         return A @ x + np.array([[0,0,u]]).T
 
-
-        
-        
-       
-    
-   
