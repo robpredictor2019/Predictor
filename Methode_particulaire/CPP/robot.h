@@ -40,31 +40,15 @@ private:
   int getTheta() const;
   int getU() const;
   //variables kalman
-  double dt;
-  double h0;
-  double d0;
   Mat x;
   Mat u;
-  Mat phat;
   Mat C;
-  Mat dx;
   Mat A;
-  Mat theta_p;
-  Mat theta_beta;
-  Mat theta_alpha;
+  Mat Gbeta;
+  Mat Galpha;
   Mat y;
-  Mat phat_out, theta_p_out;
+  Mat Xout, Galpha_out;
   double hm;
-  bool depth_new;
-  bool alt_new;
-  int size_x;
-  int size_u;
-  int size_y;
-
-  double cap_command;
-  int count_command_test;
-  double count_mag;
-  double command_test ;
 
   double m_hm[1] ;
   Mat hm_mat;

@@ -13,11 +13,10 @@ using namespace std;
 using namespace cv;
 
 //-----------------------------------------------------------------------------------------------
-//-----------------------------------------Global Value------------------------------------------
-
-
-//-----------------------------------------------------------------------------------------------
 //-----------------------------------------FONCTIONS---------------------------------------------
+
+Robot::Robot()
+:x(Mat::zeros(3, 1, CV_64F)), u(Mat::zeros(1, 1, CV_64F)),C(Mat::zeros(2, 3, CV_64F)),A(Mat::zeros(3, 3, CV_64F)),Galpha(Mat::zeros(3, 3, CV_64F)),y(Mat::zeros(2, 1, CV_64F)),Gbeta(Mat::zeros(3, 3, CV_64F)),m_kalman(Kalman()),m_number(0){}
 
 
 void Robot::kalman_predict(Mat xup_k,Mat Pup_k, Mat Q, Mat A, Mat u, Mat* x_k1, Mat* P_k1){
@@ -50,16 +49,6 @@ float Robot::scenario()
   kalman_x();
 }
 
-Robot::Robot()
-:m_x(0),m_y(0),m_theta(0),m_u(0),m_kalman(Kalman()),m_number(0){}
-
-Robot(float x,float y, float theta)
-:m_x(x),m_y(y),m_theta(theta),m_u(0),m_kalman(Kalman()),m_number(0){}
-
-float Robot::scenario()
-{
-  m_kalman.kalman_x();
-}
 
 void Robot::draw(Gnuplot gp){
     double norm = 0;
@@ -72,5 +61,4 @@ void Robot::draw(Gnuplot gp){
     gp << "plot '-'\n";
     gp.send1d(plot);
     m_number++;
-
 }
