@@ -16,11 +16,10 @@ using namespace std;
 
 SuiviCap::SuiviCap()
 {
-  HT_HeadingWanted = 0;
+  Theta_voulu = 0;
   err = FIRST;
   sumErr = 0;
-  AH_Heading = HT_HeadingWanted;
-  HT_HeadingStable = 0;
+  Theta = Theta_voulu;
   t0 = 0;
 }
 
@@ -42,13 +41,13 @@ bool SuiviCap::OnNewMail(MOOSMSG_LIST &NewMail)
     CMOOSMsg &msg = *p;
 
     string key = msg.GetKey();
-    if (key == "Theta") {
-      AH_Heading = msg.GetDouble();
+    if (key == "Nav_Heading") {
+      Theta = msg.GetDouble();
     } else if (key == "Theta_voulu") {
       err    = 0;
       sumErr = 0;
       derErr = 0;
-      HT_HeadingWanted = msg.GetDouble();
+      Theta_voulu = msg.GetDouble();
     }
 
 #if 0 // Keep these around just for template
@@ -113,7 +112,7 @@ bool SuiviCap::Iterate()
     derErr=0;
   }
   Erreur_cap = COEFF * err + COEFFDER * derErr + COEFINTERR * sumErr;
-  Notify("Erreur_cap ",Erreur_cap)
+  Notify("Erreur_cap ",Erreur_cap);
 
   return(true);
 }
