@@ -71,7 +71,6 @@ float Robot::scenario()
   m_kalman.kalman_x();
 }
 
->>>>>>> 931d8de15331f7509f9be656634c8e468038bb55
 void Robot::draw(Gnuplot gp){
     double norm = 0;
     for (int i=0;i<3;i++){
@@ -83,8 +82,5 @@ void Robot::draw(Gnuplot gp){
     gp << "plot '-'\n";
     gp.send1d(plot);
     m_number++;
-<<<<<<< HEAD
+
 }
-=======
-}
->>>>>>> 931d8de15331f7509f9be656634c8e468038bb55
