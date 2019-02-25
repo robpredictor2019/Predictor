@@ -77,6 +77,20 @@ bool Command::OnConnectToServer()
 
 bool Command::Iterate()
 {
+  if (Erreur_cap > 100) {
+    dTheta = 100 / 5;        // Pour un dt de 0.05, depalcement de 1deg par dt au max 
+    Notify("dTheta",dTheta);
+  }
+  else if (Erreur_cap < -100) {
+    dTheta = -100 / 5;
+    Notify("dTheta",dTheta);
+  }
+  else {
+    dTheta = Erreur_cap / 5;
+    Notify("dTheta",dTheta);
+  }
+
+
   return(true);
 }
 
@@ -113,6 +127,6 @@ bool Command::OnStartUp()
 
 void Command::RegisterVariables()
 {
-  Register("Erreur_cap",0)
+  Register("Erreur_cap",0);
   // Register("FOOBAR", 0);
 }
