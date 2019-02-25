@@ -1,55 +1,47 @@
 /************************************************************/
 /*    NAME:                                               */
 /*    ORGN: MIT                                             */
-/*    FILE: SuiviCap.cpp                                        */
+/*    FILE: Command.cpp                                        */
 /*    DATE:                                                 */
 /************************************************************/
 
 #include <iterator>
 #include "MBUtils.h"
-#include "SuiviCap.h"
+#include "Command.h"
 
 using namespace std;
 
 //---------------------------------------------------------
 // Constructor
 
-SuiviCap::SuiviCap()
+Command::Command()
 {
-  Theta_voulu = 0;
-  err = FIRST;
-  sumErr = 0;
-  Theta = Theta_voulu;
-  t0 = 0;
+  Erreur_cap = 0 ;
+  dTheta = 0 ;
 }
 
 //---------------------------------------------------------
 // Destructor
 
-SuiviCap::~SuiviCap()
+Command::~Command()
 {
 }
 
 //---------------------------------------------------------
 // Procedure: OnNewMail
 
-bool SuiviCap::OnNewMail(MOOSMSG_LIST &NewMail)
+bool Command::OnNewMail(MOOSMSG_LIST &NewMail)
 {
   MOOSMSG_LIST::iterator p;
 
   for(p=NewMail.begin(); p!=NewMail.end(); p++) {
     CMOOSMsg &msg = *p;
 
-    string key = msg.GetKey();
-    if (key == "Theta") {
-      AH_Heading = msg.GetDouble();
-    } else if (key == "Theta_voulu") {
-      err    = 0;
-      sumErr = 0;
-      derErr = 0;
-      HT_HeadingWanted = msg.GetDouble();
-    }
 
+    string key = msg.GetKey();
+    if (key == "Erreur_cap") {
+      Erreur_cap = msg.GetDouble();
+    }
 #if 0 // Keep these around just for template
     string key   = msg.GetKey();
     string comm  = msg.GetCommunity();
@@ -68,7 +60,7 @@ bool SuiviCap::OnNewMail(MOOSMSG_LIST &NewMail)
 //---------------------------------------------------------
 // Procedure: OnConnectToServer
 
-bool SuiviCap::OnConnectToServer()
+bool Command::OnConnectToServer()
 {
    // register for variables here
    // possibly look at the mission file?
@@ -83,44 +75,16 @@ bool SuiviCap::OnConnectToServer()
 // Procedure: Iterate()
 //            happens AppTick times per second
 
-bool SuiviCap::Iterate()
+bool Command::Iterate()
 {
-  if (err == FIRST) { // Premier passage dans Iterate
-    err = (fmod(((Theta_voulu - Theta))+360,360))-180;
-    derErr = 0;
-    sumErr = err;
-
-  }
-  else {
-    previousErr = err;
-    err = (fmod(((Theta_voulu - Theta)+360),360))-180;
-    derErr = (err - previousErr);
-    sumErr += err;
-  }
-
-  // Seuillage de l'intégrale
-  if (abs(sumErr) > MAXINT) {
-    sumErr = sumErr / abs(sumErr) * MAXINT;
-  }
-
-
-
-
-  if(fabs(err)*COEFF>=100)
-  {
-    sumErr=0;
-    derErr=0;
-  }
-  Erreur_cap = COEFF * err + COEFFDER * derErr + COEFINTERR * sumErr;
-  Notify("Erreur_cap ",Erreur_cap)
-
   return(true);
 }
+
 //---------------------------------------------------------
 // Procedure: OnStartUp()
 //            happens before connection is open
 
-bool SuiviCap::OnStartUp()
+bool Command::OnStartUp()
 {
   list<string> sParams;
   m_MissionReader.EnableVerbatimQuoting(false);
@@ -147,9 +111,8 @@ bool SuiviCap::OnStartUp()
 //---------------------------------------------------------
 // Procedure: RegisterVariables
 
-void SuiviCap::RegisterVariables()
+void Command::RegisterVariables()
 {
-  Register("Theta",0);
-  Register("Theta_voulu",0);
+  Register("Erreur_cap",0)
   // Register("FOOBAR", 0);
 }

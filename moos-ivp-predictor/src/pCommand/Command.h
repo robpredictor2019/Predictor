@@ -1,26 +1,20 @@
 /************************************************************/
 /*    NAME:                                               */
 /*    ORGN: MIT                                             */
-/*    FILE: SuiviCap.h                                          */
+/*    FILE: Command.h                                          */
 /*    DATE:                                                 */
 /************************************************************/
 
-#ifndef SuiviCap_HEADER
-#define SuiviCap_HEADER
-#define COEFF 6
-#define COEFFDER 12
-#define COEFINTERR 0.020
-#define FIRST 361
-#define MAXINT 50/COEFINTERR
+#ifndef Command_HEADER
+#define Command_HEADER
 
 #include "MOOS/libMOOS/MOOSLib.h"
-#include <math.h>
 
-class SuiviCap : public CMOOSApp
+class Command : public CMOOSApp
 {
  public:
-   SuiviCap();
-   ~SuiviCap();
+   Command();
+   ~Command();
 
  protected: // Standard MOOSApp functions to overload
    bool OnNewMail(MOOSMSG_LIST &NewMail);
@@ -30,10 +24,10 @@ class SuiviCap : public CMOOSApp
 
  protected:
    void RegisterVariables();
-   double Theta,Theta_voulu;
 
  private: // Configuration variables
-  double previousErr, derErr, Erreur_cap, sumErr, err, t0;
+  double Erreur_cap;
+  double dTheta;
 
  private: // State variables
 };
