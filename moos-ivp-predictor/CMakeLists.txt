@@ -36,7 +36,7 @@ INCLUDE_DIRECTORIES(${MOOS_INCLUDE_DIRS})
 # Search for the moos-ivp folder
 find_path( MOOSIVP_SOURCE_TREE_BASE
            NAMES build-ivp.sh build-moos.sh configure-ivp.sh
-           PATHS "../moos-ivp" "../../moos-ivp" "../../moos-ivp/trunk/" "../moos-ivp/trunk/"
+           PATHS "../moos-ivp" "../../moos-ivp" "../../moos-ivp/trunk/" "../moos-ivp/trunk/" "../../../moos/moos-ivp"
            DOC "Base directory of the MOOS-IvP source tree"
            NO_DEFAULT_PATH
 )
