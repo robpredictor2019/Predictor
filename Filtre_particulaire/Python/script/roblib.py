@@ -243,7 +243,7 @@ def mvnrnd1(G):
 
 def kalman_predict(xup,Gup,u,Γα,A):
     Γ1 = A @ Gup @ A.T + Γα
-    x1 = A @ xup + u    
+    x1 = A @ xup + u   
     return(x1,Γ1)    
 
 def kalman_correc(x0,Γ0,y,Γβ,C):
