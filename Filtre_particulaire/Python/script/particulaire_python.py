@@ -17,7 +17,7 @@ class Particule:
         self.Mco = np.zeros((3,3))
         
     def __repr__(self):
-        return "Vecteur etat :[0},{},{}]".format(self.x[0],self.x[1],self.x[2]) + "\n Matrice de covariance : {}".format(self.Mco)  # {:.2f} notation pour n'afficher que deux chiffres après la virgule
+        return "Vecteur etat :[{},{},{}]".format(self.x[0],self.x[1],self.x[2]) + "\n Matrice de covariance : {}".format(self.Mco)  # {:.2f} notation pour n'afficher que deux chiffres après la virgule
         
     def controle(self):
         return 0, 0
