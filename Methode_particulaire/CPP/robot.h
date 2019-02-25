@@ -29,7 +29,6 @@ private:
   double m_t;
 
 
-
   Robot(); // Constructeur par defaut
   Robot(float x,float y, float theta);// Constructeur
   void Show() const; // Affichage
