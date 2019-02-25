@@ -1,6 +1,9 @@
 #include "Kalman.h"
+<<<<<<< HEAD
 #include <opencv2/core/core.hpp>
 
+=======
+>>>>>>> 931d8de15331f7509f9be656634c8e468038bb55
 #include <vector>
 #include "gnuplot-iostream.h"
 

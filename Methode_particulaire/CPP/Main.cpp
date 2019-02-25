@@ -3,8 +3,14 @@
 using namespace std;
 
 int main(int argc, char **argv){
-  Robot robot;
-  y = Mat::zeros(2, 1, CV_64F);
+  Robot robot
+  Gnuplot gp;
 
-  robot.scenario();
-}
+  for (j=1,j<=1000,j+=1){
+    for (i=1; i<=100; i+=1){
+      Robot robot;
+      Robot.scenario();
+      Robot.draw(gp);
+
+    }
+  }

@@ -10,11 +10,17 @@
 #include <math.h>
 
 using namespace std;
+<<<<<<< HEAD
 using namespace cv;
+=======
+//-----------------------------------------------------------------------------------------------
+//-----------------------------------------Global Value------------------------------------------
+>>>>>>> 931d8de15331f7509f9be656634c8e468038bb55
 
 
 //-----------------------------------------------------------------------------------------------
 //-----------------------------------------FONCTIONS---------------------------------------------
+<<<<<<< HEAD
 
 void Robot::kalman_predict(Mat xup_k,Mat Pup_k, Mat Q, Mat A, Mat u, Mat* x_k1, Mat* P_k1){
   *P_k1 = (A*Pup_k*A.t()) + Q;
@@ -52,6 +58,20 @@ Robot::Robot()
 Robot(float x,float y, float theta)
 :m_x(x),m_y(y),m_theta(theta),m_u(0),m_kalman(Kalman()),m_number(0){}
 
+=======
+Robot::Robot()
+:m_x(0),m_y(0),m_theta(0),m_u(0),m_kalman(Kalman()),m_number(0){}
+
+Robot(float x,float y, float theta)
+:m_x(x),m_y(y),m_theta(theta),m_u(0),m_kalman(Kalman()),m_number(0){}
+
+
+float Robot::scenario()
+{
+  m_kalman.kalman_x();
+}
+
+>>>>>>> 931d8de15331f7509f9be656634c8e468038bb55
 void Robot::draw(Gnuplot gp){
     double norm = 0;
     for (int i=0;i<3;i++){
@@ -63,4 +83,8 @@ void Robot::draw(Gnuplot gp){
     gp << "plot '-'\n";
     gp.send1d(plot);
     m_number++;
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> 931d8de15331f7509f9be656634c8e468038bb55
