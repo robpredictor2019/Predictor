@@ -9,4 +9,7 @@ moos-ivp-predictor/lib/*.DS_Store
 moos-ivp-predictor/lib/nbproject
 moos-ivp-predictor/lib/*.dpp
 moos-ivp-predictor/lib/*.user
+Methode_particulaire/CPP/build/
+
+.gitignore 
 
