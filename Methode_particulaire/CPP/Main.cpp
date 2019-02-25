@@ -24,7 +24,6 @@ int main(int argc, char **argv){
     List_robot.push_back(Robot())
   }
 
-
   for (int j=0,j<=nombreIteration,j++){
     for (int i=0; i<nombreRobot; i++){
       robot = List_robot.at<Robot>(i)
