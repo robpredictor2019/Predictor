@@ -16,10 +16,6 @@ Cette méthode complète et valide le travail effectué par Kalman. Il s'agit de
 Dans cette partie on essaye de déterminer une zone de navigation de laquelle on est certain que le robot ne sort jamais. Cela permet de garantir que le robot ne se perdra pas lors de sa mission et qu'on pourra toujours le récupérer.
 
 ## Tubex
-Outil utilisé (ou pas) par les autres groupes. On trouve dans ce repertoire des exemples d'utilisation.
+Outil utiliser (ou pas) par les autres groupes. On trouve dans ce repertoire.
 
-## Lien utiles
-
-Trello: 
-
-Latex/ Overleaf : https://www.overleaf.com/8358965573yyksgdngzxmz
+##Lien utiles
