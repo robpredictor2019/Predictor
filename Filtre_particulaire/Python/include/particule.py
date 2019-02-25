@@ -16,14 +16,12 @@ def kalman_predict(xup,Gup,u,Γα,A):
 def kalman_correc(x0,Γ0,y,Γβ,C):
     S = C @ Γ0 @ C.T + Γβ 
     if det(S) != 0 :
-        K = Γ0 @ C.T @ inv(S)           
-
+        K = Γ0 @ C.T @ inv(S)
     else : 
         K = zeros((3,2))
     ytilde = y - C @ x0        
     Gup = (eye(len(x0))-K @ C) @ Γ0 
-    xup = x0+ K@ytilde
-        
+    xup = x0+ K@ytilde    
     return(xup,Gup) 
     
 def kalman(x0,Γ0,u,y,Γα,Γβ,A,C):
@@ -36,7 +34,7 @@ class Particule:
     """
     Particule class
     """
-    def __init__(self,X,U,cov):
+    def __init__(self,X,U,cov, figure):
         """
         Constructor
 
@@ -55,11 +53,11 @@ class Particule:
             covariance matrix
         """
 
-        self.Xchap = Xchap
+        self.Xchap = X
         self.X = X
         self.U = U
         self.cov = cov
-        self.theta = theta
+        self.theta = 0
         self.auv = figure.create(UnityFigure.OBJECT_3D_SUBMARINE, 0, 0, 0, dimX=5, dimY=5, dimZ=5)
 
 
@@ -88,7 +86,7 @@ class Particule:
         draw_arrow(X[0],X[1],U[1],0.1,col)
 
     def appendFrame(self,anim): #PyUnityVibes
-        anim.appendFrame(self.auv, x=self.X[0,0], y=0.0, z=self.X[1,0], rx=0, ry=0, rz=self.u[1,0])
+        anim.appendFrame(self.auv, x=self.X[0,0], y=0.0, z=self.X[1,0], rx=0, ry=0, rz=self.U[1,0])
 
     def controle(self,t,w):
         """
@@ -101,16 +99,15 @@ class Particule:
         U[1,0] = k*(w-self.theta)
         return U
 
-
-     def f(self):
+    def f(self):
         """
         State equation of the AUV
 
         alpha : bruit gaussien sur x,y et v
         """
         
-        theta = U[1,0]
-        u = U[0,0]
+        theta = self.U[1,0]
+        u = self.U[0,0]
 
         sigma_x, sigma_y,sigma_v = 0.1,0.1,0.15
         G_alpha = np.diag([sigma_x**2,sigma_y**2,sigma_v**2])
