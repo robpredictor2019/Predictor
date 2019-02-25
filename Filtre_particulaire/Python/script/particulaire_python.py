@@ -19,9 +19,6 @@ class Particule:
     def __repr__(self):
         return "Vecteur etat :[{},{},{}]".format(self.x[0],self.x[1],self.x[2]) + "\n Matrice de covariance : {}".format(self.Mco)  # {:.2f} notation pour n'afficher que deux chiffres après la virgule
 
-    def __str__(self):
-        return "Vecteur etat :[{},{},{}]".format(self.x[0],self.x[1],self.x[2]) + "\n Matrice de covariance : {}".format(self.Mco)
-
     def controle(self):
         return 0, 0
 
