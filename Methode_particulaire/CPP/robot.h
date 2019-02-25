@@ -1,6 +1,10 @@
 #include "Kalman.h"
 #include <opencv2/core/core.hpp>
 
+#include <vector>
+#include "gnuplot-iostream.h"
+
+typedef std::pair<double, double> Point;
 
 class Robot
 {
