@@ -3,6 +3,7 @@
 using namespace std;
 
 int main(int argc, char **argv){
+  Robot robot
   Gnuplot gp;
 
   for (j=1,j<=1000,j+=1){
@@ -13,6 +14,3 @@ int main(int argc, char **argv){
 
     }
   }
-
-
-}
