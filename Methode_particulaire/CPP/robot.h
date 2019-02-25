@@ -10,6 +10,7 @@ private:
   Kalman m_kalman;
 
 public:
+
   Robot(); // Constructeur
   void Show() const; // Affichage
   //Methodes
@@ -26,5 +27,4 @@ public:
   int getY() const;
   int getTheta() const;
   int getU() const;
-
 };
