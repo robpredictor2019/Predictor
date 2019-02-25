@@ -11,23 +11,39 @@
 
 using namespace std;
 using namespace cv;
-<<<<<<< HEAD
-=======
-
-//-----------------------------------------------------------------------------------------------
-//-----------------------------------------Global Value------------------------------------------
-
->>>>>>> 7c94b9f126457131bf9767c3f87e31f6bfc3b6ee
 
 //-----------------------------------------------------------------------------------------------
 //-----------------------------------------FONCTIONS---------------------------------------------
 
-<<<<<<< HEAD
 Robot::Robot()
-:x(Mat::zeros(3, 1, CV_64F)), u(Mat::zeros(1, 1, CV_64F)),C(Mat::zeros(2, 3, CV_64F)),A(Mat::zeros(3, 3, CV_64F)),Galpha(Mat::zeros(3, 3, CV_64F)),y(Mat::zeros(2, 1, CV_64F)),Gbeta(Mat::zeros(3, 3, CV_64F)),m_kalman(Kalman()),m_number(0){}
+:x(Mat::zeros(3, 1, CV_64F)), u(Mat::zeros(1, 1, CV_64F)),C(Mat::zeros(2, 3, CV_64F)),A(Mat::zeros(3, 3, CV_64F)),
+Galpha(Mat::zeros(3, 3, CV_64F)),y(Mat::zeros(2, 1, CV_64F)),Gbeta(Mat::zeros(3, 3, CV_64F)),m_kalman(Kalman()),m_number(0),
+Gx(Mat::zeros(3, 3, CV_64F)){}
 
-=======
->>>>>>> 7c94b9f126457131bf9767c3f87e31f6bfc3b6ee
+void Robot::InitValues(){
+  x.at<double>(0,0) = 1;
+  x.at<double>(1,0) = 1;
+  x.at<double>(2,0) = 0;
+
+  u.at<double>(0,0) = 0;
+
+  A.at<double>(0,2) = cos(0);
+  A.at<double>(1,2) = sin(0);
+  A.at<double>(2,2) = -1;
+
+  Galpha.at<double>(0,0) = 0.1^2;
+  Galpha.at<double>(1,1) = 0.1^2;
+  Galpha.at<double>(2,2) = 0.1^2;
+
+  Gbeta.at<double>(0,0) = 0.1^2;
+  Gbeta.at<double>(1,1) = 0.1^2;
+  Gbeta.at<double>(2,2) = 0.1^2;
+
+  Gx.at<double>(0,0) = 0.1^2;
+  Gx.at<double>(1,1) = 0.1^2;
+  Gx.at<double>(2,2) = 0.1^2;
+
+}
 
 void Robot::kalman_predict(Mat xup_k,Mat Pup_k, Mat Q, Mat A, Mat u, Mat* x_k1, Mat* P_k1){
   *P_k1 = (A*Pup_k*A.t()) + Q;
@@ -46,32 +62,14 @@ void Robot::kalman_correct(Mat x_k1, Mat P_k1, Mat  C, Mat R, Mat y, Mat* xup_k1
    *xup_k1 = x_k1 + K*err;
 }
 
-void Robot::kalman_x(Mat x_k,Mat P_k,Mat u,Mat y,Mat Q, Mat R,Mat A ,Mat C, Mat* P_k1, Mat* x_k1){
+void Robot::kalman_x(Mat x_k, Mat P_k, Mat u, Mat y, Mat Q, Mat R,Mat A ,Mat C, Mat* P_k1, Mat* x_k1){
   Mat Pup_k = Mat::zeros(Size(SIZEX,SIZEX),CV_64F);
   Mat xup_k = Mat::zeros(Size(SIZEX,1),CV_64F);
 
-  kalman_correct(x_k,P_k, C,R, y, &xup_k, &Pup_k);
-  kalman_predict(xup_k,Pup_k, Q, A,u,x_k1,P_k1);
+  kalman_correct(x_k , P_k, C, R, y, &xup_k, &Pup_k);
+  kalman_predict(xup_k, Pup_k, Q, A, u, x_k1, P_k1);
 }
 
-float Robot::scenario()
-{
-  kalman_x();
-}
-
-<<<<<<< HEAD
-=======
-Robot::Robot()
-:m_x(0),m_y(0),m_theta(0),m_u(0),m_kalman(Kalman()),m_number(0){}
-
-Robot(float x,float y, float theta)
-:m_x(x),m_y(y),m_theta(theta),m_u(0),m_kalman(Kalman()),m_number(0){}
-
-float Robot::scenario()
-{
-  m_kalman.kalman_x();
-}
->>>>>>> 7c94b9f126457131bf9767c3f87e31f6bfc3b6ee
 
 void Robot::draw(Gnuplot gp){
     double norm = 0;
@@ -84,8 +82,4 @@ void Robot::draw(Gnuplot gp){
     gp << "plot '-'\n";
     gp.send1d(plot);
     m_number++;
-<<<<<<< HEAD
-=======
-
->>>>>>> 7c94b9f126457131bf9767c3f87e31f6bfc3b6ee
 }

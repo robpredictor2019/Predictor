@@ -3,8 +3,13 @@
 using namespace std;
 
 int main(int argc, char **argv){
-  Robot robot
+  Robot robot;
   Gnuplot gp;
+  robot.InitValues();
+  
+  robot.kalman_x(x, Gx, u, y, Galpha, Gbeta, A, C, &Gx_out, &x_out)
+  x = x_out;
+  Gx = Gx_out;
 
   vector<Robot> List_robot;
   for (int i=0; i<100;i++){
@@ -21,4 +26,3 @@ int main(int argc, char **argv){
     }
   }
 }
-
