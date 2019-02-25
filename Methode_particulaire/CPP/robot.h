@@ -1,3 +1,5 @@
+#include "Kalman.h"
+
 class Robot
 {
 private:
@@ -5,8 +7,10 @@ private:
   float m_y;
   float m_theta;
   float m_u;
+  Kalman m_kalman;
 
 public:
+
   Robot(); // Constructeur
   void Show() const; // Affichage
   //Methodes
@@ -23,5 +27,4 @@ public:
   int getY() const;
   int getTheta() const;
   int getU() const;
-
 };
