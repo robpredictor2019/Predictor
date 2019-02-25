@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 //-----------------------------------------------------------------------------------------------
 //---------------------------------------COMMENTAIRES--------------------------------------------
 //
@@ -8,25 +7,33 @@
 #include <vector>
 #include "Kalman.h"
 using namespace std;
-//using namespace ros;
 //-----------------------------------------------------------------------------------------------
 //-----------------------------------------Global Value------------------------------------------
 
 
 //-----------------------------------------------------------------------------------------------
 //-----------------------------------------FONCTIONS---------------------------------------------
+Robot::Robot()
+:m_x(0),m_y(0),m_theta(0),m_u(0),m_kalman(Kalman()),m_number(0){}
+
+Robot(float x,float y, float theta)
+:m_x(x),m_y(y),m_theta(theta),m_u(0),m_kalman(Kalman()),m_number(0){}
+
+
 float Robot::scenario()
 {
   m_kalman.kalman_x();
 }
-=======
-#include "robot.h"
-#include "gnuplot-iostream.h"
 
-
-
-
-void Robot::draw(){
-
+void Robot::draw(Gnuplot gp){
+    double norm = 0;
+    for (int i=0;i<3;i++){
+        for (int j=0;j<3;j++){
+            norm += m_kalman.theta_p_out.at<double>(i,j);
+        }
+    }
+    plot.push_back(Point(m_number+1,norm));
+    gp << "plot '-'\n";
+    gp.send1d(plot);
+    m_number++;
 }
->>>>>>> b4764514ad13a763733f76329f5f403c6bddb869
