@@ -1,0 +1,9 @@
+//------------------------------------------------
+// pSuiviCap config block
+
+ProcessConfig = pSuiviCap
+{
+   AppTick   = 4
+   CommsTick = 4
+}
+
