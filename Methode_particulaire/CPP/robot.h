@@ -1,4 +1,8 @@
 #include "Kalman.h"
+#include <vector>
+#include "gnuplot-iostream.h"
+
+typedef std::pair<double, double> Point;
 
 class Robot
 {
@@ -8,14 +12,18 @@ private:
   float m_theta;
   float m_u;
   Kalman m_kalman;
+  int m_number;
+  std::vector<Point> plot;
+
 
 public:
 
-  Robot(); // Constructeur
+  Robot(); // Constructeur par defaut
+  Robot(float x,float y, float theta);// Constructeur
   void Show() const; // Affichage
   //Methodes
   void evolution();
-  void draw();
+  void draw(Gnuplot gp);
   float scenario();
   //setter
   void setX(float x);
