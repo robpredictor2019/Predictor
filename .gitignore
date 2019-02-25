@@ -10,3 +10,5 @@ moos-ivp-predictor/lib/nbproject
 moos-ivp-predictor/lib/*.dpp
 moos-ivp-predictor/lib/*.user
 
+.gitignore 
+
