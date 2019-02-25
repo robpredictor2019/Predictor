@@ -10,22 +10,7 @@ private:
   Kalman m_kalman;
 
 public:
-
-  Robot(); // Constructeur par defaut
-  Robot(float x,float y, float theta);// Constructeur
-  void Show() const; // Affichage
-  //Methodes
   void evolution();
-  void draw(Gnuplot gp);
-  float scenario();
-  //setter
-  void setX(float x);
-  void setY(float y);
-  void setTheta(float theta);
-  void setU(float u);
-  //getter
-  int getX() const;
-  int getY() const;
-  int getTheta() const;
-  int getU() const;
+  void draw();
+
 };
