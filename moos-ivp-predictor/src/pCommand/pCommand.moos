@@ -1,0 +1,9 @@
+//------------------------------------------------
+// pCommand config block
+
+ProcessConfig = pCommand
+{
+   AppTick   = 4
+   CommsTick = 4
+}
+
