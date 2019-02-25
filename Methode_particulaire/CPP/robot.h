@@ -17,13 +17,9 @@ private:
 
 
 public:
-<<<<<<< b452b92740c5b7d2906e818703eaeb7710b6f1e3
-  Robot(); // Constructeur
-=======
 
   Robot(); // Constructeur par defaut
   Robot(float x,float y, float theta);// Constructeur
->>>>>>> Draw function v0.1
   void Show() const; // Affichage
   //Methodes
   void evolution();

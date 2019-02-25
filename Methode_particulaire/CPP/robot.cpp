@@ -1,3 +1,4 @@
+<<<<<<< 04ca3230751c115797fb42c83f2884c8304d293d
 //-----------------------------------------------------------------------------------------------
 //---------------------------------------COMMENTAIRES--------------------------------------------
 //
@@ -24,8 +25,6 @@ float Robot::scenario()
 {
   m_kalman.kalman_x();
 }
-<<<<<<< b452b92740c5b7d2906e818703eaeb7710b6f1e3
-=======
 
 void Robot::draw(Gnuplot gp){
     double norm = 0;
@@ -39,4 +38,3 @@ void Robot::draw(Gnuplot gp){
     gp.send1d(plot);
     m_number++;
 }
->>>>>>> Draw function v0.1
