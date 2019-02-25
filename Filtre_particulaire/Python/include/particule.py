@@ -6,7 +6,7 @@ Created on Tue Apr 17 19:13:33 2018
 """
 
 from roblib import *
-
+from PyUnityVibes.UnityFigure import UnityFigure
 
 ############################################
 class Particule:
@@ -35,6 +35,7 @@ class Particule:
         self.X = X
         self.U = U
         self.cov = cov
+        self.auv = figure.create(UnityFigure.OBJECT_3D_SUBMARINE, 0, 0, 0, dimX=5, dimY=5, dimZ=5)
 
 
 
@@ -53,13 +54,16 @@ class Particule:
         return "Vecteur etat : [{},{},{}]".format(self.X[0],self.X[1],self.X[2]) + "\n Matrice de covariance : {}".format(self.cov) + "\n Vecteur d'entree : [{},{}]".format(self.U[0],self.U[1])  # {:.2f} notation pour n'afficher que deux chiffres après la virgule
 
 
-    def display(self,col):
+    def display_plt(self,col):
         """
         Allows to display the Particule object through matplotlib
         """
         X = self.X.flatten()
         U = self.U.flatten()
         draw_arrow(X[0],X[1],U[1],0.1,col)
+
+    def appendFrame(self,anim): #PyUnityVibes
+        anim.appendFrame(self.auv, x=self.X[0,0], y=0.0, z=self.X[1,0], rx=0, ry=0, rz=self.u[1,0])
 
     def controle(self):
         """
@@ -90,7 +94,7 @@ if __name__ == "__main__":
     cov = eye(3)
     part = Particule(X,U,cov)
     figure()
-    part.display("blue")
+    part.display_plt("blue")
     part2 = part
     part2.X = part.f()
     part2.display("red")
