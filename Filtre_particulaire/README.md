@@ -1,6 +1,6 @@
-####Partie Python:
+## Partie Python:
 
-## Installation 
+### Installation 
 
 Pour pouvoir utiliser la partie Python et son affichage, nous utilisons une application de Rémi RIGAL et Noélie RAMUZAT pour faire le lien entre Unity3D et Python.
 
