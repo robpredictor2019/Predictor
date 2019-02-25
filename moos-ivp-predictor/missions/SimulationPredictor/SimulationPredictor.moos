@@ -2,8 +2,8 @@ Community  = boat
 ServerHost = localhost
 ServerPort = 9000
 
-LatOrigin  = 48.3997222
-LongOrigin = -4.441666666666667
+LatOrigin  = 48.403086
+LongOrigin = -4.521370
 MOOSTimeWarp = 10
 
 ProcessConfig = ANTLER
@@ -75,7 +75,7 @@ ProcessConfig = pNodeReporter
 
   platform_type      = ship  // détermine l'apparence du robot dans la vue
   platform_length    = 10    // m
-  platform_colour    = yellow
+  platform_color    = yellow
 }
 
 ProcessConfig = pMarinePID
