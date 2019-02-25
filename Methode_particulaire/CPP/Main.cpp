@@ -3,23 +3,17 @@
 using namespace std;
 
 
-theta_p = Mat::eye(3, 3, CV_64FC1);
-theta_p = theta_p.mul(100);
+  vector<Robot> List_robot;
+  for (int i=0; i<100;i++){
+    List_robot.push_back(Robot())
+  }
 
-theta_beta = Mat::eye(1, 1, CV_64FC1);
-theta_beta = theta_beta.mul(0.1);
+  for (int j=1,j<=1000,j++1){
+    for (int i=1; i<100; i++1){
+      robot = List_robot.at<Robot>(i)
 
-theta_alpha = Mat::eye(3, 3, CV_64FC1);
-theta_alpha = theta_alpha.mul(0.1);
-
-y = Mat::zeros(2, 1, CV_64F);
-
-Robot.A = Mat::zeros(3, 3, CV_64F)
-
-
-int main(int argc, char **argv){
-  Gnuplot gp;
-  Robot robot;
-  robot.A =
-  robot.scenario();
+      robot.scenario();
+      robot.draw(gp);
+    }
+  }
 }
