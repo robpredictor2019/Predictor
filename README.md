@@ -12,10 +12,10 @@ Several solutions have been deveploped. Some aim to quantify the AUV position un
 ## Kalman
 A Kalman filter is used in prediction mode in order to quantify uncertainty on the AUV position during its mission. We are therefore able to quantify how much the robot is lost at the end of its mission.
 
-## Méthode particulaire
+## Particulate method
 This method completes and validates the work done by Kalman. It involves simulating the movement of a multitude of robots that all have different evolution and behavior. For the same mission, each robot will follow a different trajectory. At the end of the simulation we are able to quantify the uncertainty on the location but also to detect unexpected behaviors.
 
-## Focalisation
+## Focus
 In this part we try to determine a navigation zone from which we are certain that the robot never goes out. This ensures that the robot will not be lost during its mission and can always be recovered.
 
 ## Tubex
