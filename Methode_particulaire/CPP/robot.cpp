@@ -6,8 +6,9 @@
 #include "iostream"
 #include <vector>
 #include <iterator>
-#include "MBUtils.h"
+//#include "MBUtils.h"
 #include <math.h>
+#include "robot.h"
 
 using namespace std;
 using namespace cv;
@@ -28,17 +29,17 @@ Galpha(Mat::zeros(3, 3, CV_64F)),y(Mat::zeros(2, 1, CV_64F)),Gbeta(Mat::zeros(3,
   A.at<double>(1,2) = sin(0);
   A.at<double>(2,2) = -1;
 
-  Galpha.at<double>(0,0) = 0.1^2;
-  Galpha.at<double>(1,1) = 0.1^2;
-  Galpha.at<double>(2,2) = 0.1^2;
+  Galpha.at<double>(0,0) = pow(0.1,2);
+  Galpha.at<double>(1,1) = pow(0.1,2);
+  Galpha.at<double>(2,2) = pow(0.1,2);
 
-  Gbeta.at<double>(0,0) = 0.1^2;
-  Gbeta.at<double>(1,1) = 0.1^2;
-  Gbeta.at<double>(2,2) = 0.1^2;
+  Gbeta.at<double>(0,0) = pow(0.1,2);
+  Gbeta.at<double>(1,1) = pow(0.1,2);
+  Gbeta.at<double>(2,2) = pow(0.1,2);
 
-  Gx.at<double>(0,0) = 0.1^2;
-  Gx.at<double>(1,1) = 0.1^2;
-  Gx.at<double>(2,2) = 0.1^2;
+  Gx.at<double>(0,0) = pow(0.1,2);
+  Gx.at<double>(1,1) = pow(0.1,2);
+  Gx.at<double>(2,2) = pow(0.1,2);
 }
 
 void Robot::kalman_predict(Mat xup_k,Mat Pup_k, Mat* x_k1, Mat* P_k1){
@@ -51,7 +52,7 @@ void Robot::kalman_correct( Mat* xup_k1, Mat* Pup_k1){
    Mat K = Mat::zeros(Size(3,2),CV_64F);
    Mat err = Mat::zeros(2,1,CV_64F);
 
-   S = (C*Gx*C.t()) + R;
+   S = (C*Gx*C.t()) + Gbeta;
    K = Gx*C.t()*S.inv();
    err = y - (C*x);
    *Pup_k1 = (Mat::eye(3,3,CV_64F) - (K*C)) * Gx;
@@ -63,18 +64,18 @@ void Robot::kalman_x( Mat* P_k1, Mat* x_k1){
   Mat xup_k = Mat::zeros(Size(3,1),CV_64F);
 
   kalman_correct( &xup_k, &Pup_k);
-  kalman_predict( Mat xup_k, Mat Pup_k, &x_k1, &P_k1);
+  kalman_predict( xup_k, Pup_k, x_k1, P_k1);
 }
 
 
-void Robot::draw(Gnuplot *gp){
+void Robot::draw(Gnuplot &gp){
     double norm = 0;
     for (int i=0;i<3;i++){
         for (int j=0;j<3;j++){
             norm += Gx_out.at<double>(i,j);
         }
     }
-    plot.push_back(point(t,norm));
+    plot.push_back(point(m_t,norm));
     gp << "plot '-'\n";
     gp.send1d(plot);
 }
@@ -83,16 +84,16 @@ void Robot::save_state(){
     State s;
     s.ID = m_ID;
     s.t  = m_t;
-    s.x  = x[0];
-    s.y  = x[1];
-    s.theta = x[2];
+    s.x  = x.at<double>(0);
+    s.y  = x.at<double>(1);
+    s.theta = x.at<double>(2);
     m_state.push_back(s);
 }
 
-void Robot::Export(ofstream * fs){
+void Robot::Export(ofstream & fs){
     State s;
     for (int i=0;i<m_state.size();i++){
-        s = m_state.at<State>(i);
-        fs<<s.ID<<";"<<s.t<<";"<<s.x<<";"<<s.y<<";0;0;0"<<s.theta<<std::endl;
+        s = m_state[i];
+        fs << s.ID<<";"<<s.t<<";"<<s.x<<";"<<s.y<<";0;0;0"<<s.theta<<std::endl;
     }
 }

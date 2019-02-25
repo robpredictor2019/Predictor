@@ -30,13 +30,13 @@ int main(int argc, char **argv){
       robot.kalman_x( &robot.Gx_out, &robot.x_out);
       robot.x = robot.x_out;
       robot.Gx = robot.Gx_out;
-      robot.draw(&gp);
+      robot.draw(gp);
       robot.save_state();
     }
   }
   for(int i=0; i<NOMBRE_ROBOT;i++){
     Robot robot = List_robot[i];
-    robot.Export(&fs);
+    robot.Export(fs);
 
   }
   fs.close();
