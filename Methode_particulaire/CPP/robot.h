@@ -14,6 +14,7 @@ private:
   std::vector<Point> plot;
 
 public:
+<<<<<<< HEAD
   //Variables Kalman
   Mat x;
   Mat Gx;
@@ -25,6 +26,8 @@ public:
   Mat y;
   Mat x_out, Gx_out;
 
+=======
+>>>>>>> master
   Robot(); // Constructeur par defaut
   Robot(Mat x, Mat u, Mat C, Mat A, Mat Galpha, Mat y, Mat Gbeta, Kalman m_kalman, int m_number, Mat Gx);// Constructeur
   void Show() const; // Affichage
