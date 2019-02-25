@@ -16,7 +16,7 @@ class mission:
 
 	def run(self):
 		while self.t < self.tfinal :
-			for rob in self.list_robots: 
+			for rob in self.listParticules: 
 				rob.step(self.t, self.dt)
 			self.t  += self.dt
 
