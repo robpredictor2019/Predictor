@@ -127,6 +127,6 @@ bool Command::OnStartUp()
 
 void Command::RegisterVariables()
 {
-  Register("Erreur_cap",0);
+  Register("Erreur_cap",0)
   // Register("FOOBAR", 0);
 }
