@@ -8,7 +8,7 @@ private:
 
   //Methodes
 public:
-  void evolution(Robot);
-  void draw(Robot);
+  void evolution();
+  void draw();
 
 };
