@@ -17,9 +17,6 @@ private:
 
 
 public:
-  void evolution();
-  void draw();
-
   Robot(); // Constructeur par defaut
   Robot(float x,float y, float theta);// Constructeur
   void Show() const; // Affichage

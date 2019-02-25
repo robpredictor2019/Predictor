@@ -72,7 +72,7 @@ ProcessConfig = pNodeReporter
 {
   AppTick   = 4
   CommsTick = 4
-               
+  
   platform_type      = auv  // détermine l'apparence du robot dans la vue
   platform_length    = 10    // m
   platform_colour    = yellow
@@ -130,6 +130,7 @@ ProcessConfig = pHelmIvP
 
   // Configuring behavior file and decision domain
   behaviors        =  SimulationPredictor.bhv
+
   domain           =  course:0:359:360
   domain           =  speed:0:5:20
 }
