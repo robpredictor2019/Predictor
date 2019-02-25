@@ -30,14 +30,9 @@ class mission:
 
 	def run(self):
 		while self.t < self.tfinal :
-<<<<<<< Updated upstream
-			for rob in self.listParticules: 
-				rob.step(self.t, self.dt)
-				rob.appendFrame(self.anim)
-=======
 			for part in self.listParticules: 
 				part.step(self.t, self.dt)
->>>>>>> Stashed changes
+				part.appendFrame(self.anim)
 			self.t  += self.dt
 
 		time.sleep(1)
