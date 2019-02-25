@@ -78,8 +78,25 @@ void Robot::draw(Gnuplot gp){
             norm += m_kalman.theta_p_out.at<double>(i,j);
         }
     }
-    plot.push_back(Point(m_number+1,norm));
+    plot.push_back(Point(t,norm));
     gp << "plot '-'\n";
     gp.send1d(plot);
-    m_number++;
+}
+
+void save_state(){
+    State s;
+    s.ID = m_ID;
+    s.t  = m_t;
+    s.x  = m_x;
+    s.y  = m_y;
+    s.theta = m_theta;
+    m_state.push_back(s);
+}
+
+void export(fstream fs){
+    State s;
+    for (int i=0;i<m_state.size();i++){
+        s = m_state.at<State>(i);
+        fs<<s.ID<<";"<<s.t<<";"<<s.x<<";"<<s.y<<";0;0;0"<<s.theta<<std::endl;
+    }
 }
