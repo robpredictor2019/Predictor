@@ -18,4 +18,7 @@ Dans cette partie on essaye de déterminer une zone de navigation de laquelle on
 ## Tubex
 Outil utiliser (ou pas) par les autres groupes. On trouve dans ce repertoire.
 
-##Lien utiles
+## Lien utiles
+
+Trello: 
+Latex/ Overleaf : https://www.overleaf.com/8358965573yyksgdngzxmz
