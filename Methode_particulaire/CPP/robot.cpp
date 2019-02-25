@@ -56,14 +56,6 @@ Robot::Robot()
 Robot(float x,float y, float theta)
 :m_x(x),m_y(y),m_theta(theta),m_u(0),m_kalman(Kalman()),m_number(0){}
 
-=======
-Robot::Robot()
-:m_x(0),m_y(0),m_theta(0),m_u(0),m_kalman(Kalman()),m_number(0){}
-
-Robot(float x,float y, float theta)
-:m_x(x),m_y(y),m_theta(theta),m_u(0),m_kalman(Kalman()),m_number(0){}
-
-
 float Robot::scenario()
 {
   m_kalman.kalman_x();
