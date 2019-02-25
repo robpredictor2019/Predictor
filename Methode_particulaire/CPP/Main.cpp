@@ -5,8 +5,16 @@ using namespace std;
 #define NOMBREITERATION=1000
 
 int main(int argc, char **argv){
-  Robot robot
+  Robot robot;
   Gnuplot gp;
+
+  robot.InitValues();
+  
+  robot.kalman_x(x, Gx, u, y, Galpha, Gbeta, A, C, &Gx_out, &x_out)
+  x = x_out;
+  Gx = Gx_out;
+
+
   vector<Robot> List_robot;
 
   std::fstream fs;
@@ -33,4 +41,5 @@ int main(int argc, char **argv){
   fs.close()
 
   return 0;
+
 }
