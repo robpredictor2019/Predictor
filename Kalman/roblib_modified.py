@@ -14,7 +14,6 @@ def kalman_predict(xup,Gup,u,Γα,A):
 
 def kalman_correc(x0,Γ0,y,Γβ,C):
     S = C @ Γ0 @ C.T + Γβ
-    print("Γ0",Γ0,"\nC", C,"\nS", S)
     if S.shape == (1,1):
         K = (1./S)*Γ0 @ C.T
         ytilde = y - C @ x0
@@ -30,7 +29,6 @@ def kalman_correc(x0,Γ0,y,Γβ,C):
 def kalman(x0,Γ0,u,y,Γα,Γβ,A,C):
     xup,Gup = kalman_correc(x0,Γ0,y,Γβ,C)
     x1,Γ1=kalman_predict(xup,Gup,u,Γα,A)
-    print("Gup", Γ1)
     return(x1,Γ1)
 
 def draw_tank(x,col='darkblue',r=1):
