@@ -56,10 +56,10 @@ A(Mat::zeros(3, 3, CV_64F)),B(Mat::zeros(3, 1, CV_64F)),
 Galpha(Mat::zeros(3, 3, CV_64F)),y(Mat::zeros(2, 1, CV_64F)),Gbeta(Mat::zeros(2, 2, CV_64F)),
 Gx(Mat::zeros(3, 3, CV_64F)),Gx_out(Mat::zeros(3, 3, CV_64F)) ,x_out(Mat::zeros(3, 1, CV_64F)),
 t(0),m_ID(ID)
-{ 
+{
   x.at<double>(0,0) = 1;
   x.at<double>(1,0) = 1;
-  x.at<double>(2,0) = 0;
+  x.at<double>(2,0) = 90;
 
   u.at<double>(0,0) = 0;
 
@@ -80,12 +80,6 @@ t(0),m_ID(ID)
   Gx.at<double>(0,0) = pow(0.1,2);
   Gx.at<double>(1,1) = pow(0.1,2);
   Gx.at<double>(2,2) = pow(0.1,2);
-}
-
-Robot::~Robot()
-{
-  m_state.resize(0);
-  plot.resize(0);
 }
 
 void Robot::kalman_predict(Mat xup_k,Mat Pup_k, Mat* x_k1, Mat* P_k1)
@@ -142,6 +136,17 @@ void Robot::save_state()
     s.y  = x.at<double>(1);
     s.theta = x.at<double>(2);
     m_state.push_back(s);
+}
+
+void Robot::P_theta()
+{
+  State s;
+  int K = 1;
+  if (s.x > 15)
+    s.theta = K *(270 - s.theta);
+  else
+    s.theta = K *(90 - s.theta);
+  m_state.push_back(s);
 }
 
 void Robot::Export(ofstream & fs)

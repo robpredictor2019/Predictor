@@ -1,15 +1,18 @@
 #include "robot.h"
 #include "iostream"
 using namespace std;
-#define NOMBRE_ROBOT 40
-#define TEMPS_ITERATION 10
+
+#define NOMBRE_ROBOT 100
+#define TEMPS_ITERATION 100
 #define DT 0.1
 
 int main(int argc, char **argv){
   Gnuplot gp;
-  vector<Robot>  List_robot;
-  List_robot.reserve(150);
-  cout<<List_robot.capacity()<<endl;
+  
+  vector<Robot> List_robot;
+  List_robot.reserve(100);
+  //cout<<List_robot.capacity()<<endl;
+  
   vector<point> plot;
   //plot.reserve( (NOMBRE_ROBOT+1) * (TEMPS_ITERATION/DT) );
 
@@ -33,7 +36,7 @@ int main(int argc, char **argv){
     }
     //List_robot[i] = robot;
   }
-  cout<<"size "<<plot.size()<<endl;
+  //cout<<"size "<<plot.size()<<endl;
   /*for (int i=0;i<plot.size();i++){
     cout<<i<<"("<<plot[i].first<<","<<plot[i].second<<")\n";
   }*/
