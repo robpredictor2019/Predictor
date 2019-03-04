@@ -2,8 +2,8 @@ Community  = boat
 ServerHost = localhost
 ServerPort = 9000
 
-LatOrigin  = 48.403086
-LongOrigin = -4.521370
+LatOrigin  = 48.390825
+LongOrigin = -4.425194
 MOOSTimeWarp = 10
 
 ProcessConfig = ANTLER
@@ -28,7 +28,7 @@ ProcessConfig = ANTLER
   Run = pHelmIvP        @ NewConsole = false
 
  // Suivi de cap
- Run = pSuiviCap @ NewConsole = false
+ Run = pSuiviCap        @ NewConsole = false
 
   // Ajoutez pSuiviCap et pCommand
 }
@@ -38,21 +38,17 @@ ProcessConfig = pMarineViewer
   AppTick   = 4
   CommsTick = 4
 
-  tiff_file = penfeld.tif
+  tiff_file = moulin_blanc.tif
   zoom      = 1.0
 
   appcast_viewable = true
   trails_length = 1000
   trails_connect_viewable = true
 
-  // les paramètres par défaut sont conservés
-  // pour plus d'informations, entrer pMarineViewer -e
-  // ou lire la documentation en ligne de l'application
-
   // Button Configurations
   button_one   = LANCEMENT # LANCEMENT=true
   button_one   = MOOS_MANUAL_OVERIDE=false # MOOS_MANUAL_OVERIDE=false
-  button_two   = FIN_INSPECTION # FIN_INSPECTION=true
+  button_two   = FIN_PARCOURS # FIN_PARCOURS=false
 }
 
 ProcessConfig = uSimMarine
@@ -63,9 +59,9 @@ ProcessConfig = uSimMarine
   start_pos = x=112, y=-128, speed=0, heading=90, depth=0
   prefix    = NAV  // default is USM_
 
-  // les paramètres par défaut sont conservés
-  // pour plus d'informations, entrer uSimMarine -e
-  // ou lire la documentation en ligne de l'application
+  DRIFT_X=0.4
+  DRIFT_Y=0.1
+  
 }
 
 ProcessConfig = pNodeReporter
@@ -134,3 +130,4 @@ ProcessConfig = pHelmIvP
   domain           =  course:0:359:360
   domain           =  speed:0:5:20
 }
+
