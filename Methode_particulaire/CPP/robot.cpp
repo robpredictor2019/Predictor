@@ -46,6 +46,12 @@ Gx(Mat::zeros(3, 3, CV_64F)),Gx_out(Mat::zeros(3, 3, CV_64F)) ,x_out(Mat::zeros(
   Gx.at<double>(2,2) = pow(0.1,2);
 }
 
+Robot::~Robot()
+{
+  m_state.resize(0);
+  plot.resize(0);
+}
+
 void Robot::kalman_predict(Mat xup_k,Mat Pup_k, Mat* x_k1, Mat* P_k1)
 {
   *P_k1 = (A*Pup_k*A.t()) + Galpha;

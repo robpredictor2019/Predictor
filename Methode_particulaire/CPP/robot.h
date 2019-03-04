@@ -38,6 +38,7 @@ public:
   cv::Mat x_out, Gx_out;
 
   Robot(); // Constructeur par defaut
+  ~Robot(); // Destructeur
   Robot(cv::Mat x, cv::Mat u, cv::Mat C, cv::Mat A, cv::Mat Galpha, cv::Mat y, cv::Mat Gbeta, cv::Mat Gx);// Constructeur
   void Show() const; // Affichage
   //Methodes
