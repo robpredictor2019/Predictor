@@ -26,8 +26,10 @@ int main(int argc, char **argv){
   }
 
 
+
   for (int j=0,j<=TEMPS_ITERATION * DT,j++){
     for (int i=0; i<NOMBRE_ROBOT; i++){
+
       robot = List_robot.at<Robot>(i)
       robot.evolution();
       robot.draw(gp);

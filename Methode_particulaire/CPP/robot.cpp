@@ -104,7 +104,6 @@ void Robot::draw(Gnuplot gp){
     plot.push_back(Point(t,norm));
     gp << "plot '-'\n";
     gp.send1d(plot);
-    m_number++;
 }
 
 void save_state(){
