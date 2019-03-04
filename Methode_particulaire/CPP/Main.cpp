@@ -17,7 +17,7 @@ int main(int argc, char **argv){
   //plot.reserve( (NOMBRE_ROBOT+1) * (TEMPS_ITERATION/DT) );
 
   std::ofstream fs;
-  fs.open ("../Robot_States.txt", std::fstream::in | std::fstream::out | std::fstream::app);
+  fs.open ("../Robot_States.txt", std::fstream::in | std::fstream::out | std::fstream::trunc);
   fs << "N="<<NOMBRE_ROBOT<<";T="<<TEMPS_ITERATION<<";dt="<<DT<<endl;
 
   for (int i=0; i<NOMBRE_ROBOT;i++){
@@ -31,10 +31,10 @@ int main(int argc, char **argv){
       robot.x = robot.x_out;
       robot.Gx = robot.Gx_out;
       robot.draw(&plot);
-      //robot.save_state();
+      robot.save_state();
       robot.t+=DT;
     }
-    //List_robot[i] = robot;
+    List_robot[i] = robot;
   }
   //cout<<"size "<<plot.size()<<endl;
   /*for (int i=0;i<plot.size();i++){
@@ -43,10 +43,10 @@ int main(int argc, char **argv){
 
   gp<<"plot '-'\n";
   gp.send1d(plot);
-  /*for(int i=0; i<NOMBRE_ROBOT;i++){
+  for(int i=0; i<NOMBRE_ROBOT;i++){
     Robot robot = List_robot[i];
     robot.Export(fs);
-  }*/
+  }
   fs.close();
 
   return 0;
