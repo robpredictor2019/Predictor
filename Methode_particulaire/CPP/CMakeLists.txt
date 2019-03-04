@@ -10,10 +10,10 @@ find_package(OpenCV REQUIRED)
 include_directories(${OpenCV_INCLUDE_DIR})
 link_directories(${OpenCV_LIBRARY_DIRS})
 
-set(SOURCES Main.cpp robot.cpp)
-set(HEADERS robot.h)
+file(GLOB SOURCES
+    robot.h robot.cpp)
 
 
-
+    
 add_executable(Main Main.cpp)
 target_link_libraries(Main ${SOURCES} ${HEADERS} ${OpenCV_LIBS} ${Boost_LIBRARIES})

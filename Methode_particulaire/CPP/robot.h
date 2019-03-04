@@ -41,11 +41,11 @@ public:
   void Show() const; // Affichage
   //Methodes
   void evolution();
-  void draw(Gnuplot *gp);
+  void draw(Gnuplot &gp);
   float scenario();
 
   void save_state();
-  void Export(std::ofstream * fs);
+  void Export(std::ofstream & fs);
 
   void kalman_predict( cv::Mat xup_k, cv::Mat Pup_k, cv::Mat* x_k1, cv::Mat* P_k1);
   void kalman_correct( cv::Mat* xup_k1, cv::Mat* Pup_k1);
