@@ -31,6 +31,7 @@ public:
   cv::Mat u;
   cv::Mat C;
   cv::Mat A;
+  cv::Mat B;
   cv::Mat Gbeta;
   cv::Mat Galpha;
   cv::Mat y;
