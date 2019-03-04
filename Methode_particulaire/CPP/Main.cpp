@@ -1,7 +1,7 @@
 #include "robot.h"
 #include "iostream"
 using namespace std;
-#define NOMBRE_ROBOT 100
+#define NOMBRE_ROBOT 1
 #define TEMPS_ITERATION 100
 #define DT 0.1
 
