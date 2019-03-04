@@ -6,6 +6,8 @@ Created on Tue Apr 17 19:13:33 2018
 """
 
 from roblib import *
+import time
+import math
 from PyUnityVibes.UnityFigure import UnityFigure
 
 def kalman_predict(xup,Gup,u,Γα,A):
@@ -58,8 +60,9 @@ class Particule:
         self.U = U
         self.cov = cov
         self.theta = 0
-        self.auv = figure.create(UnityFigure.OBJECT_3D_SUBMARINE, 0, 0, 0, dimX=5, dimY=5, dimZ=5)
-
+        self.auv = figure.create(UnityFigure.OBJECT_3D_SUBMARINE, 0, 0, 0, dimX=5, dimY=5, dimZ=5, color=UnityFigure.COLOR_YELLOW)
+        self.auv.updateRotation(0,math.degrees(self.U[1,0]),0)
+        time.sleep(0.1)
 
 
     def __str__(self):
@@ -70,12 +73,19 @@ class Particule:
         U = self.U.flatten()
         return 'X: \n x coordinate > {}\n y coordinate > {}\n speed > {}\n\n U: \n speed input > {}\n theta heading input > {}\n\n cov:\n {}'.format(self.X[0], self.X[1], self.X[2], self.U[0], self.U[1], self.cov)
 
-
     def __repr__(self):
         X = self.X.flatten()
         U = self.U.flatten()
         return "Vecteur etat : [{},{},{}]".format(self.X[0],self.X[1],self.X[2]) + "\n Matrice de covariance : {}".format(self.cov) + "\n Vecteur d'entree : [{},{}]".format(self.U[0],self.U[1])  # {:.2f} notation pour n'afficher que deux chiffres après la virgule
 
+    def noise(self, variance):
+        return np.random.normal(0,variance**2)
+
+    def sign(self, a):
+        if a > 0:
+            return 1
+        else:
+            return -1
 
     def display(self,col):
         """
@@ -86,18 +96,16 @@ class Particule:
         draw_arrow(X[0],X[1],U[1],0.1,col)
 
     def appendFrame(self,anim): #PyUnityVibes
-        anim.appendFrame(self.auv, x=self.X[0,0], y=0.0, z=self.X[1,0], rx=0, ry=0, rz=self.U[1,0])
+        #print("U : ", math.degrees(self.U[1,0]), "th: ", math.degrees(self.theta))
+        anim.appendFrame(self.auv, x=self.X[1,0], y=0.0, z=self.X[0,0], rx=0, ry=math.degrees(self.theta), rz=0)
 
-    def controle(self,t,w):
+    def controle(self,t,theta_target):
         """
         Control equation of the AUV
         """
         k = 1
-        xchap = self.Xchap
-        x = self.X
-        U = self.U
-        U[1,0] = k*(w-self.theta)
-        return U
+        #print(">>>", theta_target, self.theta)
+        self.U[1,0] = k*(theta_target-self.theta)
 
     def f(self):
         """
@@ -105,7 +113,7 @@ class Particule:
 
         alpha : bruit gaussien sur x,y et v
         """
-        
+        #print("u : ", self.U.flatten())
         theta = self.U[1,0]
         u = self.U[0,0]
 
@@ -113,35 +121,41 @@ class Particule:
         G_alpha = np.diag([sigma_x**2,sigma_y**2,sigma_v**2])
 
         alpha = np.zeros((3,1))
-        alpha[0,0] = np.random.randn(1,1)*sigma_x
-        alpha[1,0] = np.random.randn(1,1)*sigma_y
-        alpha[2,0] = np.random.randn(1,1)*sigma_v
-
+        alpha[0,0] = np.random.normal(0,sigma_x**2)
+        alpha[1,0] = np.random.normal(0,sigma_y**2)
+        alpha[2,0] = np.random.normal(0,sigma_v**2)
 
         A  = array([[0,0,cos(theta)],[0,0,sin(theta)],[0,0,-1]])
         return A.dot(self.X) + array([[0],[0],[u]]) + alpha
 
 
     def step(self,t,dt):
-        if t > 60:
+        if t == 60:
             C = array([[1,0,0],[0,1,0]])
             G_beta = diag([[0.45**2],[0.45**2]])
         else :
             C = zeros((2,3))
             G_beta = zeros((2,2))
 
+        if t<60:
+            theta_target = 0
+        else:
+            theta_target = np.pi
+
         sigma_x, sigma_y,sigma_v = 0.1,0.1,0.15
         G_alpha = np.diag([sigma_x**2,sigma_y**2,sigma_v**2])
 
-
+        #print("X avant : [{},{},{}]".format(self.X[0,0], self.X[1,0], self.X[2,0]))
         self.X = self.X + dt*self.f()
-        
+        #print("X apres : [{},{},{}]".format(self.X[0,0], self.X[1,0], self.X[2,0]))
         
         U = self.U.flatten()
         
         A  = array([[1,0,cos(self.theta)],[0,1,sin(self.theta)],[0,0,-1]])
         self.Xchap,self.cov = kalman(self.X,self.cov,array([[0],[0],[U[0]]]),G_beta ,G_alpha,G_beta,A,C)
-        self.U = self.controle(t,pi/2)
+        self.controle(t, theta_target)
+
+
 
 
 
