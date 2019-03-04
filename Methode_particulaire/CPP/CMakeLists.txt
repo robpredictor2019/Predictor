@@ -1,6 +1,7 @@
 project(Predictor_particular_approch_cpp)
 cmake_minimum_required(VERSION 3.0)
 
+set(CMAKE_BUILD_TYPE Debug)
 
 find_package(Boost 1.58.0 COMPONENTS filesystem system iostreams REQUIRED)
 include_directories(${Boost_INCLUDE_DIR})

@@ -15,16 +15,16 @@ struct State{
 
 typedef std::pair<double, double> point;
 
+
 class Robot
 {
 private:
   int m_ID;
-  std::vector<point> plot;
   std::vector<State> m_state;
-  double m_t;
 
 public:
 
+  double t;
   //Variables Kalman
   cv::Mat x;
   cv::Mat Gx;
@@ -39,11 +39,13 @@ public:
 
   Robot(); // Constructeur par defaut
   ~Robot(); // Destructeur
+  
+  Robot(int); // Constructeur par defaut
   Robot(cv::Mat x, cv::Mat u, cv::Mat C, cv::Mat A, cv::Mat Galpha, cv::Mat y, cv::Mat Gbeta, cv::Mat Gx);// Constructeur
   void Show() const; // Affichage
   //Methodes
   void evolution();
-  void draw(Gnuplot &gp);
+  void draw(std::vector<point>*);
   float scenario();
 
   void save_state();
