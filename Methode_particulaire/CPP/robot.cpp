@@ -16,6 +16,40 @@ using namespace cv;
 //-----------------------------------------------------------------------------------------------
 //-----------------------------------------FONCTIONS---------------------------------------------
 
+
+Robot::Robot()
+:x(Mat::zeros(3, 1, CV_64F)), u(Mat::zeros(1, 1, CV_64F)),C(Mat::zeros(2, 3, CV_64F)),
+A(Mat::zeros(3, 3, CV_64F)),B(Mat::zeros(3, 1, CV_64F)),
+Galpha(Mat::zeros(3, 3, CV_64F)),y(Mat::zeros(2, 1, CV_64F)),Gbeta(Mat::zeros(2, 2, CV_64F)),
+Gx(Mat::zeros(3, 3, CV_64F)),Gx_out(Mat::zeros(3, 3, CV_64F)) ,x_out(Mat::zeros(3, 1, CV_64F)),
+t(0),m_ID(0)
+{ 
+  x.at<double>(0,0) = 1;
+  x.at<double>(1,0) = 1;
+  x.at<double>(2,0) = 0;
+
+  u.at<double>(0,0) = 0;
+
+  A.at<double>(0,2) = cos(0);
+  A.at<double>(1,2) = sin(0);
+  A.at<double>(2,2) = -1;
+
+  B.at<double>(2,0) = 1;
+
+  Galpha.at<double>(0,0) = pow(0,2);
+  Galpha.at<double>(1,1) = pow(1,2);
+  Galpha.at<double>(2,2) = pow(1,2);
+
+  Gbeta.at<double>(0,0) = pow(0.1,2);
+  Gbeta.at<double>(1,1) = pow(0.1,2);
+  Gbeta.at<double>(2,2) = pow(0.1,2);
+
+  Gx.at<double>(0,0) = pow(0.1,2);
+  Gx.at<double>(1,1) = pow(0.1,2);
+  Gx.at<double>(2,2) = pow(0.1,2);
+}
+
+
 Robot::Robot(int ID)
 :x(Mat::zeros(3, 1, CV_64F)), u(Mat::zeros(1, 1, CV_64F)),C(Mat::zeros(2, 3, CV_64F)),
 A(Mat::zeros(3, 3, CV_64F)),B(Mat::zeros(3, 1, CV_64F)),
