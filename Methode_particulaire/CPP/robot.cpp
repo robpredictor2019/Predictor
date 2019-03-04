@@ -111,18 +111,15 @@ void Robot::save_state()
     m_state.push_back(s);
 }
 
-Robot::P_theta()
+void Robot::P_theta()
 {
   State s;
   int K = 1;
-  if s.x > 15
-  {
+  if (s.x > 15)
     s.theta = K *(270 - s.theta);
-  }
   else
-  {
     s.theta = K *(90 - s.theta);
-  }
+
   m_state.push_back(s);
 }
 
