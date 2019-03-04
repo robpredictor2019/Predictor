@@ -48,13 +48,6 @@ t(0),m_ID(ID)
   Gx.at<double>(2,2) = pow(0.1,2);
 }
 
-Robot::~Robot()
-{
-  m_state.resize(0);
-  plot.resize(0);
-}
-
-
 void Robot::kalman_predict(Mat xup_k,Mat Pup_k, Mat* x_k1, Mat* P_k1)
 {
   *P_k1 = (A*Pup_k*A.t()) + Galpha;
@@ -111,18 +104,14 @@ void Robot::save_state()
     m_state.push_back(s);
 }
 
-Robot::P_theta()
+void Robot::P_theta()
 {
   State s;
   int K = 1;
-  if s.x > 15
-  {
+  if (s.x > 15)
     s.theta = K *(270 - s.theta);
-  }
   else
-  {
     s.theta = K *(90 - s.theta);
-  }
   m_state.push_back(s);
 }
 
