@@ -23,7 +23,7 @@ A(Mat::zeros(3, 3, CV_64F)),B(Mat::zeros(3, 1, CV_64F)),
 Galpha(Mat::zeros(3, 3, CV_64F)),y(Mat::zeros(2, 1, CV_64F)),Gbeta(Mat::zeros(2, 2, CV_64F)),
 Gx(Mat::zeros(3, 3, CV_64F)),Gx_out(Mat::zeros(3, 3, CV_64F)) ,x_out(Mat::zeros(3, 1, CV_64F)),
 t(0),m_ID(0)
-{ 
+{
   x.at<double>(0,0) = 1;
   x.at<double>(1,0) = 1;
   x.at<double>(2,0) = 0;
@@ -146,10 +146,6 @@ void Robot::P_theta()
     s.theta = K *(270 - s.theta);
   else
     s.theta = K *(90 - s.theta);
-<<<<<<< HEAD
-
-=======
->>>>>>> 2f36bce79128d0d04b3dadcd43d09048b3d18632
   m_state.push_back(s);
 }
 
