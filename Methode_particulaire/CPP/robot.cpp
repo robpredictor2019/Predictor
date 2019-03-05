@@ -26,8 +26,8 @@ Galpha(Mat::zeros(3, 3, CV_64F)),y(Mat::zeros(2, 1, CV_64F)),Gbeta(Mat::zeros(2,
 Gx(Mat::zeros(3, 3, CV_64F)),Gx_out(Mat::zeros(3, 3, CV_64F)) ,x_out(Mat::zeros(3, 1, CV_64F)),
 t(0),m_ID(0)
 {
-  x.at<double>(0,0) = 1;
-  x.at<double>(1,0) = 1;
+  x.at<double>(0,0) = 0;
+  x.at<double>(1,0) = 0;
   x.at<double>(2,0) = 0;
 
   u.at<double>(0,0) = 0;
@@ -52,16 +52,16 @@ t(0),m_ID(0)
 }
 
 
-Robot::Robot(int ID)
+Robot::Robot(int ID,double dt)
 :x(Mat::zeros(3, 1, CV_64F)), u(Mat::zeros(1, 1, CV_64F)),C(Mat::zeros(2, 3, CV_64F)),
 A(Mat::zeros(3, 3, CV_64F)),B(Mat::zeros(3, 1, CV_64F)),
 Galpha(Mat::zeros(3, 3, CV_64F)),y(Mat::zeros(2, 1, CV_64F)),Gbeta(Mat::zeros(2, 2, CV_64F)),
 Gx(Mat::zeros(3, 3, CV_64F)),Gx_out(Mat::zeros(3, 3, CV_64F)) ,x_out(Mat::zeros(3, 1, CV_64F)),
-t(0),m_ID(ID)
+t(0),m_ID(ID),dt(dt)
 {
-  x.at<double>(0,0) = 1;
-  x.at<double>(1,0) = 1;
-  x.at<double>(2,0) = 90;
+  x.at<double>(0,0) = 0;
+  x.at<double>(1,0) = 0;
+  x.at<double>(2,0) = 1;
 
   u.at<double>(0,0) = 0;
 
@@ -93,9 +93,10 @@ void Robot::evolution()
 
   xdot.at<double>(0) = x.at<double>(2)*cos(theta) + dx(generator);
   xdot.at<double>(1) = x.at<double>(2)*sin(theta) + dy(generator);
-  xdot.at<double>(2) = u.at<double>(0) - x.at<double>(2)*cos(theta) + dv(generator);
+  xdot.at<double>(2) = u.at<double>(0) - x.at<double>(2) + dv(generator);
 
   x = x + dt*xdot;
+  t+=dt;
 }
 
 void Robot::kalman_predict(Mat xup_k,Mat Pup_k, Mat* x_k1, Mat* P_k1)
@@ -150,7 +151,7 @@ void Robot::draw_x_y(vector<point>*plot)
 }
 
 vector<point> Robot::draw_x_y()
-{ 
+{
   vector<point> plot;
   cout<<"x="<<x.at<double>(0,0)<<"\n";
   cout<<"y="<<x.at<double>(1,0)<<"\n";
@@ -176,7 +177,7 @@ void Robot::P_theta()
   double x0(0);
   double y0(0);
 
-  if (t = 60)
+  if (t == 60)
     theta = 90 + atan((x.at<double>(0,0)-x0) / (x.at<double>(0,1)- y0));
   else
     theta = 90;
