@@ -176,7 +176,7 @@ void Robot::P_theta()
   double x0(0);
   double y0(0);
 
-  if (t = 60)
+  if (t == 60)
     theta = 90 + atan((x.at<double>(0,0)-x0) / (x.at<double>(0,1)- y0));
   else
     theta = 90;
