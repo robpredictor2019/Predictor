@@ -40,9 +40,9 @@ t(0),m_ID(0)
   Galpha.at<double>(1,1) = pow(1,2);
   Galpha.at<double>(2,2) = pow(1,2);
 
-  Gbeta.at<double>(0,0) = pow(0.1,2);
-  Gbeta.at<double>(1,1) = pow(0.1,2);
-  Gbeta.at<double>(2,2) = pow(0.1,2);
+  Gbeta.at<double>(0,0) = pow(0.45,2);
+  Gbeta.at<double>(1,1) = pow(0.45,2);
+  Gbeta.at<double>(2,2) = pow(0.45,2);
 
   Gx.at<double>(0,0) = pow(0.1,2);
   Gx.at<double>(1,1) = pow(0.1,2);
@@ -149,13 +149,18 @@ void Robot::save_state()
 
 void Robot::P_theta()
 {
-  State s;
   int K = 1;
-  if (t > 60)
-    s.theta = K *( 27- s.theta);
+  double angle, x0, y0, gpsx, gpsy;
+  if (t=0)
+    x0 = x.at<double>(0);
+    y0 = x.at<double>(1);
+  if (t = 60)
+    gpsx =
+    gpsy =
+    angle = 90 + atan((gpsx - x0) / (gpsy - y0));
+    x0 = K *(angle - 0);
   else
-    s.theta = K *(90 - s.theta);
-  m_state.push_back(s);
+    y0 = K *(90 - 0);
 }
 
 void Robot::Export(ofstream & fs)
