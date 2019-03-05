@@ -5,6 +5,7 @@ using namespace std;
 #define NOMBRE_ROBOT 1
 #define TEMPS_ITERATION 100
 #define DT 0.1
+#define Agps 3.0
 
 int main(int argc, char **argv){
   Gnuplot gp;
@@ -27,15 +28,27 @@ int main(int argc, char **argv){
   for (int i=0;i<NOMBRE_ROBOT;i++){
     Robot robot = List_robot[i];
     for (int j=0; j<TEMPS_ITERATION/DT; j++){
-      if (t=60)
-        robot.C.at<double>(0,0) = 1;
-        robot.C.at<double>(1,1) = 1;
+      if (t=60 || t=120){
+        robot.x_out = robot.x
+        robot.C.at<double>(0,0)=1;
+        robot.C.at<double>(1,1)=1;
+        robot.Gx.at<double>(0,0) = Agps
+        robot.Gx.at<double>(0,1) = Agps
+        robot.Gbeta.at<double>(0,0) = pow(3,2)
+        robot.Gbeta.at<double>(1,1) = pow(3,2)
+      }
+
       robot.P_theta(); // Proportionnel pour
       robot.kalman_x( &robot.Gx_out, &robot.x_out); // Kalman
-      robot.x = robot.x_out;
-      robot.Gx = robot.Gx_out;
+      robot.evolution();
       robot.draw(&plot);
       robot.save_state();
+      if (t=60 || t=120){
+        robot.C.at<double>(0,0)=0;
+        robot.C.at<double>(1,1)=0;
+        robot.Gbeta.at<double>(0,0) = pow(0.1,2)
+        robot.Gbeta.at<double>(1,1) = pow(0.1,2)
+      }
       robot.t+=DT;
     }
     List_robot[i] = robot;
