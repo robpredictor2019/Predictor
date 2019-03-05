@@ -32,6 +32,7 @@ int main(int argc, char **argv){
   gp << "set yrange [-50:50]\n";
   gp << "set ylabel \"y\"\n";
   gp << "set xlabel \"x\"\n";
+  gp << "set title 'Robot Position'\n";
 
   //gp << "plot";//for post calcul show
 
@@ -77,6 +78,7 @@ int main(int argc, char **argv){
   }
 
   cout<<"Simulation done\n";
+  Gamma << "set title '|Gx|'\n";
   Gamma<<"plot '-' \n";
   Gamma.send1d(plot);
 
