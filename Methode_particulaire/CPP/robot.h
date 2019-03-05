@@ -4,6 +4,7 @@
 #include <vector>
 #include "gnuplot-iostream.h"
 #include <boost/tuple/tuple.hpp>
+#include <math.h>
 
 struct State{
   int ID;

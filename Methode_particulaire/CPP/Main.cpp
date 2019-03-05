@@ -2,17 +2,17 @@
 #include "iostream"
 using namespace std;
 
-#define NOMBRE_ROBOT 100
+#define NOMBRE_ROBOT 1
 #define TEMPS_ITERATION 100
 #define DT 0.1
 
 int main(int argc, char **argv){
   Gnuplot gp;
-  
+
   vector<Robot> List_robot;
   List_robot.reserve(100);
   //cout<<List_robot.capacity()<<endl;
-  
+
   vector<point> plot;
   //plot.reserve( (NOMBRE_ROBOT+1) * (TEMPS_ITERATION/DT) );
 
@@ -27,6 +27,7 @@ int main(int argc, char **argv){
   for (int i=0;i<NOMBRE_ROBOT;i++){
     Robot robot = List_robot[i];
     for (int j=0; j<TEMPS_ITERATION/DT; j++){
+      robot.P_theta(); //Proportionnel pour
       robot.kalman_x( &robot.Gx_out, &robot.x_out);
       robot.x = robot.x_out;
       robot.Gx = robot.Gx_out;
