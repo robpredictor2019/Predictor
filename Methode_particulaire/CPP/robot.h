@@ -5,6 +5,8 @@
 #include "gnuplot-iostream.h"
 #include <boost/tuple/tuple.hpp>
 #include <math.h>
+#include <random>
+
 
 struct State{
   int ID;
@@ -20,14 +22,14 @@ typedef std::pair<double, double> point;
 class Robot
 {
 private:
-
   double dt;
   int m_ID;
   std::vector<State> m_state;
 
 public:
-  double t;
 
+  double t;
+  double theta;
   //Variables Kalman
   cv::Mat x;
   cv::Mat Gx;
@@ -51,6 +53,7 @@ public:
   void evolution();
   void draw(std::vector<point>*);
   void draw_x_y(std::vector<point>*);
+  std::vector<point> draw_x_y();
   float scenario();
 
   void save_state();

@@ -9,6 +9,8 @@
 //#include "MBUtils.h"
 #include <math.h>
 #include "robot.h"
+#include <random>
+#include <cmath>
 
 using namespace std;
 using namespace cv;
@@ -63,23 +65,37 @@ t(0),m_ID(ID)
 
   u.at<double>(0,0) = 0;
 
-  A.at<double>(0,2) = cos(0);
-  A.at<double>(1,2) = sin(0);
+  A.at<double>(0,2) = cos(theta);
+  A.at<double>(1,2) = sin(theta);
   A.at<double>(2,2) = -1;
 
   B.at<double>(2,0) = 1;
 
-  Galpha.at<double>(0,0) = pow(ID,2);
+  Galpha.at<double>(0,0) = pow(1,2);
   Galpha.at<double>(1,1) = pow(1,2);
   Galpha.at<double>(2,2) = pow(1,2);
 
   Gbeta.at<double>(0,0) = pow(0.1,2);
   Gbeta.at<double>(1,1) = pow(0.1,2);
-  Gbeta.at<double>(2,2) = pow(0.1,2);
 
   Gx.at<double>(0,0) = pow(0.1,2);
   Gx.at<double>(1,1) = pow(0.1,2);
   Gx.at<double>(2,2) = pow(0.1,2);
+}
+
+void Robot::evolution()
+{
+  default_random_engine generator;
+  normal_distribution<double> dx(0,Galpha.at<double>(0,0));
+  normal_distribution<> dy(0,Galpha.at<double>(1,1));
+  normal_distribution<> dv(0,Galpha.at<double>(2,2));
+  Mat xdot = Mat::zeros(3, 1, CV_64F);;
+
+  xdot.at<double>(0) = x.at<double>(2)*cos(theta) + dx(generator);
+  xdot.at<double>(1) = x.at<double>(2)*sin(theta) + dy(generator);
+  xdot.at<double>(2) = u - x.at<double>(2)*cos(theta) + dv(generator);
+
+  x = x + dt*xdot;
 }
 
 void Robot::kalman_predict(Mat xup_k,Mat Pup_k, Mat* x_k1, Mat* P_k1)
@@ -108,7 +124,6 @@ void Robot::kalman_x( Mat* P_k1, Mat* x_k1)
 
   kalman_correct( &xup_k, &Pup_k);
   kalman_predict( xup_k, Pup_k, x_k1, P_k1);
-
 }
 
 
@@ -134,6 +149,16 @@ void Robot::draw_x_y(vector<point>*plot)
   plot->push_back(point(x.at<double>(0,0), x.at<double>(1,0)));
 }
 
+vector<point> Robot::draw_x_y()
+{ 
+  vector<point> plot;
+  cout<<"x="<<x.at<double>(0,0)<<"\n";
+  cout<<"y="<<x.at<double>(1,0)<<"\n";
+  plot.push_back(point(x.at<double>(0,0), x.at<double>(1,0)));
+  return plot;
+}
+
+
 void Robot::save_state()
 {
     State s;
@@ -145,22 +170,16 @@ void Robot::save_state()
     m_state.push_back(s);
 }
 
-
-
 void Robot::P_theta()
 {
-  int K = 1;
-  double angle, x0, y0, gpsx, gpsy;
-  if (t=0){
-    x0 = x.at<double>(0);
-    y0 = x.at<double>(1);
-  }
-  if (t = 60){
-    angle = 90 + atan((gpsx - x0) / (gpsy - y0));
-    x0 = K *(angle - 0);
-  }
+  int K(1);
+  double x0(0);
+  double y0(0);
+
+  if (t = 60)
+    theta = 90 + atan((x.at<double>(0,0)-x0) / (x.at<double>(0,1)- y0));
   else
-    y0 = K *(90 - 0);
+    theta = 90;
 }
 
 void Robot::Export(ofstream & fs)
