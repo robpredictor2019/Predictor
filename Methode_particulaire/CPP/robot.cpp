@@ -24,7 +24,7 @@ Robot::Robot()
 A(Mat::zeros(3, 3, CV_64F)),B(Mat::zeros(3, 1, CV_64F)),
 Galpha(Mat::zeros(3, 3, CV_64F)),y(Mat::zeros(2, 1, CV_64F)),Gbeta(Mat::zeros(2, 2, CV_64F)),
 Gx(Mat::zeros(3, 3, CV_64F)),Gx_out(Mat::zeros(3, 3, CV_64F)) ,x_out(Mat::zeros(3, 1, CV_64F)),
-t(0),m_ID(0)
+t(0),m_ID(0),theta_bar(90),v(1)
 {
   x.at<double>(0,0) = 0;
   x.at<double>(1,0) = 0;
@@ -32,9 +32,9 @@ t(0),m_ID(0)
 
   u.at<double>(0,0) = 0;
 
-  A.at<double>(0,2) = cos(0);
-  A.at<double>(1,2) = sin(0);
-  A.at<double>(2,2) = -1;
+  A.at<double>(0,2) = v*cos(theta_bar);
+  A.at<double>(1,2) = v*sin(theta_bar);
+  A.at<double>(2,2) = -v;
 
   B.at<double>(2,0) = 1;
 
@@ -57,17 +57,17 @@ Robot::Robot(int ID,double dt)
 A(Mat::zeros(3, 3, CV_64F)),B(Mat::zeros(3, 1, CV_64F)),
 Galpha(Mat::zeros(3, 3, CV_64F)),y(Mat::zeros(2, 1, CV_64F)),Gbeta(Mat::zeros(2, 2, CV_64F)),
 Gx(Mat::zeros(3, 3, CV_64F)),Gx_out(Mat::zeros(3, 3, CV_64F)) ,x_out(Mat::zeros(3, 1, CV_64F)),
-t(0),m_ID(ID),dt(dt)
+t(0),m_ID(ID),dt(dt),theta_bar(90),v(1)
 {
   x.at<double>(0,0) = 0;
   x.at<double>(1,0) = 0;
   x.at<double>(2,0) = 1;
 
-  u.at<double>(0,0) = 0;
+  u.at<double>(0,0) = 1;
 
-  A.at<double>(0,2) = cos(theta);
-  A.at<double>(1,2) = sin(theta);
-  A.at<double>(2,2) = -1;
+  A.at<double>(0,2) = v*cos(theta);
+  A.at<double>(1,2) = v*sin(theta);
+  A.at<double>(2,2) = -v;
 
   B.at<double>(2,0) = 1;
 
@@ -89,13 +89,17 @@ void Robot::evolution()
   normal_distribution<double> dx(0,Galpha.at<double>(0,0));
   normal_distribution<> dy(0,Galpha.at<double>(1,1));
   normal_distribution<> dv(0,Galpha.at<double>(2,2));
-  Mat xdot = Mat::zeros(3, 1, CV_64F);;
+  Mat xdot = Mat::zeros(3, 1, CV_64F);
+  double thetadot;
+
 
   xdot.at<double>(0) = x.at<double>(2)*cos(theta) + dx(generator);
   xdot.at<double>(1) = x.at<double>(2)*sin(theta) + dy(generator);
   xdot.at<double>(2) = u.at<double>(0) - x.at<double>(2) + dv(generator);
-
+  thetadot = max( min( abs(10*PI/180),K*(theta_bar-theta) ),-abs(10*PI/180) );
+  cout<<Gx.at<double>(2,2)<<endl;
   x = x + dt*xdot;
+  theta = theta + dt*thetadot;
   t+=dt;
 }
 
@@ -173,14 +177,13 @@ void Robot::save_state()
 
 void Robot::P_theta()
 {
-  int K(1);
   double x0(0);
   double y0(0);
 
   if (t == 60)
-    theta = 90 + atan((x.at<double>(0,0)-x0) / (x.at<double>(0,1)- y0));
+    theta = K*( (90+atan((x.at<double>(0,0)-x0) / (x.at<double>(0,1)- y0))) - theta );
   else
-    theta = 90;
+    theta = K*(90-theta);
 }
 
 void Robot::Export(ofstream & fs)
