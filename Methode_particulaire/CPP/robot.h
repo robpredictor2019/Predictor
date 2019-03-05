@@ -7,6 +7,7 @@
 #include <math.h>
 #include <random>
 
+#define PI 3.141592653
 
 struct State{
   int ID;
@@ -27,9 +28,11 @@ private:
   std::vector<State> m_state;
 
 public:
-
+  int K;
   double t;
   double theta;
+  double theta_bar;
+  int v;
   //Variables Kalman
   cv::Mat x;
   cv::Mat Gx;

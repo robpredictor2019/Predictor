@@ -4,8 +4,8 @@ using namespace std;
 
 #define NOMBRE_ROBOT 1
 #define TEMPS_ITERATION 100
-#define DT 0.1
-#define Agps 3.0
+#define DT 1
+
 
 int main(int argc, char **argv){
   Gnuplot gp;
@@ -39,13 +39,11 @@ int main(int argc, char **argv){
     for (int j=0; j<TEMPS_ITERATION/DT; j++){
 
       if (robot.t==60 || robot.t==120){
-        robot.x_out = robot.x;
         robot.C.at<double>(0,0)=1;
         robot.C.at<double>(1,1)=1;
-        robot.Gx.at<double>(0,0) = Agps;
-        robot.Gx.at<double>(0,1) = Agps;
         robot.Gbeta.at<double>(0,0) = pow(3,2);
         robot.Gbeta.at<double>(1,1) = pow(3,2);
+        robot.theta_bar = robot.theta;
       }
       robot.P_theta(); //Proportionnel pour
       robot.kalman_x( &robot.Gx_out, &robot.x_out);
@@ -63,8 +61,8 @@ int main(int argc, char **argv){
       if (robot.t==60 || robot.t==120){
         robot.C.at<double>(0,0)=0;
         robot.C.at<double>(1,1)=0;
-        robot.Gbeta.at<double>(0,0) = pow(0.1,2);
-        robot.Gbeta.at<double>(1,1) = pow(0.1,2);
+        robot.Gbeta.at<double>(0,0) = 0;
+        robot.Gbeta.at<double>(1,1) = 0;
       }
       //robot.t+=DT;
     }
