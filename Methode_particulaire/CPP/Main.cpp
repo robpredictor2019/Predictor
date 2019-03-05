@@ -3,7 +3,7 @@
 using namespace std;
 
 #define NOMBRE_ROBOT 1
-#define TEMPS_ITERATION 200
+#define TEMPS_ITERATION 100
 #define DT 0.1
 
 int main(int argc, char **argv){
@@ -27,6 +27,7 @@ int main(int argc, char **argv){
   for (int i=0;i<NOMBRE_ROBOT;i++){
     Robot robot = List_robot[i];
     for (int j=0; j<TEMPS_ITERATION/DT; j++){
+      robot.P_theta(); //Proportionnel pour
       robot.kalman_x( &robot.Gx_out, &robot.x_out);
       robot.x = robot.x_out;
       robot.Gx = robot.Gx_out;

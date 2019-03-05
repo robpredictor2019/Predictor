@@ -7,6 +7,13 @@ Trois méthodes sont implémentées:
 - evolution
 - draw
 - scenario
+- Kalman
 
-## Classe kalman
-Cette classe permet d'avoir accès au filtre de Kalman.
+
+
+A faire:
+* gitignore pour le fichier text
+* Proportionnel en conséquence Mission triangle
+* Implémentation des valeur GPS et donc de "y" dans le kalman  et donc du C aussi
+* tracer l'incertitude ?
+* 
