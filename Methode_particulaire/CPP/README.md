@@ -14,6 +14,4 @@ Trois méthodes sont implémentées:
 A faire:
 * gitignore pour le fichier text
 * Proportionnel en conséquence Mission triangle
-* Implémentation des valeur GPS et donc de "y" dans le kalman  et donc du C aussi
 * tracer l'incertitude ?
-* 

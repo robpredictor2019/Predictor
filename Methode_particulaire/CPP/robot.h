@@ -20,14 +20,14 @@ typedef std::pair<double, double> point;
 class Robot
 {
 private:
-
   double dt;
   int m_ID;
   std::vector<State> m_state;
 
 public:
-  double t;
 
+  double t;
+  double theta;
   //Variables Kalman
   cv::Mat x;
   cv::Mat Gx;
