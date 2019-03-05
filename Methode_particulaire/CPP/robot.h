@@ -5,6 +5,8 @@
 #include "gnuplot-iostream.h"
 #include <boost/tuple/tuple.hpp>
 #include <math.h>
+#include <random>
+
 
 struct State{
   int ID;

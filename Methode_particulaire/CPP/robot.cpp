@@ -9,6 +9,8 @@
 //#include "MBUtils.h"
 #include <math.h>
 #include "robot.h"
+#include <random>
+#include <cmath>
 
 using namespace std;
 using namespace cv;
@@ -79,6 +81,21 @@ t(0),m_ID(ID)
   Gx.at<double>(0,0) = pow(0.1,2);
   Gx.at<double>(1,1) = pow(0.1,2);
   Gx.at<double>(2,2) = pow(0.1,2);
+}
+
+void Robot::evolution()
+{
+  default_random_engine generator;
+  normal_distribution<double> dx(0,Galpha.at<double>(0,0));
+  normal_distribution<> dy(0,Galpha.at<double>(1,1));
+  normal_distribution<> dv(0,Galpha.at<double>(2,2));
+  Mat xdot = Mat::zeros(3, 1, CV_64F);;
+
+  xdot.at<double>(0) = x.at<double>(2)*cos(theta) + dx(generator);
+  xdot.at<double>(1) = x.at<double>(2)*sin(theta) + dy(generator);
+  xdot.at<double>(2) = u - x.at<double>(2)*cos(theta) + dv(generator);
+
+  x = x + dt*xdot;
 }
 
 void Robot::kalman_predict(Mat xup_k,Mat Pup_k, Mat* x_k1, Mat* P_k1)
