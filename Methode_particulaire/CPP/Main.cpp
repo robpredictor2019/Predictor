@@ -24,6 +24,11 @@ int main(int argc, char **argv){
     List_robot[i]=Robot(i);
   }
 
+  gp << "set xrange [-150:150]\n";
+  gp << "set yrange [-10:10]\n";
+  gp << "set ylabel \"y\"\n";
+  gp << "set xlabel \"x\"\n";
+
   for (int i=0;i<NOMBRE_ROBOT;i++){
     Robot robot = List_robot[i];
     for (int j=0; j<TEMPS_ITERATION/DT; j++){
@@ -34,10 +39,10 @@ int main(int argc, char **argv){
       //robot.draw(&plot);
       
       robot.draw_x_y(&plot);
-      //gp << "set ylabel \"y\"\n";
-      //gp << "set xlabel \"x\"\n";
-      //gp<<"plot '-'\n";
-      //gp.send1d(plot);
+
+
+      gp<<"plot '-'\n";
+      gp.send1d(plot);
       robot.save_state();
       robot.t+=DT;
     }
@@ -50,10 +55,10 @@ int main(int argc, char **argv){
 
 
 
-  gp << "set ylabel \"y\"\n";
-  gp << "set xlabel \"x\"\n";
+  //gp << "set ylabel \"y\"\n";
+  //gp << "set xlabel \"x\"\n";
   //gp<<"show xlabel\n";
-  gp<<"plot '-'\n";
+  //gp<<"plot '-'\n";
   gp.send1d(plot);
 
   for(int i=0; i<NOMBRE_ROBOT;i++){
