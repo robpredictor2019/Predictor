@@ -63,8 +63,8 @@ t(0),m_ID(ID)
 
   u.at<double>(0,0) = 0;
 
-  A.at<double>(0,2) = cos(x.at<double>(2));
-  A.at<double>(1,2) = sin(x.at<double>(2));
+  A.at<double>(0,2) = cos(0);
+  A.at<double>(1,2) = sin(0);
   A.at<double>(2,2) = -1;
 
   B.at<double>(2,0) = 1;
@@ -158,9 +158,9 @@ void Robot::P_theta()
     gpsx =
     gpsy =
     angle = 90 + atan((gpsx - x0) / (gpsy - y0));
-    x.at<double>(2) = K *(angle - x.at<double>(2));
+    x0 = K *(angle - 0);
   else
-    x.at<double>(2) = K *(90 - x.at<double>(2));
+    y0 = K *(90 - 0);
 }
 
 void Robot::Export(ofstream & fs)
