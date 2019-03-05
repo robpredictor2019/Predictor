@@ -151,14 +151,14 @@ void Robot::P_theta()
 {
   int K = 1;
   double angle, x0, y0, gpsx, gpsy;
-  if (t=0)
+  if (t=0){
     x0 = x.at<double>(0);
     y0 = x.at<double>(1);
-  if (t = 60)
-    gpsx =
-    gpsy =
+  }
+  if (t = 60){
     angle = 90 + atan((gpsx - x0) / (gpsy - y0));
     x0 = K *(angle - 0);
+  }
   else
     y0 = K *(90 - 0);
 }
