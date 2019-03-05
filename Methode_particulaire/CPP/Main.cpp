@@ -81,6 +81,8 @@ int main(int argc, char **argv){
   //gp << "set xlabel \"x\"\n";
   //gp<<"show xlabel\n";
   //Gamma<<"plot"<<Gamma.file1d(plot)<<" notitle\n'";
+  Gamma<<"plot '-' \n";
+  Gamma.send1d(plot);
 
   for(int i=0; i<NOMBRE_ROBOT;i++){
     Robot robot = List_robot[i];
