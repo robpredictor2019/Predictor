@@ -22,10 +22,6 @@ typedef std::pair<double, double> point;
 class Robot
 {
 private:
-<<<<<<< HEAD
-=======
-
->>>>>>> 6f95a9418c5cff820a3c3b32f382187711c7283b
   double dt;
   int m_ID;
   std::vector<State> m_state;
