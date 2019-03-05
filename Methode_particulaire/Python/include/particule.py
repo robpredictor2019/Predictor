@@ -78,6 +78,9 @@ class Particule:
         return np.random.normal(0,variance**2)
 
     def sign(self, a):
+        """
+        Return the sign of a
+        """
         if a > 0:
             return 1
         else:
@@ -100,7 +103,6 @@ class Particule:
         Control equation of the AUV
         """
         k = 1
-        #print(">>>", theta_target, self.theta)
         self.U[1,0] = k*(theta_target-self.theta)
 
     def f(self):
@@ -108,11 +110,10 @@ class Particule:
         State equation of the AUV
         alpha : bruit gaussien sur x,y et v
         """
-        #print("u : ", self.U.flatten())
         theta = self.U[1,0]
         u = self.U[0,0]
 
-        sigma_x, sigma_y,sigma_v = 0.1,0.1,0.15
+        sigma_x, sigma_y,sigma_v = 0.1,0.5,0.15
         G_alpha = np.diag([sigma_x**2,sigma_y**2,sigma_v**2])
 
         alpha = np.zeros((3,1))
@@ -125,24 +126,28 @@ class Particule:
 
 
     def step(self,t,dt):
-        if t == 60:
+        """
+        Allows to apply the evolution model between t and t+dt
+        """
+        if t == 1:
             C = array([[1,0,0],[0,1,0]])
             G_beta = diag([[0.45**2],[0.45**2]])
         else :
             C = zeros((2,3))
             G_beta = zeros((2,2))
 
+        """
         if t<60:
             theta_target = 0
         else:
             theta_target = np.pi
+        """
+        theta_target = 0
 
         sigma_x, sigma_y,sigma_v = 0.1,0.1,0.15
         G_alpha = np.diag([sigma_x**2,sigma_y**2,sigma_v**2])
 
-        #print("X avant : [{},{},{}]".format(self.X[0,0], self.X[1,0], self.X[2,0]))
         self.X = self.X + dt*self.f()
-        #print("X apres : [{},{},{}]".format(self.X[0,0], self.X[1,0], self.X[2,0]))
         
         U = self.U.flatten()
         

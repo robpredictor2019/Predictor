@@ -15,7 +15,7 @@ class mission:
 		self.listParticules = [Particule(np.array([[0.0],[0.0],[0.0]]), np.array([[1.0],[0.0]]), np.diag((10**-9,10**-9,10**-9)), self.figure ) for i in range(num)]
 		self.t = 0
 		self.dt = 0.1
-		self.tfinal = 30
+		self.tfinal = 60
 		self.num = num
 
 		self.anim = self.figure.createAnimation(self.dt)
@@ -56,21 +56,17 @@ class mission:
 			part.theta = np.arctan2(0.0001, 50)
 
 		while self.t < self.tfinal :
-			#print("[{:.2f},{:.2f},{:.2f}]".format(self.listParticules[0].X[0,0], self.listParticules[0].X[1,0], self.listParticules[0].X[2,0]))
+			print("[{:.2f},{:.2f},{:.2f}]".format(self.listParticules[0].X[0,0], self.listParticules[0].X[1,0], self.listParticules[0].X[2,0]))
 			sys.stdout.write("Aller  : t = %f \r" % self.t)
 			for part in self.listParticules: 
 				part.step(self.t, self.dt)
 				part.appendFrame(self.anim)
 			self.t  += self.dt
 
-		
-		print(self.listParticules[0])
 		self.recalage()
-		print(self.listParticules[0])
-
 
 		while self.t < 2*self.tfinal:
-			#sys.stdout.write("Retour : t = %f \r" % self.t)
+			sys.stdout.write("Retour : t = %f \r" % self.t)
 			for part in self.listParticules: 
 				part.step(self.t, self.dt)
 				part.appendFrame(self.anim)
@@ -82,7 +78,7 @@ class mission:
 
 	def run(self):
 		while self.t < self.tfinal :	
-			#sys.stdout.write("t = %f \r" % self.t)
+			sys.stdout.write("t = %f \r" % self.t)
 			for part in self.listParticules: 
 				part.step(self.t, self.dt)
 				part.appendFrame(self.anim)
