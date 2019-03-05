@@ -1,5 +1,6 @@
 #include "robot.h"
 #include "iostream"
+#include <unistd.h>
 using namespace std;
 
 #define NOMBRE_ROBOT 1
@@ -31,13 +32,13 @@ int main(int argc, char **argv){
   gp << "set yrange [-5:5]\n";
   gp << "set ylabel \"y\"\n";
   gp << "set xlabel \"x\"\n";
-  gp << "set linetype 1 linecolor rgb 'blue'\n";
-  gp << "plot";
+
+  //gp << "plot";//for post calcul show
 
   for (int i=0;i<NOMBRE_ROBOT;i++){
     Robot robot = List_robot[i];
     for (int j=0; j<TEMPS_ITERATION/DT; j++){
-
+      
       if (robot.t==60 || robot.t==120){
         robot.x_out = robot.x;
         robot.C.at<double>(0,0)=1;
@@ -53,12 +54,16 @@ int main(int argc, char **argv){
       robot.Gx = robot.Gx_out;
       robot.evolution();
       robot.draw(&plot);
-      //robot.draw_x_y(&plot);
-      p = robot.draw_x_y();
+      robot.draw_x_y(&p); // for real time plot
+      //p = robot.draw_x_y(); //for post calcul show
 
-      //gp<<"plot '-'\n";
-      //gp.send1d(plot);
-      gp << gp.file1d(p)<<" notitle with linespoint ls 1,";
+
+      gp<<"plot '-'\n"; //for real time plot
+      gp.send1d(p); //for real time plot
+      usleep(100000);//sleep for real time plot
+      //cout<<j<<endl;
+
+      //gp << gp.file1d(p)<<" notitle with linespoint ls 1,";//for post calcul show
       robot.save_state();
       if (robot.t==60 || robot.t==120){
         robot.C.at<double>(0,0)=0;
@@ -68,20 +73,11 @@ int main(int argc, char **argv){
       }
       //robot.t+=DT;
     }
-    gp << gp.file1d(p)<<" notitle with linespoint ls 1\n";
+    //gp << gp.file1d(p)<<" notitle with linespoint ls 1\n";
     List_robot[i] = robot;
   }
-  //cout<<"size "<<plot.size()<<endl;
-  /*for (int i=0;i<plot.size();i++){
-    cout<<i<<"("<<plot[i].first<<","<<plot[i].second<<")\n";
-  }*/
 
-
-
-  //gp << "set ylabel \"y\"\n";
-  //gp << "set xlabel \"x\"\n";
-  //gp<<"show xlabel\n";
-  //Gamma<<"plot"<<Gamma.file1d(plot)<<" notitle\n'";
+  cout<<"Simulation done\n";
   Gamma<<"plot '-' \n";
   Gamma.send1d(plot);
 
@@ -89,6 +85,7 @@ int main(int argc, char **argv){
     Robot robot = List_robot[i];
     robot.Export(fs);
   }
+  cout<<"Export done\n";
   fs.close();
 
   return 0;
