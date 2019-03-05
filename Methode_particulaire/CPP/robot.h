@@ -20,12 +20,14 @@ typedef std::pair<double, double> point;
 class Robot
 {
 private:
+  double t;
+  double dt;
   int m_ID;
   std::vector<State> m_state;
 
 public:
 
-  double t;
+
   //Variables Kalman
   cv::Mat x;
   cv::Mat Gx;
@@ -48,6 +50,7 @@ public:
   //Methodes
   void evolution();
   void draw(std::vector<point>*);
+  void draw_x_y(std::vector<point>*);
   float scenario();
 
   void save_state();
