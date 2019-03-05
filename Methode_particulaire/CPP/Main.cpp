@@ -59,7 +59,7 @@ int main(int argc, char **argv){
       //gp.send1d(plot);
       gp << gp.file1d(p)<<" notitle with linespoint ls 1,";
       robot.save_state();
-      if (t=60 || t=120){
+      if (robot.t==60 || robot.t==120){
         robot.C.at<double>(0,0)=0;
         robot.C.at<double>(1,1)=0;
         robot.Gbeta.at<double>(0,0) = pow(0.1,2);
