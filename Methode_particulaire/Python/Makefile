@@ -12,7 +12,7 @@ DATA = Robot_States.txt
 default: run
 
 run:
-	echo "\n>>>> Run launched ..." & PYTHONPATH="${INCLUDE_FOL}" python3 "${SCRIPT_FOL}$/${PROG}" 
+	echo "\n>>>> Run launched ..." & PYTHONPATH="${INCLUDE_FOL}" python3 "${SCRIPT_FOL}/${PROG}" 
 
 cpp:
 	python3 "${SCRIPT_FOL}/${PROG_CPP}" "${DATA_FOL}/${DATA}"
