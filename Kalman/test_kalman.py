@@ -17,7 +17,7 @@ class kalman_localisation:
         self.X = X
         self.Γα = Γα
         self.u = u
-        self.Gup = 1.*np.eye(3)
+        self.Gup = 0.*np.eye(3)
 
         err_GPS = 0.48
         err_DVL = 0.3
@@ -44,21 +44,25 @@ class kalman_localisation:
     def set_mission(self, lm):
         self.lm = lm
         self.len_lm = len(lm)
+        sum_dist = 0
+        for i in range(self.len_lm):
+            sum_dist += np.linalg.norm(np.array(self.lm[(i+1)%self.len_lm][0])-np.array(self.lm[i][0]))
+        self.r = int(sum_dist/dt)
 
     def apply_kalman_predict(self):
-        return kalman_predict(self.X, self.Gup, self.u, self.Γα, self.A)
+        return kalman_predict(self.X, self.Gup, self.u*self.dt, self.Γα*self.dt, self.A)
 
     def apply_kalman_GPS(self):
         y = self.X[:2]
-        return kalman(self.X, self.Gup, self.u, y, self.Γα, self.Γβ1, self.A, self.C1)
+        return kalman(self.X, self.Gup, self.u*self.dt, y, self.Γα*self.dt, self.Γβ1, self.A, self.C1)
 
     def apply_kalman_DVL(self):
         y = self.X[2]
-        return kalman(self.X, self.Gup, self.u, y, self.Γα, self.Γβ2, self.A, self.C2)
+        return kalman(self.X, self.Gup, self.u*self.dt, y, self.Γα*self.dt, self.Γβ2, self.A, self.C2)
 
     def apply_kalman_full(self):
         y = self.X
-        return kalman(self.X, self.Gup, self.u, y, self.Γα, self.Γβ3, self.A, self.C3)
+        return kalman(self.X, self.Gup, self.u*self.dt, y, self.Γα*self.dt, self.Γβ3, self.A, self.C3)
 
     def get_V_pt(self, i):
         pt, r = np.array(self.lm[i][0]), self.lm[i][1]
@@ -112,16 +116,25 @@ class kalman_localisation:
     def plot_results(self):
         fig = plt.figure()
         ax = fig.add_subplot(111, aspect='equal')
-        ax.set_xlim(-3,12)
-        ax.set_ylim(-3,8)
+        xmin,xmax,ymin,ymax = -1,1,-1,1
+        for ile in self.lm:
+            r = ile[1]
+            xmin = min(xmin,ile[0][0]-r)
+            xmax = max(xmax,ile[0][0]+r)
+            ymin = min(ymin,ile[0][1]-r)
+            ymax = max(ymax,ile[0][1]+r)
+        ax.set_xlim(xmin,xmax)
+        ax.set_ylim(ymin,ymax)
         for i in range(len(self.lX)):
             # draw_tank(self.lX[i],col='darkblue',r=0.1)
             if i%20 == 0 :
                     draw_ellipse(self.lX[i][:2].T,self.lGup[0,0,i], self.lGup[1,1,i],ax,"blue")
             # draw_ellipse(self.lX[i].T,self.lGup[0,0], self.lGup[1,1],ax,"blue")
         nlX = np.array(self.lX)
-        plt.plot(nlX[:,0],nlX[:,1])
+        plt.plot(nlX[:,0],nlX[:,1],'k')
         # print(self.lX[:][0][:][0])
+        for ile in self.lm:
+            draw_ellipse(ile[0],ile[1],ile[1],ax,"red","red")
         for i in range(3):
             plt.figure()
             plt.plot(self.lGup[i,i])
@@ -131,13 +144,15 @@ if __name__ == "__main__":
     X = np.array([0., 0., 1.])
     Γα = 0.01*np.eye(3)
     u = np.array([0., 0., 1.])
-    r = 2500
+    r = 25000
     dt = 0.01
 
     # ax=init_figure(-1,6,-1,6)
 
     kl = kalman_localisation(X, Γα, u, r, dt)
-    lm = [[[0.,0.], 1.], [[10.,1.], 1.], [[5.,5.], 1.]]
+    lm = [[[0.,0.], 1.], [[8.,1.], 1.], [[5.,5.], 1.]]
+    print(kl.r)
     kl.set_mission(lm)
+    print(kl.r)
     kl.loop()
     plt.show()
