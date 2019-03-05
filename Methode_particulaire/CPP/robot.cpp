@@ -59,7 +59,7 @@ t(0),m_ID(ID)
 {
   x.at<double>(0,0) = 1;
   x.at<double>(1,0) = 1;
-  x.at<double>(2,0) = 0;
+  x.at<double>(2,0) = 90;
 
   u.at<double>(0,0) = 0;
 
@@ -147,7 +147,7 @@ void Robot::P_theta()
 {
   int K(1);
   double x0(0);
-  double y(0);
+  double y0(0);
 
   if (t = 60)
     theta = 90 + atan((x.at<double>(0,0)-x0) / (x.at<double>(0,1)- y0));
