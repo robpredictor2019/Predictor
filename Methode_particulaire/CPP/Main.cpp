@@ -45,7 +45,7 @@ int main(int argc, char **argv){
         robot.C.at<double>(1,1)=1;
         robot.Gbeta.at<double>(0,0) = pow(3,2);
         robot.Gbeta.at<double>(1,1) = pow(3,2);
-        robot.theta_bar = 270;
+        robot.theta_bar = 180;
 
       }
       //robot.P_theta(); //Proportionnel pour
