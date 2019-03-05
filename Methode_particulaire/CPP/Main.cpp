@@ -33,7 +33,6 @@ int main(int argc, char **argv){
   for (int i=0;i<NOMBRE_ROBOT;i++){
     Robot robot = List_robot[i];
     for (int j=0; j<TEMPS_ITERATION/DT; j++){
-<<<<<<< HEAD
       if (t=60 || t=120){
         robot.x_out = robot.x
         robot.C.at<double>(0,0)=1;
@@ -48,18 +47,6 @@ int main(int argc, char **argv){
       robot.kalman_x( &robot.Gx_out, &robot.x_out); // Kalman
       robot.evolution();
       robot.draw(&plot);
-=======
-      robot.P_theta(); //Proportionnel pour
-      robot.kalman_x( &robot.Gx_out, &robot.x_out);
-      robot.x = robot.x_out;
-      robot.Gx = robot.Gx_out;
-      //robot.draw(&plot);
-      robot.draw_x_y(&plot);
-
-
-      gp<<"plot '-'\n";
-      gp.send1d(plot);
->>>>>>> 6f95a9418c5cff820a3c3b32f382187711c7283b
       robot.save_state();
       if (t=60 || t=120){
         robot.C.at<double>(0,0)=0;
@@ -76,10 +63,6 @@ int main(int argc, char **argv){
     cout<<i<<"("<<plot[i].first<<","<<plot[i].second<<")\n";
   }*/
 
-<<<<<<< HEAD
-  gp<<"plot '-'\n";
-  gp.send1d(plot);
-=======
 
 
   //gp << "set ylabel \"y\"\n";
@@ -88,7 +71,6 @@ int main(int argc, char **argv){
   //gp<<"plot '-'\n";
   gp.send1d(plot);
 
->>>>>>> 6f95a9418c5cff820a3c3b32f382187711c7283b
   for(int i=0; i<NOMBRE_ROBOT;i++){
     Robot robot = List_robot[i];
     robot.Export(fs);
