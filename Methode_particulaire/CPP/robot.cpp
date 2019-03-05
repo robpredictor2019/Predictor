@@ -149,6 +149,16 @@ void Robot::draw_x_y(vector<point>*plot)
   plot->push_back(point(x.at<double>(0,0), x.at<double>(1,0)));
 }
 
+vector<point> Robot::draw_x_y()
+{ 
+  vector<point> plot;
+  cout<<"x="<<x.at<double>(0,0)<<"\n";
+  cout<<"y="<<x.at<double>(1,0)<<"\n";
+  plot.push_back(point(x.at<double>(0,0), x.at<double>(1,0)));
+  return plot;
+}
+
+
 void Robot::save_state()
 {
     State s;
