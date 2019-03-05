@@ -18,4 +18,4 @@ file(GLOB SOURCES
 
     
 add_executable(Main Main.cpp)
-target_link_libraries(Main ${SOURCES} ${HEADERS} ${OpenCV_LIBS} ${Boost_LIBRARIES})
+target_link_libraries(Main ${SOURCES} ${OpenCV_LIBS} ${Boost_LIBRARIES})
