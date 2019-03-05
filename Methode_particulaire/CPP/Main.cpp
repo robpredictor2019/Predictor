@@ -3,11 +3,7 @@
 using namespace std;
 
 #define NOMBRE_ROBOT 1
-<<<<<<< HEAD
 #define TEMPS_ITERATION 100
-=======
-#define TEMPS_ITERATION 200
->>>>>>> 0d77ef52fc9f590bd5b3cca8ac8d34950e18b4d8
 #define DT 0.1
 
 int main(int argc, char **argv){
