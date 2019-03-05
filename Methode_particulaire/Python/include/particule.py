@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 """
 Created on Tue Apr 17 19:13:33 2018
-
 @author: alexandre
 """
 
@@ -39,18 +38,15 @@ class Particule:
     def __init__(self,X,U,cov, figure):
         """
         Constructor
-
         Parameters
         ----------
         X: state vector
             X[0]:x coordinate
             X[1]:y coordinate
             X[2]:v speed
-
         U: input vector
             U[0]:u speed input
             U[1]:theta heading input
-
         cov: matrix 3*3
             covariance matrix
         """
@@ -112,7 +108,6 @@ class Particule:
     def f(self):
         """
         State equation of the AUV
-
         alpha : bruit gaussien sur x,y et v
         """
         theta = self.U[1,0]
@@ -161,24 +156,49 @@ class Particule:
         self.controle(t, theta_target)
 
 
+    def afficher_ellipse(self,ax,col):
+    #draw_ellipse(c,Γ,η,ax,col): # Gaussian confidence ellipse with artist
+    #draw_ellipse(array([[1],[2]]),eye(2),0.9,ax,[1,0.8-0.3*i,0.8-0.3*i])
+        draw_ellipse(self.Xchap[0:2,0],self.cov[0:2, 0:2],0.99,ax,col)
 
+
+def afficher_ellipse_all(tab_part,col):
+    
+    """
+    tab_part: tableau contenant les toutes particules
+    col : couleurs [R G B]
+    """    
+    all_Xchap = [p.Xchap[0,0] for p in tab_part]
+    all_Ychap = [p.Xchap[1,0] for p in tab_part]    
+    fig = plt.figure(0)
+    ax = fig.add_subplot(111, aspect='equal')
+    ax.set_xlim(min(all_Xchap)-30, max(all_Xchap)+30)
+    ax.set_ylim(min(all_Ychap)-30, max(all_Ychap)+30)
+    for p in tab_part:
+        p.afficher_ellipse(ax,col)
 
 
 
 
 if __name__ == "__main__":
 
+    fig1 = figure()
     X = array([[1],[10],[2]])
     Xchap = X
     U = array([[3],[pi/4]])
     cov = eye(3)
     theta = 0
-    part = Particule(X,Xchap,U,cov,theta)
+    part = Particule(X,U,cov,fig1)
     print(part)
-    figure()
     part2 = part
     part2.step(10,0.1)
     print(part2)
     part2.display("red")
     part2.step(12,0.1)
     part2.display("green")
+    
+    part3 = Particule(2*X,U,10*cov,fig1)    
+    part4 = Particule(array([[-7],[12],[3]]),U,cov,fig1) 
+    tab_part = [part,part2,part3,part4] 
+    part2.step(12,0.1)
+    afficher_ellipse_all(tab_part,[0.9,0,0])
