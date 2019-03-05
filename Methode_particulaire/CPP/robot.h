@@ -27,8 +27,9 @@ private:
   std::vector<State> m_state;
 
 public:
-  double t;
 
+  double t;
+  double theta;
   //Variables Kalman
   cv::Mat x;
   cv::Mat Gx;
