@@ -94,7 +94,7 @@ void Robot::evolution()
 
   xdot.at<double>(0) = x.at<double>(2)*cos(theta) + dx(generator);
   xdot.at<double>(1) = x.at<double>(2)*sin(theta) + dy(generator);
-  xdot.at<double>(2) = u - x.at<double>(2)*cos(theta) + dv(generator);
+  xdot.at<double>(2) = u.at<double>(0) - x.at<double>(2)*cos(theta) + dv(generator);
 
   x = x + dt*xdot;
 }
