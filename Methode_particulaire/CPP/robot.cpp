@@ -59,7 +59,7 @@ t(0),m_ID(ID)
 {
   x.at<double>(0,0) = 1;
   x.at<double>(1,0) = 1;
-  x.at<double>(2,0) = 0;
+  x.at<double>(2,0) = 90;
 
   u.at<double>(0,0) = 0;
 
