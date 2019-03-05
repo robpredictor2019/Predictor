@@ -2,17 +2,17 @@
 #include "iostream"
 using namespace std;
 
-#define NOMBRE_ROBOT 100
-#define TEMPS_ITERATION 100
+#define NOMBRE_ROBOT 1
+#define TEMPS_ITERATION 200
 #define DT 0.1
 
 int main(int argc, char **argv){
   Gnuplot gp;
-  
+
   vector<Robot> List_robot;
-  List_robot.reserve(100);
+  List_robot.reserve(500);
   //cout<<List_robot.capacity()<<endl;
-  
+
   vector<point> plot;
   //plot.reserve( (NOMBRE_ROBOT+1) * (TEMPS_ITERATION/DT) );
 
@@ -30,7 +30,12 @@ int main(int argc, char **argv){
       robot.kalman_x( &robot.Gx_out, &robot.x_out);
       robot.x = robot.x_out;
       robot.Gx = robot.Gx_out;
-      robot.draw(&plot);
+      //robot.draw(&plot);
+      robot.draw_x_y(&plot);
+      //gp << "set ylabel \"y\"\n";
+      //gp << "set xlabel \"x\"\n";
+      //gp<<"plot '-'\n";
+      //gp.send1d(plot);
       robot.save_state();
       robot.t+=DT;
     }
@@ -41,8 +46,14 @@ int main(int argc, char **argv){
     cout<<i<<"("<<plot[i].first<<","<<plot[i].second<<")\n";
   }*/
 
+
+
+  gp << "set ylabel \"y\"\n";
+  gp << "set xlabel \"x\"\n";
+  //gp<<"show xlabel\n";
   gp<<"plot '-'\n";
   gp.send1d(plot);
+  
   for(int i=0; i<NOMBRE_ROBOT;i++){
     Robot robot = List_robot[i];
     robot.Export(fs);

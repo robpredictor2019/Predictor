@@ -23,7 +23,7 @@ A(Mat::zeros(3, 3, CV_64F)),B(Mat::zeros(3, 1, CV_64F)),
 Galpha(Mat::zeros(3, 3, CV_64F)),y(Mat::zeros(2, 1, CV_64F)),Gbeta(Mat::zeros(2, 2, CV_64F)),
 Gx(Mat::zeros(3, 3, CV_64F)),Gx_out(Mat::zeros(3, 3, CV_64F)) ,x_out(Mat::zeros(3, 1, CV_64F)),
 t(0),m_ID(0)
-{ 
+{
   x.at<double>(0,0) = 1;
   x.at<double>(1,0) = 1;
   x.at<double>(2,0) = 0;
@@ -59,7 +59,7 @@ t(0),m_ID(ID)
 {
   x.at<double>(0,0) = 1;
   x.at<double>(1,0) = 1;
-  x.at<double>(2,0) = 90;
+  x.at<double>(2,0) = 0;
 
   u.at<double>(0,0) = 0;
 
@@ -108,6 +108,7 @@ void Robot::kalman_x( Mat* P_k1, Mat* x_k1)
 
   kalman_correct( &xup_k, &Pup_k);
   kalman_predict( xup_k, Pup_k, x_k1, P_k1);
+
 }
 
 
@@ -124,7 +125,13 @@ void Robot::draw(vector<point> *plot)
     norm = pow(norm,0.5);
     //cout<<norm<<endl;
     plot->push_back(point(t,norm));
+}
 
+void Robot::draw_x_y(vector<point>*plot)
+{
+  cout<<"x="<<x.at<double>(0,0)<<"\n";
+  cout<<"y="<<x.at<double>(1,0)<<"\n";
+  plot->push_back(point(x.at<double>(0,0), x.at<double>(1,0)));
 }
 
 void Robot::save_state()
@@ -138,12 +145,14 @@ void Robot::save_state()
     m_state.push_back(s);
 }
 
+
+
 void Robot::P_theta()
 {
   State s;
   int K = 1;
-  if (s.x > 15)
-    s.theta = K *(270 - s.theta);
+  if (t > 60)
+    s.theta = K *( 27- s.theta);
   else
     s.theta = K *(90 - s.theta);
   m_state.push_back(s);
