@@ -38,14 +38,14 @@ int main(int argc, char **argv){
     Robot robot = List_robot[i];
     for (int j=0; j<TEMPS_ITERATION/DT; j++){
 
-      if (t=60 || t=120){
-        robot.x_out = robot.x
+      if (robot.t==60 || robot.t==120){
+        robot.x_out = robot.x;
         robot.C.at<double>(0,0)=1;
         robot.C.at<double>(1,1)=1;
-        robot.Gx.at<double>(0,0) = Agps
-        robot.Gx.at<double>(0,1) = Agps
-        robot.Gbeta.at<double>(0,0) = pow(3,2)
-        robot.Gbeta.at<double>(1,1) = pow(3,2)
+        robot.Gx.at<double>(0,0) = Agps;
+        robot.Gx.at<double>(0,1) = Agps;
+        robot.Gbeta.at<double>(0,0) = pow(3,2);
+        robot.Gbeta.at<double>(1,1) = pow(3,2);
       }
       robot.P_theta(); //Proportionnel pour
       robot.kalman_x( &robot.Gx_out, &robot.x_out);
@@ -59,11 +59,11 @@ int main(int argc, char **argv){
       //gp.send1d(plot);
       gp << gp.file1d(p)<<" notitle with linespoint ls 1,";
       robot.save_state();
-      if (t=60 || t=120){
+      if (robot.t==60 || robot.t==120){
         robot.C.at<double>(0,0)=0;
         robot.C.at<double>(1,1)=0;
-        robot.Gbeta.at<double>(0,0) = pow(0.1,2)
-        robot.Gbeta.at<double>(1,1) = pow(0.1,2)
+        robot.Gbeta.at<double>(0,0) = pow(0.1,2);
+        robot.Gbeta.at<double>(1,1) = pow(0.1,2);
       }
       robot.t+=DT;
     }
@@ -81,6 +81,8 @@ int main(int argc, char **argv){
   //gp << "set xlabel \"x\"\n";
   //gp<<"show xlabel\n";
   //Gamma<<"plot"<<Gamma.file1d(plot)<<" notitle\n'";
+  Gamma<<"plot '-' \n";
+  Gamma.send1d(plot);
 
   for(int i=0; i<NOMBRE_ROBOT;i++){
     Robot robot = List_robot[i];
