@@ -32,6 +32,7 @@ int main(int argc, char **argv){
   gp << "set yrange [-5:5]\n";
   gp << "set ylabel \"y\"\n";
   gp << "set xlabel \"x\"\n";
+  gp << "set title 'Robot Position'\n";
 
   //gp << "plot";//for post calcul show
 
@@ -46,7 +47,7 @@ int main(int argc, char **argv){
         robot.Gbeta.at<double>(1,1) = pow(3,2);
         robot.theta_bar = robot.theta;
       }
-      robot.P_theta(); //Proportionnel pour
+      //robot.P_theta(); //Proportionnel pour
       robot.kalman_x( &robot.Gx_out, &robot.x_out);
       robot.x = robot.x_out;
       robot.Gx = robot.Gx_out;
@@ -58,7 +59,7 @@ int main(int argc, char **argv){
 
       gp<<"plot '-'\n"; //for real time plot
       gp.send1d(p); //for real time plot
-      usleep(100000);//sleep for real time plot
+      //usleep(100000);//sleep for real time plot
       //cout<<j<<endl;
 
       //gp << gp.file1d(p)<<" notitle with linespoint ls 1,";//for post calcul show
@@ -76,6 +77,7 @@ int main(int argc, char **argv){
   }
 
   cout<<"Simulation done\n";
+  Gamma << "set title '|Gx|'\n";
   Gamma<<"plot '-' \n";
   Gamma.send1d(plot);
 
