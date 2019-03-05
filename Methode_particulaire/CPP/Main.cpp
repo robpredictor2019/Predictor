@@ -5,7 +5,7 @@ using namespace std;
 
 #define NOMBRE_ROBOT 1
 #define TEMPS_ITERATION 100
-#define DT 1
+#define DT 0.1
 
 
 int main(int argc, char **argv){
@@ -28,8 +28,8 @@ int main(int argc, char **argv){
     List_robot[i]=Robot(i,DT);
   }
 
-  gp << "set xrange [-10:10]\n";
-  gp << "set yrange [-5:5]\n";
+  gp << "set xrange [-50:50]\n";
+  gp << "set yrange [-50:50]\n";
   gp << "set ylabel \"y\"\n";
   gp << "set xlabel \"x\"\n";
 
@@ -38,18 +38,19 @@ int main(int argc, char **argv){
   for (int i=0;i<NOMBRE_ROBOT;i++){
     Robot robot = List_robot[i];
     for (int j=0; j<TEMPS_ITERATION/DT; j++){
-      
+
       if (robot.t==60 || robot.t==120){
         robot.C.at<double>(0,0)=1;
         robot.C.at<double>(1,1)=1;
         robot.Gbeta.at<double>(0,0) = pow(3,2);
         robot.Gbeta.at<double>(1,1) = pow(3,2);
-        robot.theta_bar = robot.theta;
+        robot.theta_bar = 270;
+
       }
-      robot.P_theta(); //Proportionnel pour
+      //robot.P_theta(); //Proportionnel pour
       robot.kalman_x( &robot.Gx_out, &robot.x_out);
-      robot.x = robot.x_out;
-      robot.Gx = robot.Gx_out;
+      //robot.x = robot.x_out;
+      //robot.Gx = robot.Gx_out;
       robot.evolution();
       robot.draw(&plot);
       robot.draw_x_y(&p); // for real time plot
@@ -58,7 +59,7 @@ int main(int argc, char **argv){
 
       gp<<"plot '-'\n"; //for real time plot
       gp.send1d(p); //for real time plot
-      usleep(100000);//sleep for real time plot
+      //usleep(100000);//sleep for real time plot
       //cout<<j<<endl;
 
       //gp << gp.file1d(p)<<" notitle with linespoint ls 1,";//for post calcul show
