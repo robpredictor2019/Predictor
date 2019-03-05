@@ -33,6 +33,21 @@ class mission:
 		print("Affichage de la mission sur PyUnityVibes")
 		self.figure.animate(self.anim)
 
+
+
+
+	def afficher_ellipse_all(self, col=[0.9,0,0]):
+		all_Xchap = [p.Xchap[0,0] for p in self.listParticules]
+		all_Ychap = [p.Xchap[1,0] for p in self.listParticules] 
+		fig = plt.figure()   
+		ax = fig.add_subplot(111, aspect='equal')
+		ax.set_xlim(min(all_Xchap)-30, max(all_Xchap)+30)
+		ax.set_ylim(min(all_Ychap)-30, max(all_Ychap)+30)
+		for p in self.listParticules:
+			p.afficher_ellipse(ax,col)
+
+
+
 	def recalage(self):
 		for part in self.listParticules:
 
@@ -63,6 +78,10 @@ class mission:
 				part.appendFrame(self.anim)
 			self.t  += self.dt
 
+
+		self.afficher_ellipse_all([0.9,0,0])
+
+
 		self.recalage()
 
 		while self.t < 2*self.tfinal:
@@ -75,6 +94,11 @@ class mission:
 		print("\n Done ! ")
 		time.sleep(1)
 		self.display()
+
+
+		self.afficher_ellipse_all([0,0,0.9])
+
+
 
 	def run(self):
 		while self.t < self.tfinal :	
