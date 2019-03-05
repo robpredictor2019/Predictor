@@ -46,13 +46,15 @@ def move_motif(M,x,y,θ):
 def plot2D(M,col='black',w=1):
     plot(M[0, :], M[1, :], col, linewidth = w)
 
-def draw_ellipse(c,rx, ry,ax,col):
+def draw_ellipse(c,rx, ry,ax,col,col2="None"):
     #draw_disk(array([[1],[2]]),0.5,ax,"blue")
     e = Ellipse(xy=c, width=2*rx, height=2*ry, angle=0)
     ax.add_artist(e)
     e.set_clip_box(ax.bbox)
     e.set_alpha(0.1)
     e.set_edgecolor(col)
+    if col2 != None:
+        e.set_facecolor(col2)
 
 def init_figure(xmin,xmax,ymin,ymax):
     fig = figure(0)
