@@ -9,7 +9,13 @@ from PyUnityVibes.UnityFigure import UnityFigure
 N  = 30
 dt = 0.1
 
-file = open("file.txt", "r")
+if len(sys.argv) < 2:
+	print("Merci de rentrer le chemin d'accès au fichier à traiter")
+	sys.exit(1)
+else:
+	filename = sys.argv[1]
+
+file = open(filename, "r")
 heading = file.readline()
 data = file.readlines()
 
@@ -19,14 +25,13 @@ N = int(N[2:])    # on lit "N=100"
 T = int(T[2:])    # ------ "T=1200"
 dt= float(dt[3:]) # ------ "dt=0.1"
 
-parts = np.array(N, int(T/dt), 6)
+parts = np.zeros((N, int(T/dt), 6))
 
 for line in data:
 	data_line = line.split(";")
 	ID, t, x, y, z, rx, ry, rz = [float(el) for el in data_line]
-	parts[ID, int(t/dt), :] = x, y, z, rx, ry, rz
-
-
+	ID = int(ID)
+	parts[ID, int(T/dt)-1] = x, y, z, rx, ry , rz
 
 ### Initialisation de Unity ###
 figure = UnityFigure(UnityFigure.FIGURE_3D, UnityFigure.SCENE_EMPTY)
@@ -44,9 +49,10 @@ for ind_auv in range(N):
 time.sleep(1)
 
 ### Calcul des frames successives ###
-for t in np.arange(0, 70, dt):
+for t in np.arange(0, T, dt):
 	for ind_auv, auv in enumerate(AUVs):
-		anim.appendFrame(auv, x=2*ind_auv, y=-0.4, z=t, rx=0, ry=0, rz=0)
+		x, y, z, rx, ry, rz = parts[ind_auv, int(t/dt)]
+		anim.appendFrame(auv, x=x, y=y, z=z, rx=rx, ry=ry, rz=rz)
 time.sleep(1)
 
 

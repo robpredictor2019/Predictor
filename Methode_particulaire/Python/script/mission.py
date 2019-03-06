@@ -3,7 +3,7 @@ import roblib
 import time
 import numpy as np
 import sys
-
+import matplotlib.pyplot as plt
 from PyUnityVibes.UnityFigure import UnityFigure
 
 class mission:
@@ -17,7 +17,7 @@ class mission:
 		time.sleep(1)
 		self.t = 0
 		self.dt = 0.1
-		self.tfinal = 30
+		self.tfinal = 60
 		self.num = num
 		self.anim = self.figure.createAnimation(self.dt)
 		self.listboue = [[50,0],[25,25],[0,0]]
@@ -44,7 +44,38 @@ class mission:
 		print("Affichage de la mission sur PyUnityVibes")
 		self.figure.animate(self.anim)
 
-	def recalage(self,amer):
+
+
+
+	def afficher_ellipse_all(self, fig, col=[0.9,0,0]):
+
+		global max_x, max_y, min_y, min_x #pour regler la fenetre de l'affichage
+		all_Xchap = [p.Xchap[0,0] for p in self.listParticules]
+		all_Ychap = [p.Xchap[1,0] for p in self.listParticules]
+
+
+		if min(all_Xchap) < min_x or min_x == None:
+			min_x = min(all_Xchap)
+
+		if min(all_Ychap) < min_y or min_y == None:
+			min_y = min(all_Ychap)
+
+		if max(all_Xchap) > max_x or max_x == None:
+			max_x = max(all_Xchap)
+
+		if max(all_Ychap) > max_y or max_y == None:
+			max_y = max(all_Ychap)
+
+
+		ax = fig.add_subplot(111, aspect='equal')
+		ax.set_xlim(min_x-30, max_x+30)
+		ax.set_ylim(min_y-30, max_y+30)
+		for p in self.listParticules:
+			p.afficher_ellipse(ax,col)
+
+
+
+	def recalage(self):
 		for part in self.listParticules:
 
 			x_gps = part.X[0,0] + part.noise(0.48)
@@ -63,11 +94,15 @@ class mission:
 
 	def aller_retour(self):
 
+		global max_x, max_y, min_y, min_x   #pour regler la fenetre de l'affichage
+		max_x, max_y, min_y, min_x = self.listParticules[0].Xchap[0,0], self.listParticules[0].Xchap[1,0], self.listParticules[0].Xchap[1,0], self.listParticules[0].Xchap[0,0]
+
+
 		for part in self.listParticules:
 			part.theta = np.arctan2(0.0001, 50)
 
 		while self.t < self.tfinal :
-			#print("[{:.2f},{:.2f},{:.2f}]".format(self.listParticules[0].X[0,0], self.listParticules[0].X[1,0], self.listParticules[0].X[2,0]))
+			print("[{:.2f},{:.2f},{:.2f}]".format(self.listParticules[0].X[0,0], self.listParticules[0].X[1,0], self.listParticules[0].X[2,0]))
 			sys.stdout.write("Aller  : t = %f \r" % self.t)
 			for part in self.listParticules:
 				part.step_aller_retour(self.t, self.dt)
@@ -75,10 +110,18 @@ class mission:
 			self.t  += self.dt
 
 
+
 		print(self.listParticules[0])
 		self.recalage()
 		print(self.listParticules[0])
 
+		""" Affichage """
+		fig_ellipse = plt.figure()
+		self.afficher_ellipse_all(fig_ellipse, [0.9,0,0])
+
+
+
+		self.recalage()
 
 		while self.t < 2*self.tfinal:
 			#sys.stdout.write("Retour : t = %f \r" % self.t)
@@ -90,6 +133,15 @@ class mission:
 		print("\n Done ! ")
 		time.sleep(1)
 		self.display()
+
+
+		""" Affichage """
+		self.afficher_ellipse_all(fig_ellipse, [0,0,0.9])
+		plt.xlabel("coordonnee x en metres")
+		plt.ylabel("coordonnee y en metres")
+		plt.title("Ellipses d'incertitude en position pour les differents\n auv apres trajet aller puis apres trajet retour")
+		plt.show()
+
 
 	def run(self):
 		while self.t < self.tfinal :
