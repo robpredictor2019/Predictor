@@ -18,6 +18,7 @@ int main(int argc, char **argv){
 
   vector<point> plot;
   vector<point> p;
+  vector<point> p_hat;
   //plot.reserve( (NOMBRE_ROBOT+1) * (TEMPS_ITERATION/DT) );
 
   std::ofstream fs;
@@ -32,6 +33,8 @@ int main(int argc, char **argv){
   gp << "set yrange [-150:150]\n";
   gp << "set ylabel \"y\"\n";
   gp << "set xlabel \"x\"\n";
+  gp << "set linetype 1 linecolor rgb 'red'\n";
+  gp << "set linetype 2 linecolor rgb 'blue'\n";
   gp << "set title 'Robot Position'\n";
 
   //gp << "plot";//for post calcul show
@@ -50,12 +53,16 @@ int main(int argc, char **argv){
       robot.kalman_x(&robot.Gx_hat, &robot.x_hat);
       robot.evolution();
       robot.draw(&plot);
-      robot.draw_x_y(&p); // for real time plot
+      robot.draw_x_y_hat(&p_hat); // for real time plot
+      robot.draw_x_y(&p);
       //p = robot.draw_x_y(); //for post calcul show
 
 
-      gp<<"plot '-'\n"; //for real time plot
-      gp.send1d(p); //for real time plot
+      gp<<"plot '-' with  linespoint ls 1 points 0,"; //for real time plot
+      gp<<" '-' with linespoint ls 2 points 0\n"; //for real time plot
+      gp.send1d(p_hat); //for real time plot
+      gp.send1d(p);
+
       //usleep(100000);//sleep for real time plot
       //cout<<j<<endl;
 

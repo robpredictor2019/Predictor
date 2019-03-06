@@ -57,6 +57,7 @@ public:
   void evolution();
   void draw(std::vector<point>*);
   void draw_x_y(std::vector<point>*);
+  void draw_x_y_hat(std::vector<point>*);
   std::vector<point> draw_x_y();
   float scenario();
 

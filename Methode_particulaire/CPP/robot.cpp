@@ -175,6 +175,13 @@ void Robot::draw_x_y(vector<point>*plot)
 {
   //cout<<"x="<<x.at<double>(0,0)<<"\n";
   //cout<<"y="<<x.at<double>(1,0)<<"\n";
+  plot->push_back(point(x.at<double>(0,0), x.at<double>(1,0)));
+}
+
+void Robot::draw_x_y_hat(vector<point>*plot)
+{
+  //cout<<"x="<<x.at<double>(0,0)<<"\n";
+  //cout<<"y="<<x.at<double>(1,0)<<"\n";
   plot->push_back(point(x_hat.at<double>(0,0), x_hat.at<double>(1,0)));
 }
 
