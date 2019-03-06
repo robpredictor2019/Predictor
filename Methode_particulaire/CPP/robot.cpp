@@ -24,7 +24,7 @@ Robot::Robot()
 A(Mat::zeros(3, 3, CV_64F)),B(Mat::zeros(3, 1, CV_64F)),
 Galpha(Mat::zeros(3, 3, CV_64F)),y(Mat::zeros(2, 1, CV_64F)),Gbeta(Mat::zeros(2, 2, CV_64F)),
 Gx_hat(Mat::zeros(3, 3, CV_64F)) ,x_hat(Mat::zeros(3, 1, CV_64F)),
-t(0),m_ID(0),dt(0.1),theta_bar(0),v(1),theta(0),theta_dot(0),K(1)
+t(0),m_ID(0),dt(0.1),theta_bar(0),v(1),theta(0),theta_dot(0),Kp(1),theta_mission(0)
 {
   x.at<double>(0,0) = 0;
   x.at<double>(1,0) = 0;
@@ -61,7 +61,7 @@ Robot::Robot(int ID,double dt)
 A(Mat::zeros(3, 3, CV_64F)),B(Mat::zeros(3, 1, CV_64F)),
 Galpha(Mat::zeros(3, 3, CV_64F)),y(Mat::zeros(2, 1, CV_64F)),Gbeta(Mat::zeros(2, 2, CV_64F)),
 Gx_hat(Mat::zeros(3, 3, CV_64F)) ,x_hat(Mat::zeros(3, 1, CV_64F)),
-t(0),m_ID(ID),dt(dt),theta_bar(0),v(1),theta(0),theta_dot(0),K(1)
+t(0),m_ID(ID),dt(dt),theta_bar(0),v(1),theta(0),theta_dot(0),Kp(1),theta_mission(0)
 {
   x.at<double>(0,0) = 0;
   x.at<double>(1,0) = 0;
@@ -86,8 +86,8 @@ t(0),m_ID(ID),dt(dt),theta_bar(0),v(1),theta(0),theta_dot(0),K(1)
   Galpha.at<double>(1,1) = pow(1,2);
   Galpha.at<double>(2,2) = pow(1,2);
 
-  Gbeta.at<double>(0,0) = pow(0.1,2);
-  Gbeta.at<double>(1,1) = pow(0.1,2);
+  Gbeta.at<double>(0,0) = 0;
+  Gbeta.at<double>(1,1) = 0;
 
   Gx_hat.at<double>(0,0) = pow(0.1,2);
   Gx_hat.at<double>(1,1) = pow(0.1,2);
@@ -101,28 +101,27 @@ void Robot::evolution()
   normal_distribution<> dy(0,Galpha.at<double>(1,1));
   normal_distribution<> dv(0,Galpha.at<double>(2,2));
   Mat xdot = Mat::zeros(3, 1, CV_64F);
-  double thetadot;
 
 
 
-  xdot.at<double>(0) = x.at<double>(2)*cos((theta*PI/180)); + dx(generator);
-  xdot.at<double>(1) = x.at<double>(2)*sin((theta*PI/180)); + dy(generator);
-  xdot.at<double>(2) = u.at<double>(0) - x.at<double>(2); + dv(generator);
-  cout<<"thetadot ="<<theta_dot<<endl;
-  //cout<<Gx_hat.at<double>(2,2)<<endl;
+
+  xdot.at<double>(0) = x.at<double>(2)*cos((theta*PI/180)) + dx(generator);
+  xdot.at<double>(1) = x.at<double>(2)*sin((theta*PI/180)) + dy(generator);
+  xdot.at<double>(2) = u.at<double>(0) - x.at<double>(2) + dv(generator);
+  //cout<<"thetadot ="<<theta_dot<<endl;
+  //cout<<dx(generator)<<endl;
   x += dt*xdot;
   theta += dt*theta_dot;
   if (theta>360)
     theta -= 360;
   //Update A
-  double v = x_hat.at<double>(2);
-  A.at<double>(0,2) = cos(theta*PI/180);
-  A.at<double>(1,2) = sin(theta*PI/180);
-  A.at<double>(2,2) = -1;
+  A.at<double>(0,2) = cos(theta*PI/180)*dt;
+  A.at<double>(1,2) = sin(theta*PI/180)*dt;
+  A.at<double>(2,2) = -dt+1;
 
   //theta += dtheta(generator)
 
-  cout<<"v ="<<v<<endl;
+  //cout<<"v ="<<v<<endl;
 
   t+=dt;
 }
@@ -182,7 +181,7 @@ void Robot::draw_x_y_hat(vector<point>*plot)
 {
   //cout<<"x="<<x.at<double>(0,0)<<"\n";
   //cout<<"y="<<x.at<double>(1,0)<<"\n";
-  plot->push_back(point(x_hat.at<double>(0,0), x_hat.at<double>(1,0)));
+  plot->push_back(point(x_hat.at<double>(0), x_hat.at<double>(1)));
 }
 
 vector<point> Robot::draw_x_y()
@@ -208,16 +207,15 @@ void Robot::save_state()
 
 void Robot::P_theta()
 {
-  double x0(0);
-  double y0(0);
-  theta_dot = K*(theta_bar - theta);
-  if (t>60){
-    theta_bar = atan2(x_hat.at<double>(1),x_hat.at<double>(0))*180/PI + 180;
-    theta_dot = K*(theta_bar - theta);
+
+  //theta_dot = K*(theta_bar - theta);
+  //if (t>60){
+    theta_bar = atan2(x_hat.at<double>(1),x_hat.at<double>(0))*180/PI + theta_mission;
+    theta_dot = Kp*(theta_bar - theta);
     theta_dot = max( min(10.0,theta_dot),-10.0);
-    cout<<"theta_bar "<<theta_bar<<endl;
     //cout<<"x_hat"<<x_hat.at<double>(0)<<x_hat.at<double>(1)<<x_hat.at<double>(2)<<endl;
-  }
+  //}
+  cout<<"theta_bar "<<theta_bar<<endl;
 }
 
 void Robot::Export(ofstream & fs)
