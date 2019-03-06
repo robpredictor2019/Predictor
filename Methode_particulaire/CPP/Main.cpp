@@ -4,7 +4,8 @@
 using namespace std;
 
 #define NOMBRE_ROBOT 1
-#define TEMPS_ITERATION 150
+#define TEMPS_ITERATION 200
+
 #define DT 0.1
 
 
