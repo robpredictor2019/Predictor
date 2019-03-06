@@ -4,11 +4,7 @@
 using namespace std;
 
 #define NOMBRE_ROBOT 1
-<<<<<<< HEAD
-#define TEMPS_ITERATION 150
-=======
 #define TEMPS_ITERATION 200
->>>>>>> 9bb6bfcb5bcf1937428a3e9ddf00d1abd7d2b849
 #define DT 0.1
 
 
@@ -32,13 +28,8 @@ int main(int argc, char **argv){
     List_robot[i]=Robot(i,DT);
   }
 
-<<<<<<< HEAD
-  gp << "set xrange [-5:180]\n";
-  gp << "set yrange [-50:50]\n";
-=======
   gp << "set xrange [-150:150]\n";
   gp << "set yrange [-150:150]\n";
->>>>>>> 9bb6bfcb5bcf1937428a3e9ddf00d1abd7d2b849
   gp << "set ylabel \"y\"\n";
   gp << "set xlabel \"x\"\n";
   gp << "set title 'Robot Position'\n";
@@ -55,13 +46,6 @@ int main(int argc, char **argv){
         robot.C.at<double>(1,1)=1;
         robot.Gbeta.at<double>(0,0) = pow(3,2);
         robot.Gbeta.at<double>(1,1) = pow(3,2);
-<<<<<<< HEAD
-        robot.theta_bar = 180.0;
-        robot.A.at<double>(0,2) = 1*cos(robot.theta_bar*PI/180);
-        robot.A.at<double>(1,2) = 1*sin(robot.theta_bar*PI/180);
-        robot.A.at<double>(2,2) = -1;
-=======
->>>>>>> 9bb6bfcb5bcf1937428a3e9ddf00d1abd7d2b849
       }
       robot.P_theta(); //Proportionnel pour
       robot.kalman_x(&robot.Gx_hat, &robot.x_hat);
@@ -78,7 +62,7 @@ int main(int argc, char **argv){
 
       //gp << gp.file1d(p)<<" notitle with linespoint ls 1,";//for post calcul show
       robot.save_state();
-      if (robot.t == 60.0){
+      if (abs(robot.t-75.0)<0.15){
         robot.C.at<double>(0,0)=0;
         robot.C.at<double>(1,1)=0;
         robot.Gbeta.at<double>(0,0) = 0;

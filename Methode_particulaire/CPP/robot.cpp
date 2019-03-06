@@ -101,9 +101,6 @@ void Robot::evolution()
   normal_distribution<> dy(0,Galpha.at<double>(1,1));
   normal_distribution<> dv(0,Galpha.at<double>(2,2));
   Mat xdot = Mat::zeros(3, 1, CV_64F);
-  double thetadot;
-
-
 
   xdot.at<double>(0) = x.at<double>(2)*cos((theta*PI/180)); + dx(generator);
   xdot.at<double>(1) = x.at<double>(2)*sin((theta*PI/180)); + dy(generator);
