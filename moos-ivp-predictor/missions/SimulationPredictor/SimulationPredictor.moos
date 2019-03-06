@@ -8,27 +8,29 @@ MOOSTimeWarp = 10
 
 ProcessConfig = ANTLER
 {
-  MSBetweenLaunches = 400
+  MSBetweenLaunches = 40
 
-  Run = MOOSDB          @ NewConsole = false
-  Run = uMS             @ NewConsole = false
+  Run = MOOSDB                 @ NewConsole = false
+  Run = uMS                    @ NewConsole = false
   // Processes
-  Run = pNodeReporter   @ NewConsole = false
+  Run = pNodeReporter          @ NewConsole = false
 
   // Simulation
-  Run = uSimMarine      @ NewConsole = false
+  Run = uSimMarine             @ NewConsole = false
 
   // Interface Homme Machine
-  Run = pMarineViewer   @ NewConsole = false
+  Run = pMarineViewer          @ NewConsole = false
 
   // Regulation du robot en vitesse et en cap
-  Run = pMarinePID      @ NewConsole = false
-
-  // Intelligence
-  Run = pHelmIvP        @ NewConsole = false
+  Run = pMarinePID             @ NewConsole = false
 
  // Suivi de cap
- Run = pSuiviCap        @ NewConsole = false
+ Run = pSuiviCap               @ NewConsole = false
+
+ // State Machine
+ Run = pSimulationStateMachine @ NewConsole = false
+
+ Run = pCommand                @ NewConsole = false
 
   // Ajoutez pSuiviCap et pCommand
 }
@@ -119,15 +121,30 @@ ProcessConfig = pMarinePID
   maxelevator        = 13
 }
 
-ProcessConfig = pHelmIvP
+
+ProcessConfig = pSimulationStateMachine
 {
-  AppTick   = 4
-  CommsTick = 4
+   AppTick   = 4
+   CommsTick = 4
 
-  // Configuring behavior file and decision domain
-  behaviors        =  boat.bhv
+  POINT_A_X = -10
+  POINT_A_Y = -10
+  POINT_B_X = 50
+  POINT_B_Y = 50
+  POINT_C_X = 150
+  POINT_C_Y = 150
+}
 
-  domain           =  course:0:359:360
-  domain           =  speed:0:5:20
+ProcessConfig = pCommand
+{
+   AppTick   = 4
+   CommsTick = 4
+}
+
+
+ProcessConfig = pSuiviCap
+{
+   AppTick   = 4
+   CommsTick = 4
 }
 

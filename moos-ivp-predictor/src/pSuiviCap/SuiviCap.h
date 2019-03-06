@@ -33,7 +33,7 @@ class SuiviCap : public CMOOSApp
    double Theta,Theta_voulu;
 
  private: // Configuration variables
-  double previousErr, derErr, Erreur_cap, sumErr, err, t0;
+   double previousErr, derErr, Erreur_cap, sumErr, err, t0;
 
  private: // State variables
 };

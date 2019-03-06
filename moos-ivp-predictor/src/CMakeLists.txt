@@ -21,6 +21,7 @@ ADD_SUBDIRECTORY(pSimulationPredictor)
 
 ADD_SUBDIRECTORY(pSuiviCap)
 ADD_SUBDIRECTORY(pCommand)
+ADD_SUBDIRECTORY(pSimulationStateMachine)
 #ADD_SUBDIRECTORY(pFoobar)
 #ADD_SUBDIRECTORY(pOdometry)
 
