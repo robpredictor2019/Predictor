@@ -13,6 +13,12 @@
 
 class SimulationStateMachine : public AppCastingMOOSApp
 {
+  #define POINT_A_X -42
+  #define POINT_A_Y -70
+  #define POINT_B_X 135
+  #define POINT_B_Y 218
+  #define POINT_C_X 469
+  #define POINT_C_Y 17
  public:
    SimulationStateMachine();
    ~SimulationStateMachine();

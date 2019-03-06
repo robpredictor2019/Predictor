@@ -21,20 +21,20 @@ using namespace std;
 
 SimulationStateMachine::SimulationStateMachine()
 {
-  heading = 0;
+  heading = 90;
   depth = 0;
   speed = 0;
   point_m_x = 0;
   point_m_y = 0;
   time_underwater = 0;
-  point_a_x = 0; 
-  point_b_x = 0;
-  point_c_x = 0;
-  point_a_y = 0;
-  point_b_y = 0;
-  point_c_y = 0;
+  point_a_x = POINT_A_X; 
+  point_b_x = POINT_B_X;
+  point_c_x = POINT_C_X;
+  point_a_y = POINT_A_Y;
+  point_b_y = POINT_B_Y;
+  point_c_y = POINT_C_Y;
   state = 0;
-  point = 'D';
+  point = 'A';
   nav_x = 0;
   nav_y = 0;
   N = 0;
@@ -63,18 +63,6 @@ bool SimulationStateMachine::OnNewMail(MOOSMSG_LIST &NewMail)
         nav_x = msg.GetDouble();
     } else if(key == "NAV_Y") {
       nav_y = msg.GetDouble();
-    }  else if(key == "POINT_A_X") {
-      point_a_x = msg.GetDouble();
-    }  else if(key == "POINT_A_Y") {
-      point_a_y = msg.GetDouble();
-    }  else if(key == "POINT_B_X") {
-      point_b_x = msg.GetDouble();
-    }  else if(key == "POINT_B_Y") {
-      point_b_y = msg.GetDouble();
-    }  else if(key == "POINT_C_X") {
-      point_c_x = msg.GetDouble();
-    }  else if(key == "POINT_C_Y") {
-      point_c_y = msg.GetDouble();
     }
     else if(key != "APPCAST_REQ") // handled by AppCastingMOOSApp
       reportRunWarning("Unhandled Mail: " + key);
@@ -126,35 +114,36 @@ bool SimulationStateMachine::Iterate()
       point_m_x = nav_x;
       point_m_y = nav_y;
       speed = 2; // Restart the AUV
-      switch(point){ // Checking the current position
-        case 'A': // Next point is B
-            heading = atan((point_b_x - point_m_x)/(point_b_y - point_m_y));
-            time_underwater = (sqrt(pow(point_b_x - point_m_x,2) + pow(point_b_y - point_m_y,2) ))/speed;
-        case 'B': // Next point is C
-            heading = atan((point_c_x - point_m_x)/(point_c_y - point_m_y));
-            time_underwater = (sqrt(pow(point_c_x - point_m_x,2) + pow(point_c_y - point_m_y,2) ))/speed;
-        case 'C': // Next point is A
-            heading = atan((point_a_x - point_m_x)/(point_a_y - point_m_y));
-            time_underwater = (sqrt(pow(point_a_x - point_m_x,2) + pow(point_a_y - point_m_y,2) ))/speed;
-        case 'D': // Next point is A
-            heading = atan((point_a_x - point_m_x)/(point_a_y - point_m_y));
-            time_underwater = (sqrt(pow(point_a_x - point_m_x,2) + pow(point_a_y - point_m_y,2) ))/speed;
-      }
-
       N = 0;
-      if (depth == 2)
-            state = 2; // Follow the heading
       switch(point){ // Checking the current position
+      
         case 'A': // Next point is B
+            heading = 90 + (180/M_PI)*atan((point_b_x - point_m_x)/(point_b_y - point_m_y));
             time_underwater = (sqrt(pow(point_b_x - point_m_x,2) + pow(point_b_y - point_m_y,2) ))/speed;
         case 'B': // Next point is C
+            heading =  90 + (180/M_PI)*atan((point_c_x - point_m_x)/(point_c_y - point_m_y));
             time_underwater = (sqrt(pow(point_c_x - point_m_x,2) + pow(point_c_y - point_m_y,2) ))/speed;
         case 'C': // Next point is A
+            heading =  90 + (180/M_PI)*atan((point_a_x - point_m_x)/(point_a_y - point_m_y));
             time_underwater = (sqrt(pow(point_a_x - point_m_x,2) + pow(point_a_y - point_m_y,2) ))/speed;
         case 'D': // Next point is A
+            heading =  90 + (180/M_PI)*atan((point_a_x - point_m_x)/(point_a_y - point_m_y));
             time_underwater = (sqrt(pow(point_a_x - point_m_x,2) + pow(point_a_y - point_m_y,2) ))/speed;
-      }
-
+        }
+        if (depth == 2)
+              state = 2; // Follow the heading
+    case 2:
+      time_underwater = time_underwater - 1/10;
+      switch(point){ // Checking the current position
+          case 'A': // Next point is B
+              time_underwater = (sqrt(pow(point_b_x - nav_x,2) + pow(point_b_y - nav_y,2) ))/speed;
+          case 'B': // Next point is C
+              time_underwater = (sqrt(pow(point_c_x - nav_x,2) + pow(point_c_y - nav_y,2) ))/speed;
+          case 'C': // Next point is A
+              time_underwater = (sqrt(pow(point_a_x - nav_x,2) + pow(point_a_y - nav_y,2) ))/speed;
+          case 'D': // Next point is A
+              time_underwater = (sqrt(pow(point_a_x - nav_x,2) + pow(point_a_y - nav_y,2) ))/speed;
+        }
       if (time_underwater < 1){
         state = 0;
         depth = 0;
@@ -168,10 +157,15 @@ bool SimulationStateMachine::Iterate()
           }
       }
   }
+  
+  // Sawtooth
+  heading = fmod(heading + M_PI, 2*M_PI) - M_PI;
 
-  Notify("DESIRED_HEADING", heading);
-  Notify("DESIRED_DEPTH", depth);
-  Notify("DESIRED_SPEED", speed);
+  Notify("NAV_HEADING", heading);
+  Notify("NAV_DEPTH", depth);
+  Notify("NAV_SPEED", speed);
+  Notify("STATE_MACHINE_STATE", state);
+  Notify("NEXT_POINT_TARGETED", point);
   Notify("TIME_UNDERWATER", time_underwater);
   return(true);
 }
@@ -221,12 +215,6 @@ void SimulationStateMachine::registerVariables()
   AppCastingMOOSApp::RegisterVariables();
   Register("NAV_X", 0);
   Register("NAV_Y", 0);
-  Register("POINT_A_X", 0);
-  Register("POINT_A_Y", 0);
-  Register("POINT_B_X", 0);
-  Register("POINT_B_Y", 0);
-  Register("POINT_C_X", 0);
-  Register("POINT_C_Y", 0);
   // Register("FOOBAR", 0);
 }
 

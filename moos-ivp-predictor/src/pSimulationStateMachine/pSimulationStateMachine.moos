@@ -6,11 +6,5 @@ ProcessConfig = pSimulationStateMachine
    AppTick   = 4
    CommsTick = 4
 
-  POINT_A_X = -10
-  POINT_A_Y = -10
-  POINT_B_X = 50
-  POINT_B_Y = 50
-  POINT_C_X = 150
-  POINT_C_Y = 150
 }
 

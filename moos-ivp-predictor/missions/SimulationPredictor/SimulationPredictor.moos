@@ -44,13 +44,11 @@ ProcessConfig = pMarineViewer
   zoom      = 1.0
 
   appcast_viewable = true
-  trails_length = 1000
+  trails_length = 10000
   trails_connect_viewable = true
 
-  // Button Configurations
-  button_one   = LANCEMENT # LANCEMENT=true
-  button_one   = MOOS_MANUAL_OVERIDE=false # MOOS_MANUAL_OVERIDE=false
-  button_two   = FIN_PARCOURS # FIN_PARCOURS=false
+
+
 }
 
 ProcessConfig = uSimMarine
@@ -61,8 +59,8 @@ ProcessConfig = uSimMarine
   start_pos = x=112, y=-128, speed=0, heading=90, depth=0
   prefix    = NAV  // default is USM_
 
-  DRIFT_X=0.4
-  DRIFT_Y=0.1
+  DRIFT_X=0.0
+  DRIFT_Y=0.0
   
 }
 
@@ -124,27 +122,6 @@ ProcessConfig = pMarinePID
 
 ProcessConfig = pSimulationStateMachine
 {
-   AppTick   = 4
-   CommsTick = 4
-
-  POINT_A_X = -10
-  POINT_A_Y = -10
-  POINT_B_X = 50
-  POINT_B_Y = 50
-  POINT_C_X = 150
-  POINT_C_Y = 150
+   AppTick   = 10
+   CommsTick = 10
 }
-
-ProcessConfig = pCommand
-{
-   AppTick   = 4
-   CommsTick = 4
-}
-
-
-ProcessConfig = pSuiviCap
-{
-   AppTick   = 4
-   CommsTick = 4
-}
-
