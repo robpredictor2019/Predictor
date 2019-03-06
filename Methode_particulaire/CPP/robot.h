@@ -26,14 +26,15 @@ private:
   double dt;
   int m_ID;
   std::vector<State> m_state;
+  double Kp;
 
 public:
-  int K;
   double t;
   double theta;
   double theta_bar;
   double theta_dot;
   int v;
+  double theta_mission;
   //Variables Kalman
   cv::Mat x;
   cv::Mat Gx;
@@ -57,6 +58,7 @@ public:
   void evolution();
   void draw(std::vector<point>*);
   void draw_x_y(std::vector<point>*);
+  void draw_x_y_hat(std::vector<point>*);
   std::vector<point> draw_x_y();
   float scenario();
 
