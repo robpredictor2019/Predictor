@@ -122,6 +122,6 @@ ProcessConfig = pMarinePID
 
 ProcessConfig = pSimulationStateMachine
 {
-   AppTick   = 10
-   CommsTick = 10
+   AppTick   = 4
+   CommsTick = 4
 }

@@ -118,16 +118,16 @@ bool SimulationStateMachine::Iterate()
       switch(point){ // Checking the current position
       
         case 'A': // Next point is B
-            heading = 90 + (180/M_PI)*atan((point_b_x - point_m_x)/(point_b_y - point_m_y));
+            heading = atan((point_b_x - point_m_x)/(point_b_y - point_m_y));
             time_underwater = (sqrt(pow(point_b_x - point_m_x,2) + pow(point_b_y - point_m_y,2) ))/speed;
         case 'B': // Next point is C
-            heading =  90 + (180/M_PI)*atan((point_c_x - point_m_x)/(point_c_y - point_m_y));
+            heading =  atan((point_c_x - point_m_x)/(point_c_y - point_m_y));
             time_underwater = (sqrt(pow(point_c_x - point_m_x,2) + pow(point_c_y - point_m_y,2) ))/speed;
         case 'C': // Next point is A
-            heading =  90 + (180/M_PI)*atan((point_a_x - point_m_x)/(point_a_y - point_m_y));
+            heading =  atan((point_a_x - point_m_x)/(point_a_y - point_m_y));
             time_underwater = (sqrt(pow(point_a_x - point_m_x,2) + pow(point_a_y - point_m_y,2) ))/speed;
         case 'D': // Next point is A
-            heading =  90 + (180/M_PI)*atan((point_a_x - point_m_x)/(point_a_y - point_m_y));
+            heading =  atan((point_a_x - point_m_x)/(point_a_y - point_m_y));
             time_underwater = (sqrt(pow(point_a_x - point_m_x,2) + pow(point_a_y - point_m_y,2) ))/speed;
         }
         if (depth == 2)
@@ -159,11 +159,11 @@ bool SimulationStateMachine::Iterate()
   }
   
   // Sawtooth
-  heading = fmod(heading + M_PI, 2*M_PI) - M_PI;
+  //heading = fmod(heading + M_PI, 2*M_PI) - M_PI;
 
-  Notify("NAV_HEADING", heading);
-  Notify("NAV_DEPTH", depth);
-  Notify("NAV_SPEED", speed);
+  Notify("DESIRED_RUDDER", heading);
+  Notify("DESIRED_ELEVATOR", -depth);
+  Notify("DESIRED_THRUST", 25*speed);
   Notify("STATE_MACHINE_STATE", state);
   Notify("NEXT_POINT_TARGETED", point);
   Notify("TIME_UNDERWATER", time_underwater);
