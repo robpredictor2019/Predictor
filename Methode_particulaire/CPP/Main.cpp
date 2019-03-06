@@ -49,6 +49,8 @@ int main(int argc, char **argv){
         robot.C.at<double>(1,1)=1;
         robot.Gbeta.at<double>(0,0) = pow(3,2);
         robot.Gbeta.at<double>(1,1) = pow(3,2);
+        robot.y.at<double>(0) = robot.x.at<double>(0,0);
+        robot.y.at<double>(1) = robot.x.at<double>(1);
         robot.theta_mission = 180.0;
       }
       robot.P_theta(); //Proportionnel pour
