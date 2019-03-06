@@ -85,7 +85,7 @@ t(0),m_ID(ID),dt(dt),theta_bar(0),v(1),theta(0)
 
 void Robot::evolution()
 {
-  default_random_engine generator;
+  random_device generator;
   normal_distribution<double> dx(0,Galpha.at<double>(0,0));
   normal_distribution<> dy(0,Galpha.at<double>(1,1));
   normal_distribution<> dv(0,Galpha.at<double>(2,2));
@@ -93,9 +93,9 @@ void Robot::evolution()
   double thetadot;
 
 
-  xdot.at<double>(0) = x.at<double>(2)*cos((theta*PI/180));// + dx(generator);
-  xdot.at<double>(1) = x.at<double>(2)*sin((theta*PI/180));// + dy(generator);
-  xdot.at<double>(2) = u.at<double>(0) - x.at<double>(2);// + dv(generator);
+  xdot.at<double>(0) = x.at<double>(2)*cos((theta*PI/180)) + dx(generator);
+  xdot.at<double>(1) = x.at<double>(2)*sin((theta*PI/180))+ dy(generator);
+  xdot.at<double>(2) = u.at<double>(0) - x.at<double>(2)+ dv(generator);
   thetadot = max( min(10.0,3*(theta_bar-theta)),-10.0 );
   cout<<"thetadot ="<<thetadot<<endl;
   //cout<<Gx.at<double>(2,2)<<endl;
