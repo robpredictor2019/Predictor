@@ -32,6 +32,7 @@ public:
   double t;
   double theta;
   double theta_bar;
+  double theta_dot;
   int v;
   //Variables Kalman
   cv::Mat x;
@@ -43,7 +44,7 @@ public:
   cv::Mat Gbeta;
   cv::Mat Galpha;
   cv::Mat y;
-  cv::Mat x_out, Gx_out;
+  cv::Mat x_hat, Gx_hat;
 
   Robot(); // Constructeur par defaut
   //~Robot(); // Destructeur
@@ -62,7 +63,7 @@ public:
   void save_state();
   void Export(std::ofstream & fs);
 
-  void kalman_predict( cv::Mat xup_k, cv::Mat Pup_k, cv::Mat* x_k1, cv::Mat* P_k1);
+  void kalman_predict( cv::Mat& xup_k, cv::Mat& Pup_k, cv::Mat* x_k1, cv::Mat* P_k1);
   void kalman_correct( cv::Mat* xup_k1, cv::Mat* Pup_k1);
   void kalman_x( cv::Mat* P_k1, cv::Mat* x_k1);
 

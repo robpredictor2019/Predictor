@@ -4,7 +4,7 @@
 using namespace std;
 
 #define NOMBRE_ROBOT 1
-#define TEMPS_ITERATION 100
+#define TEMPS_ITERATION 200
 #define DT 0.1
 
 
@@ -28,8 +28,8 @@ int main(int argc, char **argv){
     List_robot[i]=Robot(i,DT);
   }
 
-  gp << "set xrange [-50:50]\n";
-  gp << "set yrange [-50:50]\n";
+  gp << "set xrange [-150:150]\n";
+  gp << "set yrange [-150:150]\n";
   gp << "set ylabel \"y\"\n";
   gp << "set xlabel \"x\"\n";
   gp << "set title 'Robot Position'\n";
@@ -45,13 +45,9 @@ int main(int argc, char **argv){
         robot.C.at<double>(1,1)=1;
         robot.Gbeta.at<double>(0,0) = pow(3,2);
         robot.Gbeta.at<double>(1,1) = pow(3,2);
-        robot.theta_bar = 180;
-
       }
-      //robot.P_theta(); //Proportionnel pour
-      robot.kalman_x( &robot.Gx_out, &robot.x_out);
-      //robot.x = robot.x_out;
-      //robot.Gx = robot.Gx_out;
+      robot.P_theta(); //Proportionnel pour
+      robot.kalman_x(&robot.Gx_hat, &robot.x_hat);
       robot.evolution();
       robot.draw(&plot);
       robot.draw_x_y(&p); // for real time plot
