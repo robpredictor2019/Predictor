@@ -210,17 +210,14 @@ void Robot::save_state()
     m_state.push_back(s);
 }
 
-void Robot::P_theta()
+void Robot::P_theta(point p)
 {
 
-  //theta_dot = K*(theta_bar - theta);
-  //if (t>60){
-    theta_bar = atan2(x_hat.at<double>(1),x_hat.at<double>(0))*180/PI + theta_mission;
-    theta_dot = Kp*(theta_bar - theta);
-    theta_dot = max( min(10.0,theta_dot),-10.0);
-    //cout<<"x_hat"<<x_hat.at<double>(0)<<x_hat.at<double>(1)<<x_hat.at<double>(2)<<endl;
-  //}
-  //cout<<"theta_bar "<<theta_bar<<endl;
+  theta_bar = atan2(p.second-x_hat.at<double>(1),p.first-x_hat.at<double>(0))*180/PI;
+  theta_dot = Kp*(theta_bar - theta);
+  theta_dot = /*0.05**/2*atan(tan(theta_dot*PI/360)) * 180/PI;
+  theta_dot = max( min(10.0,theta_dot),-10.0);
+  cout<<"theta_bar "<<theta_bar<<endl;
 }
 
 void Robot::Export(ofstream & fs)
@@ -249,4 +246,22 @@ vector<point> circle(double x,double y,double r){
 vector<point> circle(point p,double r){
   vector<point> data = circle(p.first,p.second,r);
   return data;
+}
+
+void  draw_ellipse(double x,double y,Mat Gx){
+    //Mat A(sqrt(-2*log(1)*Gx));
+    //Mat w;
+    //eigen(A,w);
+    //std::cout<<w<<endl; 
+    /*v1=array([[v[0,0]],[v[1,0]]])
+    v2=array([[v[0,1]],[v[1,1]]])        
+    f1=A @ v1
+    f2=A @ v2      
+    φ =  (arctan2(v1 [1,0],v1[0,0]))
+    α=φ*180/3.14
+    e = Ellipse(xy=c, width=2*norm(f1), height=2*norm(f2), angle=α)   
+    ax.add_artist(e)
+    e.set_clip_box(ax.bbox)
+    e.set_alpha(0.7)
+    e.set_facecolor(col)*/
 }
