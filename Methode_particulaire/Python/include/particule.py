@@ -75,6 +75,7 @@ class Particule:
         U = self.U.flatten()
         return "Vecteur etat : [{},{},{}]".format(self.X[0],self.X[1],self.X[2]) + "\n Matrice de covariance : {}".format(self.cov) + "\n Vecteur d'entree : [{},{}]".format(self.U[0],self.U[1])  # {:.2f} notation pour n'afficher que deux chiffres après la virgule
 
+
     def noise(self, variance):
         return np.random.normal(0,variance**2)
 
@@ -102,14 +103,14 @@ class Particule:
         #print("U : ", math.degrees(self.U[1,0]), "th: ", math.degrees(self.theta))
         anim.appendFrame(self.auv, x=self.X[1,0], y=0.0, z=self.X[0,0], rx=0, ry=math.degrees(self.theta), rz=0)
 
-    def controle(self,t,theta_target):
+    def controle(self,t,amer_target):
         """
         Control equation of the AUV
         """
-        K = 4
         #print(">>>", theta_target, self.theta)
-        self.theta += K * 0.1 * (theta_target-self.theta) * min(self.omega_max,abs(theta_target-self.theta))
-
+        self.U[1,0] =np.arctan2(amer_target[1] - self.Xchap[1,0],amer_target[0] - self.Xchap[0,0])
+        #self.theta += 0.1* (self.U[1,0]-self.theta)* min(self.omega_max,abs(self.U[1,0]-self.theta))
+        self.theta += (self.omega_max/np.pi)*sawtooth(self.U[1,0]-self.theta)
     def f(self):
         """
         State equation of the AUV
@@ -159,7 +160,7 @@ class Particule:
         self.Xchap,self.cov = kalman(self.X,self.cov,array([[0],[0],[U[0]]]),G_beta ,G_alpha,G_beta,A,C)
         self.controle(t, theta_target)
 
-    def step_mission(self,t,dt,presence_amer,amer_target,theta_target):
+    def step_mission(self,t,dt,presence_amer,amer_target):
 
         if presence_amer == True:
             C = array([[1,0,0],[0,1,0]])
@@ -181,7 +182,7 @@ class Particule:
 
         A  = array([[1,0,cos(self.theta)],[0,1,sin(self.theta)],[0,0,-1]])
         self.Xchap,self.cov = kalman(self.X,self.cov,array([[0],[0],[U[0]]]),G_beta ,G_alpha,G_beta,A,C)
-        self.controle(t, theta_target)
+        self.controle(t, amer_target)
 
     def afficher_ellipse(self,ax,col):
     #draw_ellipse(c,Γ,η,ax,col): # Gaussian confidence ellipse with artist
