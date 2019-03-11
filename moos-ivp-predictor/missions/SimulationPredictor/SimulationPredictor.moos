@@ -45,7 +45,7 @@ ProcessConfig = pMarineViewer
   // ou lire la documentation en ligne de l'application
 
   // Button Configurations
-  //utton_one   = LANCEMENT # LANCEMENT=true
+  //button_one   = LANCEMENT # LANCEMENT=true
   //button_one   = MOOS_MANUAL_OVERIDE=false # MOOS_MANUAL_OVERIDE=false
   //button_two   = FIN_INSPECTION # FIN_INSPECTION=true
 }
@@ -126,10 +126,12 @@ ProcessConfig = pSimulationStateMachine
    eps_yaw = 1
    nav_depth = 2
    vitesse = 1
-   A_lat = 48.391513
-   A_lon = -4.423961
-   B_lat = 48.389580
-   B_lon = -4.423758
-   C_lat = 48.391024
-   C_long = -4.420414
+
+   A_lat = 100
+   A_lon = -10
+   B_lat = 150
+   B_lon = -10
+   C_lat = 150
+   C_long = -5
+
    }
