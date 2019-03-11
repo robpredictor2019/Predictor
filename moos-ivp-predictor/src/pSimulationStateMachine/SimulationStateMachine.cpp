@@ -30,7 +30,7 @@ SimulationStateMachine::SimulationStateMachine()
   time_passed = 0;
 
   propulsion = 0;
-  speed = 0;
+
 
 
 	//state2 variables
@@ -80,7 +80,7 @@ bool SimulationStateMachine::OnNewMail(MOOSMSG_LIST &NewMail)
       actual_depth  = msg.GetDouble();   //in m
     }
    // GPS
-  if (key == "Latitude"){
+  if (key == "NAV_X"){
        gps_lat = msg.GetDouble();
        if (gps_lat!=0){
          compteur_gps = compteur_gps +1 ;
@@ -89,7 +89,7 @@ bool SimulationStateMachine::OnNewMail(MOOSMSG_LIST &NewMail)
        else {compteur_gps=0;}
      }
 
-  if (key == "Longitude"){
+  if (key == "NAV_Y"){
       gps_long  = msg.GetDouble();
        }
 
@@ -134,8 +134,8 @@ bool SimulationStateMachine::Iterate()
     Notify("DESIRED_DEPTH", desired_depth);  // active le suivi de profondeur à 2m (donc 0m)
     propulsion = 0;
     Notify("DESIRED_THRUST",propulsion);
-    speed = 0;
-    Notify("DESIRED_SPEED",speed);
+  
+    Notify("DESIRED_SPEED",vitesse);
       
 
     err_depth = abs(desired_depth - actual_depth) ;
@@ -173,8 +173,8 @@ bool SimulationStateMachine::Iterate()
     Notify("DESIRED_HEADING",desired_heading);
     propulsion = 0;
     Notify("DESIRED_THRUST",propulsion);
-    speed = 0;
-    Notify("DESIRED_SPEED",speed);
+  
+    Notify("DESIRED_SPEED",vitesse);
     err_heading = abs(desired_heading-heading);
     err_depth = abs(desired_depth-actual_depth);
     if (err_heading<eps_yaw && err_depth<eps_prof){
@@ -192,8 +192,8 @@ bool SimulationStateMachine::Iterate()
    Notify("DESIRED_HEADING",desired_heading);
    propulsion = 100;
    Notify("DESIRED_THRUST",propulsion);
-   speed = 2;
-   Notify("DESIRED_SPEED",speed);
+ 
+   Notify("DESIRED_SPEED",vitesse);
 
    time_passed = double( clock() - begin_time)/CLOCKS_PER_SEC;
    if (time_passed >= time_croisiere){
@@ -243,47 +243,47 @@ bool SimulationStateMachine::OnStartUp()
       }
 
       if (param == "nbr_gps") {
-        nbr_gps = stold(value);
+        nbr_gps = stod(value);
       }
 
       if (param == "eps_prof") {
-        eps_prof = stold(value);
+        eps_prof = stod(value);
       }
 
       if (param == "eps_yaw") {
-        eps_yaw = stold(value);
+        eps_yaw = stod(value);
       }
 
       if (param == "nav_depth") {
-        nav_depth = stold(value);
+        nav_depth = stod(value);
       }
 
       if (param == "vitesse") {
-        vitesse = stold(value);
+        vitesse = stod(value);
       }
 
       if (param == "A_lat") {
-        A_lat = stold(value);
+        A_lat = stod(value);
       }
 
       if (param == "A_long") {
-        A_long = stold(value);
+        A_long = stod(value);
       }
 
       if (param == "B_lat") {
-        B_lat = stold(value);
+        B_lat = stod(value);
       }
 
       if (param == "B_long") {
-        B_long = stold(value);
+        B_long = stod(value);
       }
 
       if (param == "C_lat") {
-        C_lat = stold(value);
+        C_lat = stod(value);
       }
 
       if (param == "C_long") {
-        C_long = stold(value);
+        C_long = stod(value);
       }
 
     }
@@ -301,4 +301,6 @@ void SimulationStateMachine::RegisterVariables()
   // Register("FOOBAR", 0);
   Register("NAV_HEADING", 0);
   Register("NAV_DEPTH", 0);
+  Register("NAV_X", 0);
+  Register("NAV_Y", 0);
 }

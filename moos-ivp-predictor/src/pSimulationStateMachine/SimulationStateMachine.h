@@ -26,7 +26,6 @@ class SimulationStateMachine : public CMOOSApp
    double gps_m_lat;
    double gps_m_long;
    double propulsion;
-   double speed;
    double a_to_b; // on va de a a b
    double b_to_c;
    double c_to_a;
