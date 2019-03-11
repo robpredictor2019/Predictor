@@ -47,8 +47,6 @@ ProcessConfig = pMarineViewer
   trails_length = 10000
   trails_connect_viewable = true
 
-
-
 }
 
 ProcessConfig = uSimMarine
