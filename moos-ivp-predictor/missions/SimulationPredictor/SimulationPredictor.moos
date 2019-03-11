@@ -126,10 +126,12 @@ ProcessConfig = pSimulationStateMachine
    eps_yaw = 1
    nav_depth = 2
    vitesse = 1
+
    A_lat = 100
    A_lon = -10
    B_lat = 150
    B_lon = -10
    C_lat = 150
    C_long = -5
+
    }

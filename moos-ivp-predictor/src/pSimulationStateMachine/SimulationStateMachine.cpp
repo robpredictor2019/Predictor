@@ -31,6 +31,7 @@ SimulationStateMachine::SimulationStateMachine()
   time_passed_s1 = 0;
 
   propulsion = 100;
+
 	//state2 variables
   desired_heading = 0;
   err_heading = 0;
@@ -143,6 +144,7 @@ bool SimulationStateMachine::Iterate()
     propulsion = 10;
     Notify("DESIRED_THRUST",propulsion);
 
+
     Notify("DESIRED_SPEED",0.2);
 
 
@@ -150,6 +152,7 @@ bool SimulationStateMachine::Iterate()
     time_passed_s1 = double( clock() - begin_time);
     Notify("time_passed_s1", time_passed_s1);
     if (err_depth<=eps_prof && time_passed_s1 >= 100000){ // si on est dehors et que le GPS à sorti 10 valeurs
+
       gps_m_lat = gps_lat; // valeure sorite par le GPS apres filtre médian
       gps_m_long = gps_long;
 
@@ -182,6 +185,7 @@ bool SimulationStateMachine::Iterate()
   else if (state_2 == 1){ //Down Ori
     desired_depth = nav_depth;  // a fond vers le profond
     Notify("DESIRED_DEPTH", desired_depth);  // active le suivi de profondeur
+
     propulsion = 10;
     Notify("DESIRED_THRUST",propulsion);
     Notify("DESIRED_SPEED",0.2);
@@ -198,11 +202,13 @@ bool SimulationStateMachine::Iterate()
 
     }
 
+
   else if (state_3 == 1){ // SuiviCap
    if(start_state3 == 1){
       begin_time = clock();
       start_state3 = 0;
    }
+
    Notify("DESIRED_DEPTH", desired_depth);  // active le suivi de profondeur
    Notify("DESIRED_HEADING",desired_heading);
    propulsion = 10;
@@ -214,8 +220,10 @@ bool SimulationStateMachine::Iterate()
    Notify("time_passed", time_passed);
 
    time_passed = double( clock() - begin_time)/CLOCKS_PER_SEC;
+
    if (time_passed >= time_croisiere){
      begin_time = clock();
+
 
      if (a_to_b == 1){
        a_to_b = 0;
