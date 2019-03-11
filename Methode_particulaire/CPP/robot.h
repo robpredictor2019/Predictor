@@ -61,6 +61,7 @@ public:
   void draw_x_y_hat(std::vector<point>*);
   std::vector<point> draw_x_y();
   float scenario();
+  double distance(point p);
 
   void save_state();
   void Export(std::ofstream & fs);
@@ -70,3 +71,6 @@ public:
   void kalman_x( cv::Mat* P_k1, cv::Mat* x_k1);
 
 };
+
+std::vector<point> circle(double x,double y,double r);
+std::vector<point> circle(point p,double r);
