@@ -76,4 +76,4 @@ public:
 std::vector<point> circle(double x,double y,double r);
 std::vector<point> circle(point p,double r);
 void draw_ellipse(double x,double y,cv::Mat Gx);
-void covar_particule(std::vector<point> * plot_x,std::vector<point> * plot_y,std::vector<point> * plot_xy,std::vector<Robot> & Lr);
+void covar_particule(std::vector<point> * plot_x,std::vector<point> * plot_y,std::vector<point> * plot_xy,std::vector<point> * plot_dist,std::vector<Robot> & Lr);

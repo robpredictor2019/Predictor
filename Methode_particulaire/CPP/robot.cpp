@@ -96,9 +96,9 @@ t(0),m_ID(ID),dt(dt),theta_bar(0),v(1),theta(0),theta_dot(0),Kp(1),theta_mission
 void Robot::evolution()
 {
   random_device generator;
-  normal_distribution<double> dx(0,Galpha.at<double>(0,0));
-  normal_distribution<> dy(0,Galpha.at<double>(1,1));
-  normal_distribution<> dv(0,Galpha.at<double>(2,2));
+  normal_distribution<double> dx(0,pow(Galpha.at<double>(0,0),0.5));
+  normal_distribution<> dy(0,pow(Galpha.at<double>(1,1),0.5));
+  normal_distribution<> dv(0,pow(Galpha.at<double>(2,2),0.5));
   Mat xdot = Mat::zeros(3, 1, CV_64F);
 
 
@@ -261,7 +261,7 @@ void  draw_ellipse(double x,double y,Mat Gx){
     e.set_facecolor(col)*/
 }
 
-void covar_particule(vector<point> * plot_x,vector<point> * plot_y,vector<point> * plot_xy,vector<Robot> & Lr){
+void covar_particule(vector<point> * plot_x,vector<point> * plot_y,vector<point> * plot_xy,vector<point> * plot_dist,vector<Robot> & Lr){
   for (int i=0;i<Lr[0].m_state.capacity();i++){
     double x_mean(0),y_mean(0),x_sigma(0),y_sigma(0);
     for(int j=0;j<Lr.capacity();j++){
@@ -278,16 +278,19 @@ void covar_particule(vector<point> * plot_x,vector<point> * plot_y,vector<point>
       x_sigma += pow(Lr[j].m_state[i].x - x_mean,2);
       y_sigma += pow(Lr[j].m_state[i].y - y_mean,2);
     }
-    x_sigma = x_sigma/Lr.capacity();
-    y_sigma = y_sigma/Lr.capacity();
-    if (isnan(x_sigma)){
-      x_sigma = 0;
-    }
-    if (isnan(y_sigma)){
-      y_sigma = 0;
+    x_sigma = pow(x_sigma/Lr.capacity(),0.5);
+    y_sigma = pow(y_sigma/Lr.capacity(),0.5);
+    double dist_max(0),dist(0);
+
+    for(int j=0;j<Lr.capacity();j++){
+      dist = pow(Lr[j].m_state[i].x - x_mean,2) + pow(Lr[j].m_state[i].y - y_mean,2);
+      if (dist>dist_max){
+        dist_max = dist;
+      }
     }
     plot_x ->push_back(point(Lr[0].m_state[i].t,x_sigma));
     plot_y ->push_back(point(Lr[0].m_state[i].t,y_sigma));
     plot_xy->push_back(point(Lr[0].m_state[i].t,pow( pow(x_sigma,2) + pow(y_sigma,2),0.5)));
+    plot_dist ->push_back(point(Lr[0].m_state[i].t,pow(dist_max,0.5)));
   }
 }

@@ -29,6 +29,7 @@ int main(int argc, char **argv){
   vector<point> plot_x;
   vector<point> plot_y;
   vector<point> plot_xy;
+  vector<point> plot_dist;
   vector<point> p;
   vector<point> p_hat;
   vector<point> Cercle_0;
@@ -109,7 +110,7 @@ int main(int argc, char **argv){
     List_robot[i] = robot;
   }
 
-  covar_particule(&plot_x,&plot_y,&plot_xy,List_robot);
+  covar_particule(&plot_x,&plot_y,&plot_xy,&plot_dist,List_robot);
 
   //Post show
   gp<<"plot '-' title 'Real'  with linespoint ls 2 points 0,";
@@ -127,10 +128,12 @@ int main(int argc, char **argv){
   Gamma << "set title 'Sigma'\n";
   Gamma<<"plot '-' title 'Sigma_x' with linespoint ls 1 points 0,";
   Gamma<<" '-' title 'Sigma_y' with linespoint ls 2 points 0,";
-  Gamma<<" '-' title 'Sigma_x^2+Sigma_y^2' with linespoint ls 3 points 0\n";
+  Gamma<<" '-' title 'Sigma_x^2+Sigma_y^2' with linespoint ls 3 points 0,";
+  Gamma<<" '-' title 'Max distance' with linespoint ls 4 points 0\n";
   Gamma.send1d(plot_x);
   Gamma.send1d(plot_y);
   Gamma.send1d(plot_xy);
+  Gamma.send1d(plot_dist);
 
   for(int i=0; i<NOMBRE_ROBOT;i++){
     Robot robot = List_robot[i];
