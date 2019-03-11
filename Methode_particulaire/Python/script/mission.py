@@ -168,11 +168,15 @@ class mission:
 			#self.recalage(amer)
 			while self.t < T:
 				presence_amer = False
-				#print(amer,"[{:.2f},{:.2f},{:.2f},{:.2f}]".format(self.listParticules[0].X[0,0], self.listParticules[0].X[1,0], self.listParticules[0].X[2,0],self.listParticules[0].theta))#print("[{:.2f},{:.2f},{:.2f}]".format(self.listParticules[0].X[0,0], self.listParticules[0].X[1,0], self.listParticules[0].X[2,0]))
+				print(amer,"[{:.2f},{:.2f},{:.2f},{:.2f}]".format(self.listParticules[0].X[0,0], self.listParticules[0].X[1,0], self.listParticules[0].X[2,0],self.listParticules[0].theta))#print("[{:.2f},{:.2f},{:.2f}]".format(self.listParticules[0].X[0,0], self.listParticules[0].X[1,0], self.listParticules[0].X[2,0]))
 				for part in self.listParticules:
 					#part.theta = np.arctan2(amer[1] - part.X[1,0],amer[0] - part.X[0,0])
 					part.step_mission(self.t, self.dt,presence_amer,amer,theta_target)
 					part.appendFrame(self.anim)
+				if self.listParticules[0].X[2,0]<0.5:
+					T = T + 0.5
+
+
 
 				self.t += self.dt
 

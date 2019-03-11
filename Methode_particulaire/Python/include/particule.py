@@ -106,9 +106,9 @@ class Particule:
         """
         Control equation of the AUV
         """
-
+        K = 4
         #print(">>>", theta_target, self.theta)
-        self.theta += 0.1 * (theta_target-self.theta) * min(self.omega_max,abs(theta_target-self.theta))
+        self.theta += K * 0.1 * (theta_target-self.theta) * min(self.omega_max,abs(theta_target-self.theta))
 
     def f(self):
         """
