@@ -1,14 +1,10 @@
-#include "robot.h"
+#include "robot.h"s
 #include "iostream"
 #include <unistd.h>
 using namespace std;
 
 #define NOMBRE_ROBOT 1
-<<<<<<< HEAD
-#define TEMPS_ITERATION 200
-=======
 #define TEMPS_ITERATION 150
->>>>>>> 74fba2cc293127f6fa2199f6b80f7392dc4b25f4
 #define DT 0.1
 
 
@@ -53,10 +49,7 @@ int main(int argc, char **argv){
         robot.C.at<double>(1,1)=1;
         robot.Gbeta.at<double>(0,0) = pow(3,2);
         robot.Gbeta.at<double>(1,1) = pow(3,2);
-<<<<<<< HEAD
-=======
         robot.theta_mission = 180.0;
->>>>>>> 74fba2cc293127f6fa2199f6b80f7392dc4b25f4
       }
       robot.P_theta(); //Proportionnel pour
       robot.kalman_x(&robot.Gx_hat, &robot.x_hat);
