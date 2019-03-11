@@ -10,7 +10,7 @@ ProcessConfig = ANTLER
 {
   MSBetweenLaunches = 400
 
-  Run = MOOSDB          @ NewConsole = false
+  Run = MOOSDB          @ NewConsole = true
 
   // Simulation
   Run = uSimMarine      @ NewConsole = false
@@ -19,13 +19,13 @@ ProcessConfig = ANTLER
   Run = pMarineViewer   @ NewConsole = false
 
   // Regulation du robot en vitesse et en cap
-  Run = pMarinePID      @ NewConsole = false 
+  Run = pMarinePID      @ NewConsole = false
 
   Run = pSimulationStateMachine @ NewConsole = false
+  Run = uMS             @ NewConsole = false
 
   // Processes
   Run = pNodeReporter   @ NewConsole = false
-
 }
 
 ProcessConfig = pMarineViewer
@@ -44,6 +44,10 @@ ProcessConfig = pMarineViewer
   // pour plus d'informations, entrer pMarineViewer -e
   // ou lire la documentation en ligne de l'application
 
+  // Button Configurations
+  //utton_one   = LANCEMENT # LANCEMENT=true
+  //button_one   = MOOS_MANUAL_OVERIDE=false # MOOS_MANUAL_OVERIDE=false
+  //button_two   = FIN_INSPECTION # FIN_INSPECTION=true
 }
 
 ProcessConfig = uSimMarine
@@ -52,66 +56,80 @@ ProcessConfig = uSimMarine
   CommsTick = 4
 
   start_pos = x=112, y=-128, speed=0, heading=90, depth=0
-  prefix    = NAV
+  prefix    = NAV  // default is USM_
+
+  // les paramètres par défaut sont conservés
+  // pour plus d'informations, entrer uSimMarine -e
+  // ou lire la documentation en ligne de l'application
 }
 
 ProcessConfig = pNodeReporter
 {
   AppTick   = 4
   CommsTick = 4
-                         
-  platform_type      = ship
-  platform_length    = 10
-  platform_colour    = yellow 
+
+  platform_type      = ship  // détermine l'apparence du robot dans la vue
+  platform_length    = 10    // m
 }
 
 ProcessConfig = pMarinePID
 {
-  AppTick   = 20          // Default MOOS AppTick=4          
-  CommsTick = 20          // Default MOOS CommsTick=4        
-                                                                
-  speed_factor    = 20    // Range [0,inf)                   
-  sim_instability = 0     // Range [0,inf)                   
-                                                                
-  tardy_helm_threshold = 2.0                                    
-  tardy_nav_threshold  = 2.0                                    
-  active_start         = false    // or {true}               
-  verbose              = terse    // or {verbose, quiet}     
-                                                                
-  // Yaw control configuration                                  
-  yaw_pid_kp  = 0.5                                             
-  yaw_pid_kd  = 0.1                                             
-  yaw_pid_ki  = 0.012                                           
-  yaw_pid_integral_limit = 0.07                                 
-  yaw_pid_ki_limit       = 0.2                                  
-  maxrudder   = 100                                             
-                                                                
-  // Speed control configuration                                
-  speed_pid_kp = 0.8                                            
-  speed_pid_kd = 0.1                                            
-  speed_pid_ki = 0.11                                           
-  speed_pid_ki_limit = 0.07                                     
-  SPEED_PID_INTEGRAL_LIMIT = 0 
-  maxthrust    = 100                                            
-                                                                
-  // Depth control configuration                                
-  depth_control      = true   // or {false}                  
-  z_to_pitch_pid_kp  = 0.12                                     
-  z_to_pitch_pid_kd  = 1.0                                      
-  z_to_pitch_pid_ki  = 0.004                                    
-  z_to_pitch_pid_integral_limit = 0.05                          
-  maxpitch           = 15                                       
-                                                                
-  // Depth control configuration                                
-  pitch_pid_kp       = 0.5                                      
-  pitch_pid_kd       = 1.0                                      
-  pitch_pid_ki       = 0                                        
-  pitch_pid_integral_limit = 0                                  
-  maxelevator        = 13    
+  AppTick   = 20          // Default MOOS AppTick=4
+  CommsTick = 20          // Default MOOS CommsTick=4
+
+  speed_factor    = 20    // Range [0,inf)
+  sim_instability = 0     // Range [0,inf)
+
+  tardy_helm_threshold = 2.0
+  tardy_nav_threshold  = 2.0
+  active_start         = true    // or {true}
+  verbose              = terse    // or {verbose, quiet}
+
+  // Yaw control configuration
+  yaw_pid_kp  = 0.5
+  yaw_pid_kd  = 0.1
+  yaw_pid_ki  = 0.012
+  yaw_pid_integral_limit = 0.07
+  yaw_pid_ki_limit       = 0.2
+  maxrudder   = 100
+
+  // Speed control configuration
+  speed_pid_kp = 0.8
+  speed_pid_kd = 0.1
+  speed_pid_ki = 0.11
+  speed_pid_ki_limit = 0.07
+  SPEED_PID_INTEGRAL_LIMIT = 0
+  maxthrust    = 100
+
+  // Depth control configuration
+  depth_control      = true   // or {false}
+  z_to_pitch_pid_kp  = 0.12
+  z_to_pitch_pid_kd  = 1.0
+  z_to_pitch_pid_ki  = 0.004
+  z_to_pitch_pid_integral_limit = 0.05
+  maxpitch           = 15
+
+  // Depth control configuration
+  pitch_pid_kp       = 0.5
+  pitch_pid_kd       = 1.0
+  pitch_pid_ki       = 0
+  pitch_pid_integral_limit = 0
+  maxelevator        = 13
 }
 
 ProcessConfig = pSimulationStateMachine
 {
-   AppTick   = 20
-   CommsTick = 20
-}
+   AppTick   = 4
+   CommsTick = 4
+   nbr_gps = 10
+   eps_prof = 1
+   eps_yaw = 1
+   nav_depth = 2
+   vitesse = 1
+   A_lat = 48.391513
+   A_lon = -4.423961
+   B_lat = 48.389580
+   B_lon = -4.423758
+   C_lat = 48.391024
+   C_long = -4.420414
+   }
