@@ -4,7 +4,7 @@
 using namespace std;
 
 #define NOMBRE_ROBOT 1
-#define TEMPS_ITERATION 300
+#define TEMPS_ITERATION 400
 #define DT 0.1
 
 
@@ -67,19 +67,15 @@ int main(int argc, char **argv){
         robot.Gbeta.at<double>(1,1) = pow(3,2);
         robot.y.at<double>(0) = robot.x.at<double>(0,0);
         robot.y.at<double>(1) = robot.x.at<double>(1);
-        if (amer_number<amer.size()-1){
-          robot.theta_mission = atan2(amer[amer_number+1].second - amer[amer_number].second,amer[amer_number+1].first - amer[amer_number].first);
-        }else{
-          robot.theta_mission = atan2(amer[0].second - amer[amer_number].second,amer[0].first - amer[amer_number].first);
+        if (not(inzone)){
+          inzone = 1;
+          amer_number++;
+          if (amer_number>=amer.size()){
+            amer_number = 0; 
+          }
         }
-        robot.theta_mission = robot.theta_mission*180/PI;
-        if (robot.theta_mission<0){
-          robot.theta_mission +=360;
-        }
-        cout<<"Theta mission : "<<robot.theta_mission<<endl;
-        inzone = 1;
       }
-      robot.P_theta(); //Proportionnel pour
+      robot.P_theta(amer[amer_number]); //Proportionnel pour
       robot.kalman_x(&robot.Gx_hat, &robot.x_hat);
       robot.evolution();
       robot.draw(&plot);
@@ -87,7 +83,7 @@ int main(int argc, char **argv){
       robot.draw_x_y(&p);
       //p = robot.draw_x_y(); //for post calcul show
 
-      if (j%10==0){
+      if (j%20==0){
         gp<<"plot '-' title 'Kalman'  with linespoint ls 1 points 0,"; //for real time plot
         gp<<" '-' title 'Real' with linespoint ls 2 points 0,"; //for real time plot
         gp<<" '-' notitle with linespoint ls 1 points 0,"; //for real time plot
@@ -106,19 +102,13 @@ int main(int argc, char **argv){
 
       //gp << gp.file1d(p)<<" notitle with linespoint ls 1,";//for post calcul show
       robot.save_state();
-      if (robot.distance(amer[amer_number])<radius){
+
+      if (inzone && robot.distance(amer[amer_number])>radius){
+        inzone = 0;
         robot.C.at<double>(0,0)=0;
         robot.C.at<double>(1,1)=0;
         robot.Gbeta.at<double>(0,0) = 0;
         robot.Gbeta.at<double>(1,1) = 0;
-      }
-
-      if (inzone && robot.distance(amer[amer_number])>radius){
-        inzone = 0;
-        amer_number++;
-        if (amer_number>=amer.size()){
-          amer_number = 0; 
-        }
       }
       //robot.t+=DT;
     }
@@ -137,6 +127,8 @@ int main(int argc, char **argv){
   }
   cout<<"Export done\n";
   fs.close();
+
+  draw_ellipse(0,0,Robot().Gx);
 
   return 0;
 }

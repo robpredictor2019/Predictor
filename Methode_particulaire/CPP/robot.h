@@ -49,7 +49,7 @@ public:
 
   Robot(); // Constructeur par defaut
   //~Robot(); // Destructeur
-  void P_theta(); //Porportionnel pour theta
+  void P_theta(point p); //Porportionnel pour theta
   Robot(int,double);
 
   Robot(cv::Mat x, cv::Mat u, cv::Mat C, cv::Mat A, cv::Mat Galpha, cv::Mat y, cv::Mat Gbeta, cv::Mat Gx);// Constructeur
@@ -74,3 +74,4 @@ public:
 
 std::vector<point> circle(double x,double y,double r);
 std::vector<point> circle(point p,double r);
+void draw_ellipse(double x,double y,cv::Mat Gx);
