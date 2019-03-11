@@ -1,9 +1,0 @@
-//------------------------------------------------
-// pState1_isobath config block
-
-ProcessConfig = pState1_isobath
-{
-   AppTick   = 4
-   CommsTick = 4
-}
-

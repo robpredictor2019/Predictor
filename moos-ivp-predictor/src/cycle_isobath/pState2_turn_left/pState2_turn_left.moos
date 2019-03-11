@@ -1,9 +1,0 @@
-//------------------------------------------------
-// pState2_turn_left config block
-
-ProcessConfig = pState2_turn_left
-{
-   AppTick   = 4
-   CommsTick = 4
-}
-

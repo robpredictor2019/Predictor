@@ -1,9 +1,0 @@
-//------------------------------------------------
-// pStateMachine config block
-
-ProcessConfig = pStateMachine
-{
-   AppTick   = 4
-   CommsTick = 4
-}
-

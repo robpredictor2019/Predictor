@@ -1,9 +1,0 @@
-//------------------------------------------------
-// pState3_cross_river config block
-
-ProcessConfig = pState3_cross_river
-{
-   AppTick   = 4
-   CommsTick = 4
-}
-
