@@ -5,6 +5,16 @@ ProcessConfig = pSimulationStateMachine
 {
    AppTick   = 4
    CommsTick = 4
-
+   nbr_gps = 10
+   eps_prof = 1
+   eps_yaw = 1
+   nav_depth = -2
+   vitesse = 2
+   A_lat = 48.387864
+   A_lon = -4.415489
+   B_lat = 48.383463
+   B_lon = -4.415987
+   C_lat = 48.386600
+   C_long = -4.408716
 }
 

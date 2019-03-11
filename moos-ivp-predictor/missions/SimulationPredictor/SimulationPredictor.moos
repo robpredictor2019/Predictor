@@ -12,9 +12,6 @@ ProcessConfig = ANTLER
 
   Run = MOOSDB          @ NewConsole = false
 
-  // Processes
-  Run = pNodeReporter   @ NewConsole = false
-
   // Simulation
   Run = uSimMarine      @ NewConsole = false
 
@@ -25,6 +22,10 @@ ProcessConfig = ANTLER
   Run = pMarinePID      @ NewConsole = false 
 
   Run = pSimulationStateMachine @ NewConsole = false
+
+  // Processes
+  Run = pNodeReporter   @ NewConsole = false
+
 }
 
 ProcessConfig = pMarineViewer
@@ -43,10 +44,6 @@ ProcessConfig = pMarineViewer
   // pour plus d'informations, entrer pMarineViewer -e
   // ou lire la documentation en ligne de l'application
 
-  // Button Configurations                                      
-  button_one   = LANCEMENT # LANCEMENT=true                           
-  button_one   = MOOS_MANUAL_OVERIDE=false # MOOS_MANUAL_OVERIDE=false       
-  button_two   = FIN_INSPECTION # FIN_INSPECTION=true     
 }
 
 ProcessConfig = uSimMarine
@@ -55,11 +52,7 @@ ProcessConfig = uSimMarine
   CommsTick = 4
 
   start_pos = x=112, y=-128, speed=0, heading=90, depth=0
-  prefix    = NAV  // default is USM_
-
-  // les paramètres par défaut sont conservés
-  // pour plus d'informations, entrer uSimMarine -e
-  // ou lire la documentation en ligne de l'application
+  prefix    = NAV
 }
 
 ProcessConfig = pNodeReporter
@@ -67,8 +60,9 @@ ProcessConfig = pNodeReporter
   AppTick   = 4
   CommsTick = 4
                          
-  platform_type      = ship  // détermine l'apparence du robot dans la vue
-  platform_length    = 10    // m
+  platform_type      = ship
+  platform_length    = 10
+  platform_colour    = yellow 
 }
 
 ProcessConfig = pMarinePID
@@ -118,6 +112,6 @@ ProcessConfig = pMarinePID
 
 ProcessConfig = pSimulationStateMachine
 {
-   AppTick   = 4
-   CommsTick = 4
+   AppTick   = 20
+   CommsTick = 20
 }
