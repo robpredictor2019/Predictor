@@ -25,10 +25,10 @@ class Robot
 private:
   double dt;
   int m_ID;
-  std::vector<State> m_state;
   double Kp;
 
 public:
+  std::vector<State> m_state;
   double t;
   double theta;
   double theta_bar;
@@ -60,6 +60,7 @@ public:
   void draw_x_y(std::vector<point>*);
   void draw_x_y_hat(std::vector<point>*);
   std::vector<point> draw_x_y();
+  std::vector<point> draw_x_y_hat();
   float scenario();
   double distance(point p);
 
@@ -75,3 +76,4 @@ public:
 std::vector<point> circle(double x,double y,double r);
 std::vector<point> circle(point p,double r);
 void draw_ellipse(double x,double y,cv::Mat Gx);
+void covar_particule(std::vector<point> * plot_x,std::vector<point> * plot_y,std::vector<point> * plot_xy,std::vector<Robot> & Lr);
