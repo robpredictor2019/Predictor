@@ -4,7 +4,7 @@
 using namespace std;
 
 #define NOMBRE_ROBOT 1
-#define TEMPS_ITERATION 150
+#define TEMPS_ITERATION 300
 #define DT 0.1
 
 
@@ -15,11 +15,28 @@ int main(int argc, char **argv){
   vector<Robot> List_robot;
   List_robot.reserve(100);
   //cout<<List_robot.capacity()<<endl;
+  double radius = 10;
+  bool inzone(0);
+
+  vector<point> amer;
+
+  amer.push_back(point(0,0));
+  amer.push_back(point(100,0));
+  amer.push_back(point(50,50));
+
+  int amer_number(1);
 
   vector<point> plot;
   vector<point> p;
   vector<point> p_hat;
+  vector<point> Cercle_0;
+  vector<point> Cercle_1;
+  vector<point> Cercle_2;
   //plot.reserve( (NOMBRE_ROBOT+1) * (TEMPS_ITERATION/DT) );
+
+  Cercle_0 = circle(amer.at(0),radius);
+  Cercle_1 = circle(amer.at(1),radius);
+  Cercle_2 = circle(amer.at(2),radius);
 
   std::ofstream fs;
   fs.open ("../Robot_States.txt", std::fstream::in | std::fstream::out | std::fstream::trunc);
@@ -42,8 +59,7 @@ int main(int argc, char **argv){
   for (int i=0;i<NOMBRE_ROBOT;i++){
     Robot robot = List_robot[i];
     for (int j=0; j<TEMPS_ITERATION/DT; j++){
-      //cout<<"Temps :"<<robot.t<<endl;
-      if (abs(robot.t-75.0)<0.15){
+      if (robot.distance(amer[amer_number])<radius){
         cout<<"je change de direction !!!!!!!!!"<<endl;
         robot.C.at<double>(0,0)=1;
         robot.C.at<double>(1,1)=1;
@@ -51,7 +67,17 @@ int main(int argc, char **argv){
         robot.Gbeta.at<double>(1,1) = pow(3,2);
         robot.y.at<double>(0) = robot.x.at<double>(0,0);
         robot.y.at<double>(1) = robot.x.at<double>(1);
-        robot.theta_mission = 180.0;
+        if (amer_number<amer.size()-1){
+          robot.theta_mission = atan2(amer[amer_number+1].second - amer[amer_number].second,amer[amer_number+1].first - amer[amer_number].first);
+        }else{
+          robot.theta_mission = atan2(amer[0].second - amer[amer_number].second,amer[0].first - amer[amer_number].first);
+        }
+        robot.theta_mission = robot.theta_mission*180/PI;
+        if (robot.theta_mission<0){
+          robot.theta_mission +=360;
+        }
+        cout<<"Theta mission : "<<robot.theta_mission<<endl;
+        inzone = 1;
       }
       robot.P_theta(); //Proportionnel pour
       robot.kalman_x(&robot.Gx_hat, &robot.x_hat);
@@ -61,22 +87,38 @@ int main(int argc, char **argv){
       robot.draw_x_y(&p);
       //p = robot.draw_x_y(); //for post calcul show
 
-
-      gp<<"plot '-' with  linespoint ls 1 points 0,"; //for real time plot
-      gp<<" '-' with linespoint ls 2 points 0\n"; //for real time plot
-      gp.send1d(p_hat); //for real time plot
-      gp.send1d(p);
+      if (j%10==0){
+        gp<<"plot '-' title 'Kalman'  with linespoint ls 1 points 0,"; //for real time plot
+        gp<<" '-' title 'Real' with linespoint ls 2 points 0,"; //for real time plot
+        gp<<" '-' notitle with linespoint ls 1 points 0,"; //for real time plot
+        gp<<" '-' notitle with linespoint ls 1 points 0,"; //for real time plot
+        gp<<" '-' notitle with linespoint ls 1 points 0\n"; //for real time plot
+        gp.send1d(p_hat); //for real time plot
+        gp.send1d(p);
+        gp.send(Cercle_0);
+        gp.send(Cercle_1);
+        gp.send(Cercle_2);
+      }
+      //cout<<robot.distance(amer[amer_number])<<endl;
 
       //usleep(100000);//sleep for real time plot
       //cout<<j<<endl;
 
       //gp << gp.file1d(p)<<" notitle with linespoint ls 1,";//for post calcul show
       robot.save_state();
-      if (abs(robot.t-75.0)<0.15){
+      if (robot.distance(amer[amer_number])<radius){
         robot.C.at<double>(0,0)=0;
         robot.C.at<double>(1,1)=0;
         robot.Gbeta.at<double>(0,0) = 0;
         robot.Gbeta.at<double>(1,1) = 0;
+      }
+
+      if (inzone && robot.distance(amer[amer_number])>radius){
+        inzone = 0;
+        amer_number++;
+        if (amer_number>=amer.size()){
+          amer_number = 0; 
+        }
       }
       //robot.t+=DT;
     }

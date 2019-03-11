@@ -192,6 +192,12 @@ vector<point> Robot::draw_x_y()
   return plot;
 }
 
+double Robot::distance(point p){
+  double dist;
+  dist = pow( pow(x.at<double>(0)-p.first,2) + pow(x.at<double>(1)-p.second,2) ,0.5);
+  return dist;
+}
+
 
 void Robot::save_state()
 {
@@ -225,4 +231,22 @@ void Robot::Export(ofstream & fs)
         s = m_state[i];
         fs << s.ID<<";"<<s.t<<";"<<s.x<<";"<<s.y<<";0;0;0;"<<s.theta<<std::endl;
     }
+}
+
+
+vector<point> circle(double x,double y,double r){
+  vector<point> data;
+  double xc;
+  double yc;
+  for (int i = 0;i<360;i++){
+    xc = r*cos(i*PI/180) + x;
+    yc = r*sin(i*PI/180) + y;
+    data.push_back(point(xc,yc));
+  }
+  return data;
+}
+
+vector<point> circle(point p,double r){
+  vector<point> data = circle(p.first,p.second,r);
+  return data;
 }
