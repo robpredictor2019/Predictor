@@ -7,12 +7,9 @@
 
 #include <iterator>
 #include "MBUtils.h"
-#include "ACTable.h"
 #include "SimulationStateMachine.h"
-
-/*
-Used for creating a state machine for the robot
-*/
+#include <math.h>
+#include <string.h>
 
 using namespace std;
 
@@ -21,24 +18,37 @@ using namespace std;
 
 SimulationStateMachine::SimulationStateMachine()
 {
-  heading = 90;
-  depth = 0;
+  //states state
+  state_1 = 1;  // UP
+  state_2 = 0;  // Down et orientation
+  state_3 = 0;  // S_cap
+  desired_depth = 0;
+  gps_lat = 0;
+  gps_long = 0;
+  //state3 variables
+	begin_time = clock();
+  time_passed = 0;
+
+  propulsion = 0;
   speed = 0;
-  point_m_x = 0;
-  point_m_y = 0;
-  time_underwater = 0;
-  point_a_x = POINT_A_X; 
-  point_b_x = POINT_B_X;
-  point_c_x = POINT_C_X;
-  point_a_y = POINT_A_Y;
-  point_b_y = POINT_B_Y;
-  point_c_y = POINT_C_Y;
-  state = 0;
-  point = 'A';
-  nav_x = 0;
-  nav_y = 0;
-  N = 0;
-  
+
+
+	//state2 variables
+  desired_heading = 0;
+  err_heading = 0;
+
+	//state variables
+  err_depth = 0;
+  compteur_gps = 0 ;
+  gps_m_lat = 0 ;
+  gps_m_long  = 0 ;
+  time_croisiere = 0;
+  dist_croisiere = 0;
+
+  // chemin a suivre
+  a_to_b = 1;
+  b_to_c = 0;
+  c_to_a = 0;
 }
 
 //---------------------------------------------------------
@@ -53,33 +63,49 @@ SimulationStateMachine::~SimulationStateMachine()
 
 bool SimulationStateMachine::OnNewMail(MOOSMSG_LIST &NewMail)
 {
-  AppCastingMOOSApp::OnNewMail(NewMail);
-
   MOOSMSG_LIST::iterator p;
+
   for(p=NewMail.begin(); p!=NewMail.end(); p++) {
     CMOOSMsg &msg = *p;
-    string key    = msg.GetKey();
-    if(key == "NAV_X"){
-        nav_x = msg.GetDouble();
-    } else if(key == "NAV_Y") {
-      nav_y = msg.GetDouble();
+
+
+    string key = msg.GetKey();
+
+    //heading
+  if (key == "NAV_HEADING"){
+    heading = msg.GetDouble()/360 * 2 * M_PI ; //heading in radians
+  }
+    // Profondeur
+  if (key == "NAV_DEPTH"){
+      actual_depth  = msg.GetDouble();   //in m
     }
-    else if(key != "APPCAST_REQ") // handled by AppCastingMOOSApp
-      reportRunWarning("Unhandled Mail: " + key);
+   // GPS
+  if (key == "Latitude"){
+       gps_lat = msg.GetDouble();
+       if (gps_lat!=0){
+         compteur_gps = compteur_gps +1 ;
+       }
+
+       else {compteur_gps=0;}
+     }
+
+  if (key == "Longitude"){
+      gps_long  = msg.GetDouble();
+       }
+
 
 #if 0 // Keep these around just for template
+    string key   = msg.GetKey();
     string comm  = msg.GetCommunity();
     double dval  = msg.GetDouble();
-    string sval  = msg.GetString(); 
+    string sval  = msg.GetString();
     string msrc  = msg.GetSource();
     double mtime = msg.GetTime();
     bool   mdbl  = msg.IsDouble();
     bool   mstr  = msg.IsString();
 #endif
-    
-    
    }
-	
+
    return(true);
 }
 
@@ -88,7 +114,12 @@ bool SimulationStateMachine::OnNewMail(MOOSMSG_LIST &NewMail)
 
 bool SimulationStateMachine::OnConnectToServer()
 {
-   registerVariables();
+   // register for variables here
+   // possibly look at the mission file?
+   // m_MissionReader.GetConfigurationParam("Name", <string>);
+   // m_Comms.Register("VARNAME", 0);
+
+   RegisterVariables();
    return(true);
 }
 
@@ -98,75 +129,94 @@ bool SimulationStateMachine::OnConnectToServer()
 
 bool SimulationStateMachine::Iterate()
 {
-  AppCastingMOOSApp::Iterate();
-  // Do your thing here!
-  AppCastingMOOSApp::PostReport();
-
-  // Do something depending the case :
-  switch(state){
-    case 0: // Taking GPS Measurements
-      N+=1;
-      speed = 0; // Stop the AUV
-      if (N == 10)
-            state = 1; // Go underwater
-            depth = 2;
-    case 1: // Going underwater and computing the desired heading and the time underwater
-      point_m_x = nav_x;
-      point_m_y = nav_y;
-      speed = 2; // Restart the AUV
-      N = 0;
-      switch(point){ // Checking the current position
+  if (state_1 == 1){ // UP
+    desired_depth = 2;  // a fond vers le haut pour sortir de l'eau
+    Notify("DESIRED_DEPTH", desired_depth);  // active le suivi de profondeur à 2m (donc 0m)
+    propulsion = 0;
+    Notify("DESIRED_THRUST",propulsion);
+    speed = 0;
+    Notify("DESIRED_SPEED",speed);
       
-        case 'A': // Next point is B
-            heading = atan((point_b_x - point_m_x)/(point_b_y - point_m_y));
-            time_underwater = (sqrt(pow(point_b_x - point_m_x,2) + pow(point_b_y - point_m_y,2) ))/speed;
-        case 'B': // Next point is C
-            heading =  atan((point_c_x - point_m_x)/(point_c_y - point_m_y));
-            time_underwater = (sqrt(pow(point_c_x - point_m_x,2) + pow(point_c_y - point_m_y,2) ))/speed;
-        case 'C': // Next point is A
-            heading =  atan((point_a_x - point_m_x)/(point_a_y - point_m_y));
-            time_underwater = (sqrt(pow(point_a_x - point_m_x,2) + pow(point_a_y - point_m_y,2) ))/speed;
-        case 'D': // Next point is A
-            heading =  atan((point_a_x - point_m_x)/(point_a_y - point_m_y));
-            time_underwater = (sqrt(pow(point_a_x - point_m_x,2) + pow(point_a_y - point_m_y,2) ))/speed;
-        }
-        if (depth == 2)
-              state = 2; // Follow the heading
-    case 2:
-      time_underwater = time_underwater - 1/10;
-      switch(point){ // Checking the current position
-          case 'A': // Next point is B
-              time_underwater = (sqrt(pow(point_b_x - nav_x,2) + pow(point_b_y - nav_y,2) ))/speed;
-          case 'B': // Next point is C
-              time_underwater = (sqrt(pow(point_c_x - nav_x,2) + pow(point_c_y - nav_y,2) ))/speed;
-          case 'C': // Next point is A
-              time_underwater = (sqrt(pow(point_a_x - nav_x,2) + pow(point_a_y - nav_y,2) ))/speed;
-          case 'D': // Next point is A
-              time_underwater = (sqrt(pow(point_a_x - nav_x,2) + pow(point_a_y - nav_y,2) ))/speed;
-        }
-      if (time_underwater < 1){
-        state = 0;
-        depth = 0;
-          switch(point){ // Checking the current position
-          case 'A': // Next point is B
-            point = 'B';
-          case 'B': // Next point is C
-            point = 'C';
-          case 'C': // Next point is A
-            point = 'A';
-          }
-      }
-  }
-  
-  // Sawtooth
-  //heading = fmod(heading + M_PI, 2*M_PI) - M_PI;
 
-  Notify("DESIRED_RUDDER", heading);
-  Notify("DESIRED_ELEVATOR", -depth);
-  Notify("DESIRED_THRUST", 25*speed);
-  Notify("STATE_MACHINE_STATE", state);
-  Notify("NEXT_POINT_TARGETED", point);
-  Notify("TIME_UNDERWATER", time_underwater);
+    err_depth = abs(desired_depth - actual_depth) ;
+
+    if (err_depth<=eps_prof && compteur_gps>=nbr_gps){ // si on est dehors et que le GPS à sorti 10 valeurs
+      state_1 = 0;
+      state_2 = 1;
+      gps_m_lat = gps_lat; // valeure sorite par le GPS apres filtre médian
+      gps_m_long = gps_long;
+
+      if (a_to_b == 1){
+        dist_croisiere = pow((B_lat - gps_m_lat),2)+pow((B_long - gps_m_long),2) ;
+        time_croisiere = sqrt(dist_croisiere) / vitesse;
+
+        desired_heading = 270 - atan( (B_lat-gps_m_lat) /  (B_long-gps_m_long))*180/ M_PI;
+      }
+
+      else if (b_to_c == 1){
+        dist_croisiere = pow((C_lat - gps_m_lat),2)+pow((C_long - gps_m_long),2) ;
+        time_croisiere = sqrt(dist_croisiere) / vitesse;
+        desired_heading = 270 - atan( (C_lat-gps_m_lat) /  (C_long-gps_m_long))*180/ M_PI;
+      }
+      else if (c_to_a == 1){
+        dist_croisiere = pow((A_lat - gps_m_lat),2)+pow((A_long - gps_m_long),2) ;
+        time_croisiere = sqrt(dist_croisiere) / vitesse;
+        desired_heading = 270 - atan( (C_lat-gps_m_lat) /  (C_long-gps_m_long))*180/ M_PI;
+      }
+
+    }
+  }
+
+  else if (state_2 == 1){ //Down Ori
+    desired_depth = nav_depth;  // a fond vers le profond
+    Notify("DESIRED_DEPTH", desired_depth);  // active le suivi de profondeur
+    Notify("DESIRED_HEADING",desired_heading);
+    propulsion = 0;
+    Notify("DESIRED_THRUST",propulsion);
+    speed = 0;
+    Notify("DESIRED_SPEED",speed);
+    err_heading = abs(desired_heading-heading);
+    err_depth = abs(desired_depth-actual_depth);
+    if (err_heading<eps_yaw && err_depth<eps_prof){
+      state_2 = 0;
+      state_3 = 1;
+
+    }
+
+  }
+
+  else if (state_3 == 1){ // SuiviCap
+
+   begin_time = clock();
+   Notify("DESIRED_DEPTH", desired_depth);  // active le suivi de profondeur
+   Notify("DESIRED_HEADING",desired_heading);
+   propulsion = 100;
+   Notify("DESIRED_THRUST",propulsion);
+   speed = 2;
+   Notify("DESIRED_SPEED",speed);
+
+   time_passed = double( clock() - begin_time)/CLOCKS_PER_SEC;
+   if (time_passed >= time_croisiere){
+     state_1 = 1;
+     state_3 = 0;
+     if (a_to_b == 1){
+       a_to_b = 0;
+       b_to_c = 1;
+     }
+
+     else if (b_to_c == 1){
+       b_to_c = 0;
+       c_to_a = 1;
+     }
+     else if (c_to_a == 1){
+       c_to_a = 0;
+       a_to_b = 1;
+     }
+        // changer a to b en b to a
+   }
+
+  }
+
   return(true);
 }
 
@@ -176,67 +226,79 @@ bool SimulationStateMachine::Iterate()
 
 bool SimulationStateMachine::OnStartUp()
 {
-  AppCastingMOOSApp::OnStartUp();
-
-  STRING_LIST sParams;
+  list<string> sParams;
   m_MissionReader.EnableVerbatimQuoting(false);
-  if(!m_MissionReader.GetConfiguration(GetAppName(), sParams))
-    reportConfigWarning("No config block found for " + GetAppName());
+  if(m_MissionReader.GetConfiguration(GetAppName(), sParams)) {
+    list<string>::iterator p;
+    for(p=sParams.begin(); p!=sParams.end(); p++) {
+      string line  = *p;
+      string param = tolower(biteStringX(line, '='));
+      string value = line;
 
-  STRING_LIST::iterator p;
-  for(p=sParams.begin(); p!=sParams.end(); p++) {
-    string orig  = *p;
-    string line  = *p;
-    string param = toupper(biteStringX(line, '='));
-    string value = line;
+      if(param == "foo") {
+        //handled
+      }
+      else if(param == "bar") {
+        //handled
+      }
 
-    bool handled = false;
-    if(param == "FOO") {
-      handled = true;
+      if (param == "nbr_gps") {
+        nbr_gps = stold(value);
+      }
+
+      if (param == "eps_prof") {
+        eps_prof = stold(value);
+      }
+
+      if (param == "eps_yaw") {
+        eps_yaw = stold(value);
+      }
+
+      if (param == "nav_depth") {
+        nav_depth = stold(value);
+      }
+
+      if (param == "vitesse") {
+        vitesse = stold(value);
+      }
+
+      if (param == "A_lat") {
+        A_lat = stold(value);
+      }
+
+      if (param == "A_long") {
+        A_long = stold(value);
+      }
+
+      if (param == "B_lat") {
+        B_lat = stold(value);
+      }
+
+      if (param == "B_long") {
+        B_long = stold(value);
+      }
+
+      if (param == "C_lat") {
+        C_lat = stold(value);
+      }
+
+      if (param == "C_long") {
+        C_long = stold(value);
+      }
+
     }
-    else if(param == "BAR") {
-      handled = true;
-    }
-
-    if(!handled)
-      reportUnhandledConfigWarning(orig);
-
   }
-  
-  registerVariables();	
+
+  RegisterVariables();
   return(true);
 }
 
 //---------------------------------------------------------
-// Procedure: registerVariables
+// Procedure: RegisterVariables
 
-void SimulationStateMachine::registerVariables()
+void SimulationStateMachine::RegisterVariables()
 {
-  AppCastingMOOSApp::RegisterVariables();
-  Register("NAV_X", 0);
-  Register("NAV_Y", 0);
   // Register("FOOBAR", 0);
+  Register("NAV_HEADING", 0);
+  Register("NAV_DEPTH", 0);
 }
-
-
-//------------------------------------------------------------
-// Procedure: buildReport()
-
-bool SimulationStateMachine::buildReport() 
-{
-  m_msgs << "============================================ \n";
-  m_msgs << "File:                                        \n";
-  m_msgs << "============================================ \n";
-
-  ACTable actab(4);
-  actab << "Alpha | Bravo | Charlie | Delta";
-  actab.addHeaderLines();
-  actab << "one" << "two" << "three" << "four";
-  m_msgs << actab.getFormattedString();
-
-  return(true);
-}
-
-
-
-
