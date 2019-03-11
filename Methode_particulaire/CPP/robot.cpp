@@ -47,8 +47,8 @@ t(0),m_ID(0),dt(0.1),theta_bar(0),v(1),theta(0),theta_dot(0),Kp(1),theta_mission
   Galpha.at<double>(1,1) = pow(1,2);
   Galpha.at<double>(2,2) = pow(1,2);
 
-  Gbeta.at<double>(0,0) = pow(0.1,2);
-  Gbeta.at<double>(1,1) = pow(0.1,2);
+  Gbeta.at<double>(0,0) = 0;
+  Gbeta.at<double>(1,1) = 0;
 
   Gx_hat.at<double>(0,0) = pow(0.1,2);
   Gx_hat.at<double>(1,1) = pow(0.1,2);
@@ -78,7 +78,7 @@ t(0),m_ID(ID),dt(dt),theta_bar(0),v(1),theta(0),theta_dot(0),Kp(1),theta_mission
   A.at<double>(0,2) = cos(theta*PI/180)*dt;
   A.at<double>(1,1) = 1;
   A.at<double>(1,2) = sin(theta*PI/180)*dt;
-  A.at<double>(2,2) = 1*dt+1;
+  A.at<double>(2,2) = 0;
 
   B.at<double>(2,0) = 1;
 
@@ -117,11 +117,10 @@ void Robot::evolution()
   //Update A
   A.at<double>(0,2) = cos(theta*PI/180)*dt;
   A.at<double>(1,2) = sin(theta*PI/180)*dt;
-  A.at<double>(2,2) = -dt+1;
 
   //theta += dtheta(generator)
 
-  //cout<<"v ="<<v<<endl;
+  //cout<<"v ="<<x_hat.at<double>(2)<<endl;
 
   t+=dt;
 }
@@ -140,9 +139,9 @@ void Robot::kalman_correct( Mat* xup_k1, Mat* Pup_k1)
 
    S = (C*Gx_hat*C.t()) + Gbeta;
    K = Gx_hat*C.t()*S.inv();
-   err = y - (C*x);
+   err = y - (C*x_hat);
    *Pup_k1 = (Mat::eye(3,3,CV_64F) - (K*C)) * Gx_hat;
-   *xup_k1 = x + K*err;
+   *xup_k1 = x_hat + K*err;
 }
 
 void Robot::kalman_x( Mat* P_k1, Mat* x_k1)
@@ -215,7 +214,7 @@ void Robot::P_theta()
     theta_dot = max( min(10.0,theta_dot),-10.0);
     //cout<<"x_hat"<<x_hat.at<double>(0)<<x_hat.at<double>(1)<<x_hat.at<double>(2)<<endl;
   //}
-  cout<<"theta_bar "<<theta_bar<<endl;
+  //cout<<"theta_bar "<<theta_bar<<endl;
 }
 
 void Robot::Export(ofstream & fs)
