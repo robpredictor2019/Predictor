@@ -8,27 +8,29 @@ MOOSTimeWarp = 10
 
 ProcessConfig = ANTLER
 {
-  MSBetweenLaunches = 400
+  MSBetweenLaunches = 40
 
-  Run = MOOSDB          @ NewConsole = false
-  Run = uMS             @ NewConsole = false
+  Run = MOOSDB                 @ NewConsole = false
+  Run = uMS                    @ NewConsole = false
   // Processes
-  Run = pNodeReporter   @ NewConsole = false
+  Run = pNodeReporter          @ NewConsole = false
 
   // Simulation
-  Run = uSimMarine      @ NewConsole = false
+  Run = uSimMarine             @ NewConsole = false
 
   // Interface Homme Machine
-  Run = pMarineViewer   @ NewConsole = false
+  Run = pMarineViewer          @ NewConsole = false
 
   // Regulation du robot en vitesse et en cap
-  Run = pMarinePID      @ NewConsole = false
-
-  // Intelligence
-  Run = pHelmIvP        @ NewConsole = false
+  Run = pMarinePID             @ NewConsole = false
 
  // Suivi de cap
- Run = pSuiviCap        @ NewConsole = false
+ Run = pSuiviCap               @ NewConsole = false
+
+ // State Machine
+ Run = pSimulationStateMachine @ NewConsole = false
+
+ Run = pCommand                @ NewConsole = false
 
   // Ajoutez pSuiviCap et pCommand
 }
@@ -42,13 +44,11 @@ ProcessConfig = pMarineViewer
   zoom      = 1.0
 
   appcast_viewable = true
-  trails_length = 1000
+  trails_length = 10000
   trails_connect_viewable = true
 
-  // Button Configurations
-  button_one   = LANCEMENT # LANCEMENT=true
-  button_one   = MOOS_MANUAL_OVERIDE=false # MOOS_MANUAL_OVERIDE=false
-  button_two   = FIN_PARCOURS # FIN_PARCOURS=false
+
+
 }
 
 ProcessConfig = uSimMarine
@@ -59,8 +59,8 @@ ProcessConfig = uSimMarine
   start_pos = x=112, y=-128, speed=0, heading=90, depth=0
   prefix    = NAV  // default is USM_
 
-  DRIFT_X=0.4
-  DRIFT_Y=0.1
+  DRIFT_X=0.0
+  DRIFT_Y=0.0
   
 }
 
@@ -119,15 +119,9 @@ ProcessConfig = pMarinePID
   maxelevator        = 13
 }
 
-ProcessConfig = pHelmIvP
+
+ProcessConfig = pSimulationStateMachine
 {
-  AppTick   = 4
-  CommsTick = 4
-
-  // Configuring behavior file and decision domain
-  behaviors        =  boat.bhv
-
-  domain           =  course:0:359:360
-  domain           =  speed:0:5:20
+   AppTick   = 4
+   CommsTick = 4
 }
-

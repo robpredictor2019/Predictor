@@ -14,7 +14,6 @@ def kalman_predict(xup,Gup,u,Γα,A):
 
 def kalman_correc(x0,Γ0,y,Γβ,C):
     S = C @ Γ0 @ C.T + Γβ
-    print("Γ0",Γ0,"\nC", C,"\nS", S)
     if S.shape == (1,1):
         K = (1./S)*Γ0 @ C.T
         ytilde = y - C @ x0
@@ -30,7 +29,6 @@ def kalman_correc(x0,Γ0,y,Γβ,C):
 def kalman(x0,Γ0,u,y,Γα,Γβ,A,C):
     xup,Gup = kalman_correc(x0,Γ0,y,Γβ,C)
     x1,Γ1=kalman_predict(xup,Gup,u,Γα,A)
-    print("Gup", Γ1)
     return(x1,Γ1)
 
 def draw_tank(x,col='darkblue',r=1):
@@ -48,13 +46,15 @@ def move_motif(M,x,y,θ):
 def plot2D(M,col='black',w=1):
     plot(M[0, :], M[1, :], col, linewidth = w)
 
-def draw_ellipse(c,rx, ry,ax,col):
+def draw_ellipse(c,rx, ry,ax,col,col2="None"):
     #draw_disk(array([[1],[2]]),0.5,ax,"blue")
     e = Ellipse(xy=c, width=2*rx, height=2*ry, angle=0)
     ax.add_artist(e)
     e.set_clip_box(ax.bbox)
     e.set_alpha(0.1)
     e.set_edgecolor(col)
+    if col2 != None:
+        e.set_facecolor(col2)
 
 def init_figure(xmin,xmax,ymin,ymax):
     fig = figure(0)
