@@ -28,11 +28,9 @@ SimulationStateMachine::SimulationStateMachine()
   //state3 variables
 	begin_time = clock();
   time_passed = 0;
+  time_passed_s1 = 0;
 
-  propulsion = 0;
-
-
-
+  propulsion = 100;
 	//state2 variables
   desired_heading = 0;
   err_heading = 0;
@@ -49,6 +47,8 @@ SimulationStateMachine::SimulationStateMachine()
   a_to_b = 1;
   b_to_c = 0;
   c_to_a = 0;
+
+  start_state3 = 1;
 }
 
 //---------------------------------------------------------
@@ -73,7 +73,7 @@ bool SimulationStateMachine::OnNewMail(MOOSMSG_LIST &NewMail)
 
     //heading
   if (key == "NAV_HEADING"){
-    heading = msg.GetDouble()/360 * 2 * M_PI ; //heading in radians
+    heading = msg.GetDouble();///360 * 2 * M_PI ; //heading in radians
   }
     // Profondeur
   if (key == "NAV_DEPTH"){
@@ -129,20 +129,27 @@ bool SimulationStateMachine::OnConnectToServer()
 
 bool SimulationStateMachine::Iterate()
 {
+  Notify("ERR_HEADING", err_heading);
+  Notify("ERR_DEPTH", err_depth);
+
+  Notify("STATE1", state_1);
+  Notify("STATE2", state_2);
+  Notify("STATE3", state_3);
+
+
   if (state_1 == 1){ // UP
-    desired_depth = 2;  // a fond vers le haut pour sortir de l'eau
+    desired_depth = 0;  // a fond vers le haut pour sortir de l'eau
     Notify("DESIRED_DEPTH", desired_depth);  // active le suivi de profondeur à 2m (donc 0m)
-    propulsion = 0;
+    propulsion = 10;
     Notify("DESIRED_THRUST",propulsion);
-  
-    Notify("DESIRED_SPEED",vitesse);
-      
 
-    err_depth = abs(desired_depth - actual_depth) ;
+    Notify("DESIRED_SPEED",0.2);
 
-    if (err_depth<=eps_prof && compteur_gps>=nbr_gps){ // si on est dehors et que le GPS à sorti 10 valeurs
-      state_1 = 0;
-      state_2 = 1;
+
+    err_depth = abs(abs(desired_depth)-abs(actual_depth));
+    time_passed_s1 = double( clock() - begin_time);
+    Notify("time_passed_s1", time_passed_s1);
+    if (err_depth<=eps_prof && time_passed_s1 >= 100000){ // si on est dehors et que le GPS à sorti 10 valeurs
       gps_m_lat = gps_lat; // valeure sorite par le GPS apres filtre médian
       gps_m_long = gps_long;
 
@@ -150,55 +157,66 @@ bool SimulationStateMachine::Iterate()
         dist_croisiere = pow((B_lat - gps_m_lat),2)+pow((B_long - gps_m_long),2) ;
         time_croisiere = sqrt(dist_croisiere) / vitesse;
 
-        desired_heading = 270 - atan( (B_lat-gps_m_lat) /  (B_long-gps_m_long))*180/ M_PI;
+        desired_heading = (270 - atan( (B_lat-gps_m_lat) /  (B_long-gps_m_long))*180/ M_PI )  ;
       }
 
       else if (b_to_c == 1){
         dist_croisiere = pow((C_lat - gps_m_lat),2)+pow((C_long - gps_m_long),2) ;
         time_croisiere = sqrt(dist_croisiere) / vitesse;
-        desired_heading = 270 - atan( (C_lat-gps_m_lat) /  (C_long-gps_m_long))*180/ M_PI;
+        desired_heading = (270 - atan( (C_lat-gps_m_lat) /  (C_long-gps_m_long))*180/ M_PI ) ;
       }
       else if (c_to_a == 1){
         dist_croisiere = pow((A_lat - gps_m_lat),2)+pow((A_long - gps_m_long),2) ;
         time_croisiere = sqrt(dist_croisiere) / vitesse;
-        desired_heading = 270 - atan( (C_lat-gps_m_lat) /  (C_long-gps_m_long))*180/ M_PI;
+        desired_heading = (270 - atan( (C_lat-gps_m_lat) /  (C_long-gps_m_long))*180/ M_PI)   ;
       }
+      desired_heading = fmod((desired_heading+90),360);
+      state_1 = 0;
+      state_2 = 1;
+      state_3 = 0;
 
     }
+
   }
 
   else if (state_2 == 1){ //Down Ori
     desired_depth = nav_depth;  // a fond vers le profond
     Notify("DESIRED_DEPTH", desired_depth);  // active le suivi de profondeur
-    Notify("DESIRED_HEADING",desired_heading);
-    propulsion = 0;
+    propulsion = 10;
     Notify("DESIRED_THRUST",propulsion);
-  
-    Notify("DESIRED_SPEED",vitesse);
-    err_heading = abs(desired_heading-heading);
-    err_depth = abs(desired_depth-actual_depth);
-    if (err_heading<eps_yaw && err_depth<eps_prof){
-      state_2 = 0;
-      state_3 = 1;
+    Notify("DESIRED_SPEED",0.2);
+    err_depth = abs(abs(desired_depth)-abs(actual_depth));
+    if(err_depth <= eps_prof ){
+      err_heading = abs(desired_heading-heading);
+      Notify("DESIRED_HEADING",desired_heading);
+      if(err_heading <= eps_yaw  ){
+        state_2 = 0;
+        state_1 = 0;
+        state_3 = 1;
+      }
+    }
 
     }
 
-  }
-
   else if (state_3 == 1){ // SuiviCap
-
-   begin_time = clock();
+   if(start_state3 == 1){
+      begin_time = clock();
+      start_state3 = 0;
+   }
    Notify("DESIRED_DEPTH", desired_depth);  // active le suivi de profondeur
    Notify("DESIRED_HEADING",desired_heading);
-   propulsion = 100;
+   propulsion = 10;
    Notify("DESIRED_THRUST",propulsion);
- 
-   Notify("DESIRED_SPEED",vitesse);
+
+   Notify("DESIRED_SPEED",0.2);
+
+   Notify("time_croisiere", time_croisiere);
+   Notify("time_passed", time_passed);
 
    time_passed = double( clock() - begin_time)/CLOCKS_PER_SEC;
    if (time_passed >= time_croisiere){
-     state_1 = 1;
-     state_3 = 0;
+     begin_time = clock();
+
      if (a_to_b == 1){
        a_to_b = 0;
        b_to_c = 1;
@@ -208,10 +226,15 @@ bool SimulationStateMachine::Iterate()
        b_to_c = 0;
        c_to_a = 1;
      }
+
      else if (c_to_a == 1){
        c_to_a = 0;
        a_to_b = 1;
      }
+     state_1 = 1;
+     state_3 = 0;
+     start_state3 = 1;
+
         // changer a to b en b to a
    }
 

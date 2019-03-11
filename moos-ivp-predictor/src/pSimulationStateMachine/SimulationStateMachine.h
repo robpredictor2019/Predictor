@@ -33,6 +33,7 @@ class SimulationStateMachine : public CMOOSApp
    double dist_croisiere;
    double eps_yaw;
    double time_passed;
+   double time_passed_s1;
    double eps_prof;
    double nbr_gps;
    double vitesse;
@@ -54,6 +55,7 @@ class SimulationStateMachine : public CMOOSApp
    double state_3;
    clock_t begin_time;
    double heading;
+   int start_state3 ;
 
 
  protected: // Standard MOOSApp functions to overload
