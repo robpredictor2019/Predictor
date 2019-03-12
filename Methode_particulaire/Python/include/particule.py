@@ -11,20 +11,20 @@ from PyUnityVibes.UnityFigure import UnityFigure
 
 def kalman_predict(xup,Gup,u,Γα,A):
     Γ1 = A @ Gup @ A.T + Γα
-    x1 = A @ xup + u 
-    return(x1,Γ1)    
+    x1 = A @ xup + u
+    return(x1,Γ1)
 
 def kalman_correc(x0,Γ0,y,Γβ,C):
-    S = C @ Γ0 @ C.T + Γβ 
+    S = C @ Γ0 @ C.T + Γβ
     if det(S) != 0 :
         K = Γ0 @ C.T @ inv(S)
-    else : 
+    else :
         K = zeros((3,2))
-    ytilde = y - C @ x0        
-    Gup = (eye(len(x0))-K @ C) @ Γ0 
-    xup = x0+ K@ytilde    
-    return(xup,Gup) 
-    
+    ytilde = y - C @ x0
+    Gup = (eye(len(x0))-K @ C) @ Γ0
+    xup = x0+ K@ytilde
+    return(xup,Gup)
+
 def kalman(x0,Γ0,u,y,Γα,Γβ,A,C):
     xup,Gup = kalman_correc(x0,Γ0,y,Γβ,C)
     x1,Γ1=kalman_predict(xup,Gup,u,Γα,A)
@@ -58,6 +58,7 @@ class Particule:
         self.theta = 0
         self.auv = figure.create(UnityFigure.OBJECT_3D_SUBMARINE, 0, 0, 0, dimX=5, dimY=5, dimZ=5, color=UnityFigure.COLOR_YELLOW)
         self.auv.updateRotation(0,math.degrees(self.U[1,0]),0)
+        self.omega_max = 10 * 2*np.pi/360
         time.sleep(0.1)
 
 
@@ -74,8 +75,12 @@ class Particule:
         U = self.U.flatten()
         return "Vecteur etat : [{},{},{}]".format(self.X[0],self.X[1],self.X[2]) + "\n Matrice de covariance : {}".format(self.cov) + "\n Vecteur d'entree : [{},{}]".format(self.U[0],self.U[1])  # {:.2f} notation pour n'afficher que deux chiffres après la virgule
 
+
     def noise(self, variance):
         return np.random.normal(0,variance**2)
+
+    def distance_amer(self,amer):
+        return math.sqrt((amer[1]-self.X[1,0])**2 + (amer[0]-self.X[0,0])**2)
 
     def sign(self, a):
         """
@@ -98,19 +103,21 @@ class Particule:
         #print("U : ", math.degrees(self.U[1,0]), "th: ", math.degrees(self.theta))
         anim.appendFrame(self.auv, x=self.X[1,0], y=0.0, z=self.X[0,0], rx=0, ry=math.degrees(self.theta), rz=0)
 
-    def controle(self,t,theta_target):
+    def controle(self,t,amer_target):
         """
         Control equation of the AUV
         """
-        k = 1
-        self.U[1,0] = k*(theta_target-self.theta)
-
+        #print(">>>", theta_target, self.theta)
+        self.U[1,0] =np.arctan2(amer_target[1] - self.Xchap[1,0],amer_target[0] - self.Xchap[0,0])
+        #self.theta += 0.1* (self.U[1,0]-self.theta)* min(self.omega_max,abs(self.U[1,0]-self.theta))
+        self.theta += (self.omega_max/np.pi)*sawtooth(self.U[1,0]-self.theta)
     def f(self):
         """
         State equation of the AUV
         alpha : bruit gaussien sur x,y et v
         """
-        theta = self.U[1,0]
+        #print("u : ", self.U.flatten())
+
         u = self.U[0,0]
 
         sigma_x, sigma_y,sigma_v = 0.1,0.5,0.15
@@ -121,15 +128,12 @@ class Particule:
         alpha[1,0] = np.random.normal(0,sigma_y**2)
         alpha[2,0] = np.random.normal(0,sigma_v**2)
 
-        A  = array([[0,0,cos(theta)],[0,0,sin(theta)],[0,0,-1]])
+        A  = array([[0,0,cos(self.theta)],[0,0,sin(self.theta)],[0,0,-1]])
         return A.dot(self.X) + array([[0],[0],[u]]) + alpha
 
 
-    def step(self,t,dt):
-        """
-        Allows to apply the evolution model between t and t+dt
-        """
-        if t == 1:
+    def step_aller_retour(self,t,dt):
+        if t == 60:
             C = array([[1,0,0],[0,1,0]])
             G_beta = diag([[0.45**2],[0.45**2]])
         else :
@@ -148,13 +152,37 @@ class Particule:
         G_alpha = np.diag([sigma_x**2,sigma_y**2,sigma_v**2])
 
         self.X = self.X + dt*self.f()
-        
+        #print("X apres : [{},{},{}]".format(self.X[0,0], self.X[1,0], self.X[2,0]))
+
         U = self.U.flatten()
-        
+
         A  = array([[1,0,cos(self.theta)],[0,1,sin(self.theta)],[0,0,-1]])
         self.Xchap,self.cov = kalman(self.X,self.cov,array([[0],[0],[U[0]]]),G_beta ,G_alpha,G_beta,A,C)
         self.controle(t, theta_target)
 
+    def step_mission(self,t,dt,presence_amer,amer_target):
+
+        if presence_amer == True:
+            C = array([[1,0,0],[0,1,0]])
+            G_beta = diag([[0.45**2],[0.45**2]])
+        else :
+            C = zeros((2,3))
+            G_beta = zeros((2,2))
+
+
+        sigma_x, sigma_y,sigma_v = 0.1,0.1,0.15
+        G_alpha = np.diag([sigma_x**2,sigma_y**2,sigma_v**2])
+
+
+        #print("X avant : [{},{},{}]".format(self.X[0,0], self.X[1,0], self.X[2,0]))
+        self.X = self.X + dt*self.f()
+        #print("X apres : [{},{},{}]".format(self.X[0,0], self.X[1,0], self.X[2,0]))
+
+        U = self.U.flatten()
+
+        A  = array([[1,0,cos(self.theta)],[0,1,sin(self.theta)],[0,0,-1]])
+        self.Xchap,self.cov = kalman(self.X,self.cov,array([[0],[0],[U[0]]]),G_beta ,G_alpha,G_beta,A,C)
+        self.controle(t, amer_target)
 
     def afficher_ellipse(self,ax,col):
     #draw_ellipse(c,Γ,η,ax,col): # Gaussian confidence ellipse with artist
@@ -162,14 +190,15 @@ class Particule:
         draw_ellipse(self.Xchap[0:2,0],self.cov[0:2, 0:2],0.99,ax,col)
 
 
+
 def afficher_ellipse_all(tab_part,col):
-    
+
     """
     tab_part: tableau contenant les toutes particules
     col : couleurs [R G B]
-    """    
+    """
     all_Xchap = [p.Xchap[0,0] for p in tab_part]
-    all_Ychap = [p.Xchap[1,0] for p in tab_part]    
+    all_Ychap = [p.Xchap[1,0] for p in tab_part]
     fig = plt.figure(0)
     ax = fig.add_subplot(111, aspect='equal')
     ax.set_xlim(min(all_Xchap)-30, max(all_Xchap)+30)
@@ -196,9 +225,9 @@ if __name__ == "__main__":
     part2.display("red")
     part2.step(12,0.1)
     part2.display("green")
-    
-    part3 = Particule(2*X,U,10*cov,fig1)    
-    part4 = Particule(array([[-7],[12],[3]]),U,cov,fig1) 
-    tab_part = [part,part2,part3,part4] 
+
+    part3 = Particule(2*X,U,10*cov,fig1)
+    part4 = Particule(array([[-7],[12],[3]]),U,cov,fig1)
+    tab_part = [part,part2,part3,part4]
     part2.step(12,0.1)
     afficher_ellipse_all(tab_part,[0.9,0,0])
