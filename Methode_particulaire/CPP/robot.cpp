@@ -81,9 +81,9 @@ t(0),m_ID(ID),dt(dt),theta_bar(0),v(1),theta(0),theta_dot(0),Kp(1),theta_mission
 
   B.at<double>(2,0) = 1;
 
-  Galpha.at<double>(0,0) = pow(dt,2);
-  Galpha.at<double>(1,1) = pow(dt,2);
-  Galpha.at<double>(2,2) = pow(dt,2);
+  Galpha.at<double>(0,0) = dt;
+  Galpha.at<double>(1,1) = dt;
+  Galpha.at<double>(2,2) = dt;
 
   Gbeta.at<double>(0,0) = 0;
   Gbeta.at<double>(1,1) = 0;
@@ -188,7 +188,7 @@ vector<point> Robot::draw_x_y_hat()
 
 double Robot::distance(point p){
   double dist;
-  dist = pow( pow(x.at<double>(0)-p.first,2) + pow(x.at<double>(1)-p.second,2) ,0.5);
+  dist = pow( pow(x_hat.at<double>(0)-p.first,2) + pow(x_hat.at<double>(1)-p.second,2) ,0.5);
   return dist;
 }
 
@@ -290,7 +290,7 @@ void covar_particule(vector<point> * plot_x,vector<point> * plot_y,vector<point>
     }
     plot_x ->push_back(point(Lr[0].m_state[i].t,x_sigma));
     plot_y ->push_back(point(Lr[0].m_state[i].t,y_sigma));
-    plot_xy->push_back(point(Lr[0].m_state[i].t,pow( pow(x_sigma,2) + pow(y_sigma,2),0.5)));
+    plot_xy->push_back(point(Lr[0].m_state[i].t,x_sigma + y_sigma));
     plot_dist ->push_back(point(Lr[0].m_state[i].t,pow(dist_max,0.5)));
   }
 }

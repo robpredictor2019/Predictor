@@ -4,7 +4,7 @@
 using namespace std;
 
 #define NOMBRE_ROBOT 100
-#define TEMPS_ITERATION 245
+#define TEMPS_ITERATION 125
 #define DT 0.1
 
 
@@ -15,7 +15,7 @@ int main(int argc, char **argv){
   vector<Robot> List_robot;
   List_robot.reserve(100);
   //cout<<List_robot.capacity()<<endl;
-  double radius = 5;
+  double radius = 1;
   bool inzone(0);
 
   vector<point> amer;
@@ -70,12 +70,10 @@ int main(int argc, char **argv){
         robot.Gbeta.at<double>(1,1) = pow(0.48,2);
         robot.y.at<double>(0) = robot.x.at<double>(0);
         robot.y.at<double>(1) = robot.x.at<double>(1);
-        if (not(inzone)){
-          inzone = 1;
-          amer_number++;
-          if (amer_number>=amer.size()){
-            amer_number = 0; 
-          }
+        inzone = 1;
+        amer_number++;
+        if (amer_number>=amer.size()){
+          amer_number = 0; 
         }
       }
       robot.P_theta(amer[amer_number]); //Proportionnel pour
@@ -99,7 +97,7 @@ int main(int argc, char **argv){
       }*/
       robot.save_state();
 
-      if (inzone && robot.distance(amer[amer_number])>radius){
+      if (inzone){
         inzone = 0;
         robot.C.at<double>(0,0)=0;
         robot.C.at<double>(1,1)=0;
@@ -128,7 +126,7 @@ int main(int argc, char **argv){
   Gamma << "set title 'Sigma'\n";
   Gamma<<"plot '-' title 'Sigma_x' with linespoint ls 1 points 0,";
   Gamma<<" '-' title 'Sigma_y' with linespoint ls 2 points 0,";
-  Gamma<<" '-' title 'Sigma_x^2+Sigma_y^2' with linespoint ls 3 points 0,";
+  Gamma<<" '-' title 'Sigma_x+Sigma_y' with linespoint ls 3 points 0,";
   Gamma<<" '-' title 'Max distance' with linespoint ls 4 points 0\n";
   Gamma.send1d(plot_x);
   Gamma.send1d(plot_y);
