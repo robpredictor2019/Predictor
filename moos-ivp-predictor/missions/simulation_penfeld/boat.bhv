@@ -1,0 +1,172 @@
+initialize LANCEMENT = false
+initialize FIN_PARCOURS = false
+initialize POINTA_f = false
+initialize POINTB_f = false
+initialize POINTC_f = false
+
+initialize speed = 0
+
+// Définitions des modes
+
+  // Niveau 1
+
+    set MODE = ACTIVE {
+      LANCEMENT = true
+    } INACTIVE
+
+  // Niveau 2
+
+    set MODE = POINTA {
+      MODE = ACTIVE
+      POINTA_f = false
+      FIN_PARCOURS = false
+    }
+
+    set MODE = POINTB {
+      MODE = ACTIVE
+      POINTA_f = true
+      POINTB_f = false
+      FIN_PARCOURS = false
+    }
+
+    set MODE = POINTC {
+      MODE = ACTIVE
+      POINTA_f = true
+      POINTB_f = true
+      POINTC_f = false
+      FIN_PARCOURS = false
+    }
+
+
+    set MODE = RETOUR {
+      MODE = ACTIVE
+      FIN_PARCOURS = true
+    }
+
+// Configuration des behaviors
+
+Behavior = BHV_ConstantHeading
+{
+  // General Behavior Parameters
+  // ---------------------------
+  name         = const_hdg_pa
+  pwt          = 100
+  condition    = MODE == POINTA
+  updates      = CONST_HDG_UPDATES
+  endflag      = POINTA_f = true
+
+  // Parameters specific to this behavior
+  // ------------------------------------
+             basewidth = 10
+              duration = 100
+  heading_mismatch_var = HDG_DIFF
+             peakwidth = 10
+           summitdelta = 25
+           heading = 300
+
+}
+
+
+Behavior = BHV_ConstantSpeed
+{
+  // General Behavior Parameters
+  // ---------------------------
+  name         = const_vit_pa  // example
+  pwt          = 100                // default
+  condition    = MODE == POINTA   // example
+  updates      = CONST_SPD_UPDATES  // example
+
+  // Parameters specific to this behavior
+  // ------------------------------------
+           basewidth = 0.2          // default
+            duration = 100           // default
+               speed = 1            // default
+  speed_mismatch_var = SPEED_DIFF   // example
+           peakwidth = 0            // default
+         summitdelta = 0            // default
+}
+
+
+
+Behavior = BHV_ConstantHeading
+{
+  // General Behavior Parameters
+  // ---------------------------
+  name         = const_hdg_pb
+  pwt          = 100
+  condition    = MODE== POINTB
+  updates      = CONST_HDG_UPDATES
+  endflag      = POINTB_f = true
+
+  // Parameters specific to this behavior
+  // ------------------------------------
+             basewidth = 10
+              duration = 100
+  heading_mismatch_var = HDG_DIFF
+             peakwidth = 10
+           summitdelta = 25
+           heading = 210
+
+}
+
+
+Behavior = BHV_ConstantSpeed
+{
+  // General Behavior Parameters
+  // ---------------------------
+  name         = const_vit_pb  // example
+  pwt          = 100                // default
+  condition    = MODE == POINTB  // example
+  updates      = CONST_SPD_UPDATES  // example
+
+  // Parameters specific to this behavior
+  // ------------------------------------
+           basewidth = 0.2          // default
+            duration = 100           // default
+               speed = 1            // default
+  speed_mismatch_var = SPEED_DIFF   // example
+           peakwidth = 0            // default
+         summitdelta = 0            // default
+}
+
+Behavior = BHV_ConstantHeading
+{
+  // General Behavior Parameters
+  // ---------------------------
+  name         = const_hdg_pc
+  pwt          = 100
+  condition    = MODE== POINTC
+  updates      = CONST_HDG_UPDATES
+  endflag      = POINTC_f = true
+  endflag      = FIN_PARCOURS = true
+
+  // Parameters specific to this behavior
+  // ------------------------------------
+             basewidth = 10
+              duration = 100
+  heading_mismatch_var = HDG_DIFF
+             peakwidth = 10
+           summitdelta = 25
+           heading = 70
+
+}
+
+
+Behavior = BHV_ConstantSpeed
+{
+  // General Behavior Parameters
+  // ---------------------------
+  name         = const_vit_pc  // example
+  pwt          = 100                // default
+  condition    = MODE == POINTC   // example
+  updates      = CONST_SPD_UPDATES  // example
+
+  // Parameters specific to this behavior
+  // ------------------------------------
+           basewidth = 0.2          // default
+            duration = 100           // default
+               speed = 1            // default
+  speed_mismatch_var = SPEED_DIFF   // example
+           peakwidth = 0            // default
+         summitdelta = 0            // default
+}
