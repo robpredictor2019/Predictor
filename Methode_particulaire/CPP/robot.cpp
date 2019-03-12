@@ -77,13 +77,13 @@ t(0),m_ID(ID),dt(dt),theta_bar(0),v(1),theta(0),theta_dot(0),Kp(1),theta_mission
   A.at<double>(0,2) = cos(theta*PI/180)*dt;
   A.at<double>(1,1) = 1;
   A.at<double>(1,2) = sin(theta*PI/180)*dt;
-  A.at<double>(2,2) = 0;
+  A.at<double>(2,2) = 1-dt;
 
-  B.at<double>(2,0) = 1;
+  B.at<double>(2,0) = dt;
 
-  Galpha.at<double>(0,0) = dt;
-  Galpha.at<double>(1,1) = dt;
-  Galpha.at<double>(2,2) = dt;
+  Galpha.at<double>(0,0) = dt*pow(0.1,2);
+  Galpha.at<double>(1,1) = dt*pow(0.1,2);
+  Galpha.at<double>(2,2) = dt*pow(0.15,2);
 
   Gbeta.at<double>(0,0) = 0;
   Gbeta.at<double>(1,1) = 0;
@@ -101,14 +101,17 @@ void Robot::evolution()
   normal_distribution<> dv(0,pow(Galpha.at<double>(2,2),0.5));
   Mat xdot = Mat::zeros(3, 1, CV_64F);
 
+  Mat Bruit = Mat::zeros(3, 1, CV_64F);
 
+  Bruit.at<double>(0) = dx(generator);
+  Bruit.at<double>(1) = dy(generator);
+  Bruit.at<double>(2) = dv(generator);
 
+  xdot.at<double>(0) = x.at<double>(2)*cos((theta*PI/180));
+  xdot.at<double>(1) = x.at<double>(2)*sin((theta*PI/180));
+  xdot.at<double>(2) = u.at<double>(0) - x.at<double>(2);
 
-  xdot.at<double>(0) = x.at<double>(2)*cos((theta*PI/180)) + dx(generator);
-  xdot.at<double>(1) = x.at<double>(2)*sin((theta*PI/180)) + dy(generator);
-  xdot.at<double>(2) = u.at<double>(0) - x.at<double>(2) + dv(generator);
-
-  x += dt*xdot;
+  x += dt*xdot + Bruit;
   theta += dt*theta_dot;
   if (theta>360)
     theta -= 360;
@@ -247,14 +250,14 @@ void  draw_ellipse(double x,double y,Mat Gx){
     sqrt(2*Gx,A);
     Mat w;
     //eigen(A,w);
-    //std::cout<<w.size()<<endl; 
+    //std::cout<<w.size()<<endl;
     /*v1=array([[v[0,0]],[v[1,0]]])
-    v2=array([[v[0,1]],[v[1,1]]])        
+    v2=array([[v[0,1]],[v[1,1]]])
     f1=A @ v1
-    f2=A @ v2      
+    f2=A @ v2
     φ =  (arctan2(v1 [1,0],v1[0,0]))
     α=φ*180/3.14
-    e = Ellipse(xy=c, width=2*norm(f1), height=2*norm(f2), angle=α)   
+    e = Ellipse(xy=c, width=2*norm(f1), height=2*norm(f2), angle=α)
     ax.add_artist(e)
     e.set_clip_box(ax.bbox)
     e.set_alpha(0.7)
@@ -268,11 +271,11 @@ void covar_particule(vector<point> * plot_x,vector<point> * plot_y,vector<point>
       x_mean += Lr[j].m_state[i].x;
       y_mean += Lr[j].m_state[i].y;
     }
-    
+
     x_mean = x_mean/Lr.capacity();
     y_mean = y_mean/Lr.capacity();
 
-    
+
 
     for(int j=0;j<Lr.capacity();j++){
       x_sigma += pow(Lr[j].m_state[i].x - x_mean,2);

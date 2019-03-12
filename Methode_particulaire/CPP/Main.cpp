@@ -3,9 +3,9 @@
 #include <unistd.h>
 using namespace std;
 
-#define NOMBRE_ROBOT 100
-#define TEMPS_ITERATION 125
-#define DT 0.1
+#define NOMBRE_ROBOT 10
+#define TEMPS_ITERATION 1350
+#define DT 0.5
 
 
 int main(int argc, char **argv){
@@ -13,7 +13,7 @@ int main(int argc, char **argv){
   Gnuplot Gamma;
 
   vector<Robot> List_robot;
-  List_robot.reserve(100);
+  List_robot.reserve(NOMBRE_ROBOT);
   //cout<<List_robot.capacity()<<endl;
   double radius = 1;
   bool inzone(0);
@@ -21,10 +21,12 @@ int main(int argc, char **argv){
   vector<point> amer;
 
   amer.push_back(point(0,0));
-  amer.push_back(point(50,0));
-  amer.push_back(point(25,25));
+  amer.push_back(point(500,0));
+  amer.push_back(point(250,250));
 
   int amer_number(1);
+
+  double Temps_trav;
 
   vector<point> plot_x;
   vector<point> plot_y;
@@ -32,13 +34,6 @@ int main(int argc, char **argv){
   vector<point> plot_dist;
   vector<point> p;
   vector<point> p_hat;
-  vector<point> Cercle_0;
-  vector<point> Cercle_1;
-  vector<point> Cercle_2;
-
-  Cercle_0 = circle(amer.at(0),radius);
-  Cercle_1 = circle(amer.at(1),radius);
-  Cercle_2 = circle(amer.at(2),radius);
 
   std::ofstream fs;
   fs.open ("../Robot_States.txt", std::fstream::in | std::fstream::out | std::fstream::trunc);
@@ -61,8 +56,10 @@ int main(int argc, char **argv){
   for (int i=0;i<NOMBRE_ROBOT;i++){
     Robot robot = List_robot[i];
     amer_number = 1;
+    Temps_trav = sqrt(pow((amer[amer_number].first - robot.x.at<double>(0)),2)+pow((amer[amer_number].second - robot.x.at<double>(1)),2))/1;
+
     for (int j=0; j<TEMPS_ITERATION/DT-1; j++){
-      if (robot.distance(amer[amer_number])<radius){
+      if ((Temps_trav-robot.t)<0){
         //cout<<"je change de direction !!!!!!!!!"<<endl;
         robot.C.at<double>(0,0)=1;
         robot.C.at<double>(1,1)=1;
@@ -73,8 +70,9 @@ int main(int argc, char **argv){
         inzone = 1;
         amer_number++;
         if (amer_number>=amer.size()){
-          amer_number = 0; 
+          amer_number = 0;
         }
+        Temps_trav = sqrt(pow((amer[amer_number].first - robot.x.at<double>(0)),2)+pow((amer[amer_number].second - robot.x.at<double>(1)),2))/1 + robot.t;
       }
       robot.P_theta(amer[amer_number]); //Proportionnel pour
       robot.kalman_x(&robot.Gx_hat, &robot.x_hat);
@@ -112,15 +110,9 @@ int main(int argc, char **argv){
 
   //Post show
   gp<<"plot '-' title 'Real'  with linespoint ls 2 points 0,";
-  gp<<" '-' title 'Kalman' with linespoint ls 1 points 0,"; 
-  gp<<" '-' notitle with linespoint ls 3 points 0,"; 
-  gp<<" '-' notitle with linespoint ls 3 points 0,"; 
-  gp<<" '-' notitle with linespoint ls 3 points 0\n"; 
+  gp<<" '-' title 'Kalman' with linespoint ls 1 points 0\n";
   gp.send1d(p);
   gp.send1d(p_hat);
-  gp.send(Cercle_0);
-  gp.send(Cercle_1);
-  gp.send(Cercle_2);
 
   cout<<"Simulation done\n";
   Gamma << "set title 'Sigma'\n";
