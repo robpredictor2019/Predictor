@@ -15,7 +15,6 @@ int main(int argc, char **argv){
   x = x_out;
   Gx = Gx_out;
 
-
   vector<Robot> List_robot;
 
   std::fstream fs;

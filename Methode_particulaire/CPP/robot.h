@@ -25,7 +25,6 @@ private:
   double m_t;
 
 public:
-
   //Variables Kalman
   Mat x;
   Mat Gx;
@@ -44,7 +43,6 @@ public:
   void evolution();
   void draw(Gnuplot gp);
   float scenario();
-
   void InitValues();
 
   void save_state();
