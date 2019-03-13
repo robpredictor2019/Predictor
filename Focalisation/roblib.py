@@ -140,7 +140,7 @@ def draw_ellipse(c,Γ,η,ax,col): # Gaussian confidence ellipse with artist
     
     
 
-def draw_disk(c,r,ax,col,α=0.3): 
+def draw_disk(c,r,ax,col,α=0.6): 
     #draw_disk(array([[1],[2]]),0.5,ax,"blue")
     e = Ellipse(xy=c, width=2*r, height=2*r, angle=0)   
     ax.add_artist(e)
