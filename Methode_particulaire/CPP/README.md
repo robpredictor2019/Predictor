@@ -7,6 +7,11 @@ Trois méthodes sont implémentées:
 - evolution
 - draw
 - scenario
+- Kalman
 
-## Classe kalman
-Cette classe permet d'avoir accès au filtre de Kalman.
+
+
+A faire:
+* gitignore pour le fichier text
+* Proportionnel en conséquence Mission triangle
+* tracer l'incertitude ?
