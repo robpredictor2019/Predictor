@@ -4,10 +4,8 @@
 $ sudo apt-get install -y python2.7 flex bison gcc g++ make pkg-config
 
 # installer Ibex :
-	trouver ibex-2.6.0.tar.gz sur internet
-
-	tar xvfz ibex-2.6.0.tar.gz
-	cd ibex-2.6.0
+	tar xvfz ibex-lib-ibex-2.6.0.tar.gz
+	cd ibex-lib-ibex-2.6.0
 	./waf configure
 	sudo ./waf install
 	
@@ -24,37 +22,25 @@ $ sudo apt-get install -y python2.7 flex bison gcc g++ make pkg-config
 	make
 	make test
 
-##pour inclure les libraries : (A TESTER) 
+## Pour utiliser les codes:
+- dans tubex-lib/examples/cpp mettre le dossier missions_predictor
+- ajouter la ligne "add_subdirectory(missions_predictor)" dans le CMakeList.txt de tubex-lib/examples/cpp
 
-- ds CmakeList de MOOS-extend/src/??
-	TARGET_LINK_LIBRARIES( ${ibex tubex
-							
-
-- ds CmakeList de MOOS-extend, soit:
-#=============================================================================
-# Ibex
-#=============================================================================
-
-INCLUDE_DIRECTORIES("???/ibex-lib-ibex-2.6.0/__build__")
-LINK_DIRECTORIES("???/ibex-lib-ibex-2.6.0/__build__/src/libibex.a")
-#=============================================================================
-# Tubex
-#=============================================================================
-
-INCLUDE_DIRECTORIES("tubex-lib/build/include")
-LINK_DIRECTORIES("???/tubex-lib/build/src/tube/libtubex-core.a")
-
-soit : faire des paths dans /.bashrc pour ne pas avoir les "???" à mettre en dur
-
-
-##pour compiler le programme : 
+## Pour compiler le programme mission triangle: 
+- renommer triangle.cpp en main.cpp
 - ds terminal 1 : vibes
 - ds terminal 2 : ds tubex-lib/build ->$ make
 - ds terminal 3 : ds tubex-lib/build/examples/cpp/test_sarah -> $ ./ex_test_sarah
 
+## Pour compiler le programme mission aller-retour: 
+- renommer retour_0.cpp en main.cpp
+- ds terminal 1 : vibes
+- ds terminal 2 : ds tubex-lib/build ->$ make
+- ds terminal 3 : ds tubex-lib/build/examples/cpp/test_sarah -> $ ./ex_test_sarah
 
 ##pour reccuperer intervals :
    //tube.sliceBox(index) -> ( [temps], [image], dt, nb_slices )
    //tube.size() -> nb interval
    //tube.domain() -> temps
    //tube[index] -> image
+
