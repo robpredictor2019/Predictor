@@ -103,9 +103,6 @@ bool SuiviCap::Iterate()
     sumErr = sumErr / abs(sumErr) * MAXINT;
   }
 
-
-
-
   if(fabs(err)*COEFF>=100)
   {
     sumErr=0;

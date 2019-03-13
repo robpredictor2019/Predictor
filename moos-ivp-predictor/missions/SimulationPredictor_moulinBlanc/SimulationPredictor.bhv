@@ -1,0 +1,317 @@
+initialize LANCEMENT = false
+initialize FIN_PARCOURS = false
+initialize POINT_A = false
+initialize POINT_B = false
+initialize POINT_C = false
+initialize speed = 0
+
+// Définitions des modes
+
+  // Niveau 1
+
+    set MODE = ACTIVE {
+      LANCEMENT = true
+    } INACTIVE
+
+  // Niveau 2
+
+    set MODE = DEPART {
+      MODE = ACTIVE
+      POINT_A = false
+      POINT_B = false
+      POINT_C = false
+      FIN_PARCOURS = false
+    }
+
+    set MODE = RETOUR {
+      MODE = ACTIVE
+      FIN_PARCOURS = true
+    }
+
+    set MODE = GOPOINT_A {
+      MODE = ACTIVE
+      POINT_A = true
+      POINT_B = false
+      POINT_C = false
+      FIN_PARCOURS = false
+    }
+
+    set MODE = GOPOINT_B {
+      MODE = ACTIVE
+      POINT_A = false
+      POINT_B = true
+      POINT_C = false
+      FIN_PARCOURS = false
+    }
+
+    set MODE = GOPOINT_C {
+      MODE = ACTIVE
+      POINT_A = false
+      POINT_B = false
+      POINT_C = true
+      FIN_PARCOURS = false
+    }
+
+// Configuration des behaviors
+// Depart
+Behavior = BHV_ConstantHeading
+{
+  // General Behavior Parameters
+  // ---------------------------
+  name         = const_hdg
+  pwt          = 100
+  condition    = MODE== DEPART
+  updates      = CONST_HDG_UPDATES
+  endflag      = POINT_A = true
+
+  // Parameters specific to this behavior
+  // ------------------------------------
+             basewidth = 10
+              duration = 100
+  heading_mismatch_var = HDG_DIFF
+             peakwidth = 10
+           summitdelta = 25
+           heading = 90
+
+}
+
+ Behavior = BHV_ConstantSpeed
+ {
+   // General Behavior Parameters
+   // ---------------------------
+   name         = depart_const_spd_transit  // example
+   pwt          = 100                // default
+   condition    = MODE == DEPART   // example
+   updates      = CONST_SPD_UPDATES  // example
+
+   // Parameters specific to this behavior
+   // ------------------------------------
+            basewidth = 0.2          // default
+             duration = 100           // default
+                speed = 2            // default
+   speed_mismatch_var = SPEED_DIFF   // example
+            peakwidth = 0            // default
+          summitdelta = 0            // default
+ }
+
+// Depart to Point A
+
+Behavior = BHV_ConstantHeading
+{
+  // General Behavior Parameters
+  // ---------------------------
+  name         = pointA_const_hdg
+  pwt          = 100
+  condition    = MODE== GOPOINT_A
+  updates      = CONST_HDG_UPDATES
+  endflag      = POINT_A = false
+  endflag      = POINT_B = true
+
+  // Parameters specific to this behavior
+  // ------------------------------------
+             basewidth = 10
+              duration = 100
+  heading_mismatch_var = HDG_DIFF
+             peakwidth = 10
+           summitdelta = 25
+           heading = 90
+
+}
+
+ Behavior = BHV_ConstantSpeed
+ {
+   // General Behavior Parameters
+   // ---------------------------
+   name         = pointA_const_spd_transit // example
+   pwt          = 100                // default
+   condition    = MODE == GOPOINT_A   // example
+   updates      = CONST_SPD_UPDATES  // example
+
+   // Parameters specific to this behavior
+   // ------------------------------------
+            basewidth = 0.2          // default
+             duration = 100              
+                speed = 2
+   speed_mismatch_var = SPEED_DIFF   // example
+            peakwidth = 0            // default
+          summitdelta = 0            // default
+ }
+
+// Point A to Point B
+
+Behavior = BHV_ConstantHeading
+{
+  // General Behavior Parameters
+  // ---------------------------
+  name         = AB_const_hdg
+  pwt          = 100
+  condition    = MODE== GOPOINT_B
+  updates      = CONST_HDG_UPDATES
+  endflag      = POINT_B = false
+  endflag      = POINT_C = true
+
+  // Parameters specific to this behavior
+  // ------------------------------------
+             basewidth = 10
+              duration = 100
+              perpetual = true
+  heading_mismatch_var = HDG_DIFF
+             peakwidth = 10
+           summitdelta = 25
+           heading = 315
+
+}
+
+ Behavior = BHV_ConstantSpeed
+ {
+   // General Behavior Parameters
+   // ---------------------------
+   name         = AB_const_spd_transit  // example
+   pwt          = 100                // default
+   condition    = MODE == GOPOINT_B   // example
+   updates      = CONST_SPD_UPDATES  // example
+
+   // Parameters specific to this behavior
+   // ------------------------------------
+            basewidth = 0.2          // default
+             duration = 100
+            perpetual = true
+                speed = 2
+   speed_mismatch_var = SPEED_DIFF   // example
+            peakwidth = 0            // default
+          summitdelta = 0            // default
+ }
+
+// Point B to Point C
+
+Behavior = BHV_ConstantHeading
+{
+  // General Behavior Parameters
+  // ---------------------------
+  name         = BC_const_hdg
+  pwt          = 100
+  condition    = MODE== GOPOINT_C
+  updates      = CONST_HDG_UPDATES
+  endflag      = POINT_C = false
+  endflag      = POINT_A = true
+
+  // Parameters specific to this behavior
+  // ------------------------------------
+             basewidth = 10
+              duration = 100
+              perpetual = true
+  heading_mismatch_var = HDG_DIFF
+             peakwidth = 10
+           summitdelta = 25
+           heading = 235
+
+}
+
+ Behavior = BHV_ConstantSpeed
+ {
+   // General Behavior Parameters
+   // ---------------------------
+   name         = BC_const_spd_transit  // example
+   pwt          = 100                // default
+   condition    = MODE == GOPOINT_C   // example
+   updates      = CONST_SPD_UPDATES  // example
+
+   // Parameters specific to this behavior
+   // ------------------------------------
+            basewidth = 0.2          // default
+             duration = 100
+              perpetual = true
+                speed = 2
+   speed_mismatch_var = SPEED_DIFF   // example
+            peakwidth = 0            // default
+          summitdelta = 0            // default
+ }
+
+
+
+// Point C to Point A
+
+Behavior = BHV_ConstantHeading
+{
+  // General Behavior Parameters
+  // ---------------------------
+  name         = CA_const_hdg
+  pwt          = 100
+  condition    = MODE== GOPOINT_A
+  updates      = CONST_HDG_UPDATES
+  endflag      = POINT_A = false
+  endflag      = POINT_B = true
+
+  // Parameters specific to this behavior
+  // ------------------------------------
+             basewidth = 10
+              duration = 100
+              perpetual = true
+  heading_mismatch_var = HDG_DIFF
+             peakwidth = 10
+           summitdelta = 25
+           heading = 90
+
+}
+
+ Behavior = BHV_ConstantSpeed
+ {
+   // General Behavior Parameters
+   // ---------------------------
+   name         = CA_const_spd_transit  // example
+   pwt          = 100                // default
+   condition    = MODE == GOPOINT_A   // example
+   updates      = CONST_SPD_UPDATES  // example
+
+   // Parameters specific to this behavior
+   // ------------------------------------
+            basewidth = 0.2          // default
+             duration = 100
+              perpetual = true
+                speed = 2
+   speed_mismatch_var = SPEED_DIFF   // example
+            peakwidth = 0            // default
+          summitdelta = 0            // default
+ }
+
+// Retour 
+Behavior = BHV_ConstantHeading
+{
+  // General Behavior Parameters
+  // ---------------------------
+  name         = retour_const_hdg
+  pwt          = 100
+  condition    = MODE == RETOUR
+  updates      = CONST_HDG_UPDATES
+  endflag      = LANCEMENT = false
+  endflag      = FIN_PARCOURS = false
+
+  // Parameters specific to this behavior
+  // ------------------------------------
+             basewidth = 10
+              duration = 100
+  heading_mismatch_var = HDG_DIFF
+             peakwidth = 10
+           summitdelta = 25
+           heading = 270
+
+}
+
+Behavior = BHV_ConstantSpeed
+{
+   // General Behavior Parameters
+   // ---------------------------
+   name         = retour_const_spd_transit  // example
+   pwt          = 100                // default
+   condition    = MODE == RETOUR   // example
+   updates      = CONST_SPD_UPDATES  // example
+
+   // Parameters specific to this behavior
+   // ------------------------------------
+            basewidth = 0.2          // default
+             duration = 100           // default
+                speed = 2            // default
+   speed_mismatch_var = SPEED_DIFF   // example
+            peakwidth = 0            // default
+          summitdelta = 0            // default
+}
