@@ -10,6 +10,6 @@ moos-ivp-predictor/lib/nbproject
 moos-ivp-predictor/lib/*.dpp
 moos-ivp-predictor/lib/*.user
 Methode_particulaire/CPP/build/
+Methode_particulaire/CPP/Robot_States.txt
 
-.gitignore 
-
+.gitignore

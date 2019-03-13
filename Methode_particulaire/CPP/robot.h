@@ -1,55 +1,79 @@
-#include "Kalman.h"
+
 #include <opencv2/core/core.hpp>
 #include <fstream>
 #include <vector>
 #include "gnuplot-iostream.h"
+#include <boost/tuple/tuple.hpp>
+#include <math.h>
+#include <random>
 
+#define PI 3.141592653
 
 struct State{
-  int ID,
-  double t,
-  double x,
-  double y,
-  double theta
+  int ID;
+  double t;
+  double x;
+  double y;
+  double theta;
 }typedef State;
 
-typedef std::pair<double, double> Point;
+typedef std::pair<double, double> point;
+
 
 class Robot
 {
 private:
-  Kalman m_kalman;
+  double dt;
   int m_ID;
-  std::vector<Point> plot;
-  std::vector<State> m_state;
-  double m_t;
+  double Kp;
 
 public:
+  std::vector<State> m_state;
+  double t;
+  double theta;
+  double theta_bar;
+  double theta_dot;
+  int v;
+  double theta_mission;
   //Variables Kalman
-  Mat x;
-  Mat Gx;
-  Mat u;
-  Mat C;
-  Mat A;
-  Mat Gbeta;
-  Mat Galpha;
-  Mat y;
-  Mat x_out, Gx_out;
+  cv::Mat x;
+  cv::Mat Gx;
+  cv::Mat u;
+  cv::Mat C;
+  cv::Mat A;
+  cv::Mat B;
+  cv::Mat Gbeta;
+  cv::Mat Galpha;
+  cv::Mat y;
+  cv::Mat x_hat, Gx_hat;
 
   Robot(); // Constructeur par defaut
-  Robot(Mat x, Mat u, Mat C, Mat A, Mat Galpha, Mat y, Mat Gbeta, Kalman m_kalman, int m_number, Mat Gx);// Constructeur
+  //~Robot(); // Destructeur
+  void P_theta(point p); //Porportionnel pour theta
+  Robot(int,double);
+
+  Robot(cv::Mat x, cv::Mat u, cv::Mat C, cv::Mat A, cv::Mat Galpha, cv::Mat y, cv::Mat Gbeta, cv::Mat Gx);// Constructeur
   void Show() const; // Affichage
   //Methodes
   void evolution();
-  void draw(Gnuplot gp);
+  void draw(std::vector<point>*);
+  void draw_x_y(std::vector<point>*);
+  void draw_x_y_hat(std::vector<point>*);
+  std::vector<point> draw_x_y();
+  std::vector<point> draw_x_y_hat();
   float scenario();
-  void InitValues();
+  double distance(point p);
 
   void save_state();
-  void export(std::fstream fs);
+  void Export(std::ofstream & fs);
 
-  void kalman_predict(Mat xup_k,Mat Pup_k, Mat Q, Mat A, Mat u, Mat* x_k1, Mat* P_k1);
-  void kalman_correct(Mat x_k1, Mat P_k1, Mat  C, Mat R, Mat y, Mat* xup_k1, Mat* Pup_k1);
-  void kalman_x(Mat x_k,Mat P_k,Mat u,Mat y,Mat Q, Mat R,Mat A ,Mat C, Mat* P_k1, Mat* x_k1);
+  void kalman_predict( cv::Mat& xup_k, cv::Mat& Pup_k, cv::Mat* x_k1, cv::Mat* P_k1);
+  void kalman_correct( cv::Mat* xup_k1, cv::Mat* Pup_k1);
+  void kalman_x( cv::Mat* P_k1, cv::Mat* x_k1);
 
 };
+
+std::vector<point> circle(double x,double y,double r);
+std::vector<point> circle(point p,double r);
+void draw_ellipse(double x,double y,cv::Mat Gx);
+void covar_particule(std::vector<point> * plot_x,std::vector<point> * plot_y,std::vector<point> * plot_xy,std::vector<point> * plot_dist,std::vector<Robot> & Lr);

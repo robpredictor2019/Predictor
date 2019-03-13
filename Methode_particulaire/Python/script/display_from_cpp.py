@@ -7,7 +7,7 @@ from PyUnityVibes.UnityFigure import UnityFigure
 
 ### Constante ###
 N  = 30
-dt = 0.1
+dt = 0.5
 
 if len(sys.argv) < 2:
 	print("Merci de rentrer le chemin d'accès au fichier à traiter")
@@ -51,6 +51,8 @@ time.sleep(1)
 ### Calcul des frames successives ###
 for t in np.arange(0, T, dt):
 	for ind_auv, auv in enumerate(AUVs):
+		if t%10.0 < 0.1:
+			sys.stdout.write("- t = {}s\r".format(t))
 		x, y, z, rx, ry, rz = parts[ind_auv, int(t/dt)]
 		anim.appendFrame(auv, x=x, y=y, z=z, rx=rx, ry=ry, rz=rz)
 time.sleep(1)
